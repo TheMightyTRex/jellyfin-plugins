@@ -139,6 +139,9 @@ public sealed class RestoreRecord
 {
     public int Restored { get; set; }
 
+    /// <summary>Gets or sets the size the restored pictures had while shrunk, taken off the space saved.</summary>
+    public long ShrunkBytes { get; set; }
+
     public long Bytes { get; set; }
 
     public int AlreadyOriginal { get; set; }
@@ -573,7 +576,18 @@ public sealed class Shrinker
             "Picture shrinker: {Kind} run shrank {Shrunk} pictures, {Before} to {After} bytes; left {Left}; could not read {Failed}; not backed up {NotBackedUp}. {Stopped}",
             kind, rec.Shrunk, rec.Before, rec.After, rec.Left, rec.Failed, rec.NotBackedUp, rec.Stopped);
         progress?.Report(100);
+        ReturnMemory();
         return rec;
+    }
+
+    /// <summary>
+    /// Gives the memory a run used back to the system once it ends (a full, compacting collection, once per run), so
+    /// Jellyfin is no larger between runs than it was before the first.
+    /// </summary>
+    internal static void ReturnMemory()
+    {
+        System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
     }
 
     private static void Note(RunRecord rec, ShrinkSettings s, string path, string? why)
@@ -658,6 +672,7 @@ public sealed class Shrinker
                         continue;
                     }
 
+                    var shrunkSize = File.Exists(live) ? new FileInfo(live).Length : 0;
                     File.Copy(copy, tmp, overwrite: true);
                     if (File.Exists(live) && !OperatingSystem.IsWindows())
                     {
@@ -668,6 +683,7 @@ public sealed class Shrinker
                     File.Move(tmp, live, overwrite: true);
                     rec.Restored++;
                     rec.Bytes += new FileInfo(live).Length;
+                    rec.ShrunkBytes += shrunkSize;
                 }
                 catch (Exception e) when (e is IOException or UnauthorizedAccessException)
                 {
@@ -687,8 +703,16 @@ public sealed class Shrinker
 
             _log.LogInformation("Picture shrinker: restored {Restored} original pictures ({Bytes} bytes); {Already} were already the original; {Gone} are no longer in Jellyfin; {Failed} failed",
                 rec.Restored, rec.Bytes, rec.AlreadyOriginal, rec.NoLongerThere, rec.Failed);
-            Store.Update(st => st.LastRestore = rec);
+            Store.Update(st =>
+            {
+                // The space saved is what is saved now: a restored picture no longer counts.
+                st.LastRestore = rec;
+                st.Shrunk = Math.Max(0, st.Shrunk - rec.Restored);
+                st.Before = Math.Max(0, st.Before - rec.Bytes);
+                st.After = Math.Max(0, st.After - rec.ShrunkBytes);
+            });
             progress?.Report(100);
+            ReturnMemory();
             return rec;
         }
         finally

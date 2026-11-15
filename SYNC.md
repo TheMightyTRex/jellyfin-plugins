@@ -21,7 +21,7 @@ They must shrink the same pictures in the same way, so a picture never depends o
 | The checks before a replace: decodes in full, right size, right format, smaller than the original | `rules.json`, `checks` | The shared test pictures (a broken and a cut-short picture) |
 | Keep the original's mode and owner | `rules.json`, `keep_from_original` | Unit tests in each repository |
 | Backup before the first shrink, activated by default, never overwritten, at least 100 MB left free, no backup means no shrink | `rules.json`, `backup` | Unit tests in each repository |
-| Restore puts back byte-identical originals and keeps the backup | Code | Unit tests in each repository |
+| Restore puts back byte-identical originals, keeps the backup, and takes them off the space saved | Code | Unit tests in each repository |
 | Delete backup removes only the pictures in the backup folder, never follows a link, is refused during a run | Code | Unit tests in each repository |
 | New pictures: deactivated by default, wait 10 minutes | `rules.json`, `new_pictures` | Both test suites compare their defaults with `rules.json` |
 | A run stops after 115 minutes and the next carries on | `rules.json`, `run_limit_minutes` | Both test suites compare with `rules.json` |

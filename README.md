@@ -116,7 +116,8 @@ The settings page shows, measured when the page opens and after each thing you d
 - **Pictures now:** the size and number of the posters and photos it looks after.
 - **Backup of the originals:** the size and number of pictures in the backup, with **Delete backup** and the space it
   frees.
-- **Space saved:** the space saved so far and how many pictures were shrunk.
+- **Space saved:** the space saved now and how many pictures are shrunk. Pictures put back by **Restore original
+  pictures** no longer count.
 
 Below, **Last runs** lists each run: when, what started it, how many were shrunk, left as they were and not shrunk,
 the space saved, and how it ended.
@@ -155,16 +156,31 @@ the space saved, and how it ended.
 3. In **Dashboard**, **Plugins**, **My Plugins**, open **Picture shrinker** and choose **Uninstall**, then restart
    Jellyfin.
 4. If you did not delete the backup, its folder stays in Jellyfin's data folder (`picture-shrinker/originals`); you
-   can delete it yourself. The plug-in's settings file, `Jellyfin.Plugin.PictureShrinker.xml` in Jellyfin's
-   `plugins/configurations` folder, can be deleted too.
+   can delete it yourself. Two small files stay too, which you can delete: its settings,
+   `plugins/configurations/Jellyfin.Plugin.PictureShrinker.xml`, and its figures, `plugins/Jellyfin.Plugin.PictureShrinker`,
+   both in Jellyfin's configuration folder (`/config` in the official Docker image).
 
 ## How much it uses
 
 Measured on 15 November 2026 on a sample of 540 made-up pictures (300 posters at 2,000 by 3,000 pixels and 240 photos
 at 1,365 by 2,048), in a throwaway Jellyfin 10.11.11 container limited to 2 processors and 1.5 GB of memory, against
-the Starboard version on the same sample. See [the full figures](#figures).
+the Starboard version on the same sample.
 
-FIGURES
+| | Jellyfin version (this plug-in) | Starboard version |
+|---|---|---|
+| Where it runs | Inside Jellyfin | Its own container beside Jellyfin |
+| Memory at rest | No change measurable: Jellyfin with the plug-in was 164 MB, as before the run | 13 MB (its whole container) |
+| Memory at the peak of a run | About 20 MB more than Jellyfin at rest (183 MB against 164 MB) | 33 MB (its whole container) |
+| Memory after a run | Back to Jellyfin at rest (164 MB) | 23 MB (the image library stays loaded) |
+| Processor time for the run | 35 seconds | 39 seconds |
+| Time the run took | 55 seconds (one processor at most, as it uses one thread) | 80 seconds (capped at half a processor) |
+| Pictures shrunk | 540 of 540 | 540 of 540 |
+| Space saved | 758.8 MB (776.3 MB to 17.5 MB) | 758.4 MB (776.3 MB to 17.9 MB) |
+| Jellyfin's answers during the run | `/System/Info` every 2 seconds: median 25 ms, slowest 68 ms (at rest: 30 ms and 59 ms) | Not affected (a separate container) |
+
+Both work at the lowest priority. The Jellyfin version uses slightly less processor time and, with no container of its
+own, less memory at rest; the Starboard version keeps its memory apart from Jellyfin's. An earlier build of this
+plug-in kept about 60 MB after a run; it now hands that memory back when each run ends.
 
 ## Why SkiaSharp
 

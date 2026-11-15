@@ -198,6 +198,8 @@ public sealed class ShrinkerTests : IDisposable
         var rec = shrinker.Restore(CancellationToken.None)!;
         Assert.Equal(7, rec.Restored);
         Assert.Equal(original, Hashes(_meta));
+        Assert.Equal(0, shrinker.Measure().Saved); // nothing is saved once every picture is back
+        Assert.Equal(0, shrinker.Measure().ShrunkTotal);
         Assert.Equal(7, shrinker.Restore(CancellationToken.None)!.AlreadyOriginal); // the backup is kept
     }
 

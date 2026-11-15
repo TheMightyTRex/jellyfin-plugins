@@ -24,6 +24,7 @@
         #PictureShrinkerConfigPage .psButtons { display: flex; flex-wrap: wrap; gap: 0.5em; margin-top: 1em; }
         #PictureShrinkerConfigPage .psButtons .emby-button { margin: 0; }
         #PictureShrinkerConfigPage .psReason { margin: 0.4em 0 0; }
+        #PictureShrinkerConfigPage [aria-disabled="true"] { opacity: 0.5; cursor: not-allowed; }
         #PictureShrinkerConfigPage :focus-visible { outline: 0.15em solid #00a4dc; outline-offset: 0.15em; }
     </style>
     <div data-role="content">
@@ -233,10 +234,11 @@
                     reason = 'There is no backup to delete.';
                 }
                 var del = $('psDelete');
-                del.disabled = !!reason;
+                // aria-disabled, not disabled: the button stays in the Tab order, so its reason is read with it
+                del.setAttribute('aria-disabled', reason ? 'true' : 'false');
                 del.textContent = sp.BackupCount ? 'Delete backup (frees ' + size(sp.BackupBytes) + ')' : 'Delete backup';
                 $('psDeleteReason').textContent = reason;
-                $('psShrinkNow').disabled = !!s.Running;
+                $('psShrinkNow').setAttribute('aria-disabled', s.Running ? 'true' : 'false');
                 var problem = $('psProblem');
                 problem.hidden = !s.Problem;
                 problem.textContent = s.Problem || '';
@@ -311,6 +313,7 @@
             });
 
             $('psShrinkNow').addEventListener('click', function () {
+                if (this.getAttribute('aria-disabled') === 'true') { say('Already running. Measure again to see how far it has gone.'); return; }
                 post('ShrinkNow').then(function (r) { say(r.Said); return measure(); });
             });
 
@@ -320,7 +323,7 @@
 
             var dialog = $('psConfirm');
             $('psDelete').addEventListener('click', function () {
-                if (!last) { return; }
+                if (!last || this.getAttribute('aria-disabled') === 'true') { say($('psDeleteReason').textContent); return; }
                 $('psConfirmSize').textContent = 'This deletes ' + count(last.Space.BackupCount, 'original picture', 'original pictures') + ' and frees ' + size(last.Space.BackupBytes) + '.';
                 dialog.showModal();
                 $('psConfirmCancel').focus();
