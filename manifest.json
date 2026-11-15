@@ -7,6 +7,23 @@
     "owner": "TheMightyTRexUK",
     "category": "General",
     "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/main/images/logo.png",
-    "versions": []
+    "versions": [
+      {
+        "version": "1.1.1.0",
+        "changelog": "The first version for Jellyfin, with rules 1.1 (the same as the Starboard plug-in 1.1.0), in two builds from the same\nsource: 1.1.1.0 for Jellyfin 12 (.NET 10) and 1.1.0.0 for Jellyfin 10.11 (.NET 9). Jellyfin installs the one for its\nown version.\n\n- Shrinks Jellyfin's pictures: posters to 900 pixels tall and photos of cast and crew to 400 pixels wide, both settings. Smaller pictures are left alone.\n- Checked before it replaces: each smaller copy is written beside the original, opened again and decoded in full, and swapped in only when it has the right size and format and is smaller.\n- Backup first: each original is copied to a backup folder before its first shrink. Restore original pictures puts them back; Delete backup frees the space when you are sure.\n- When you choose: a task in Scheduled Tasks, every Sunday at 03:30 until you change it, at the lowest priority. New pictures can be shrunk soon after Jellyfin saves them (deactivated by default).\n- Space: the pictures now, the backup and the space saved, on the settings page. A finished run sends no notification.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/releases/download/v1.1.1.0/picture-shrinker_1.1.1.0_jellyfin-12.zip",
+        "checksum": "a940e74e69f07e802e9f317d01c3ab2e",
+        "timestamp": "2026-11-15T23:22:40Z"
+      },
+      {
+        "version": "1.1.0.0",
+        "changelog": "The first version for Jellyfin, with rules 1.1 (the same as the Starboard plug-in 1.1.0), in two builds from the same\nsource: 1.1.1.0 for Jellyfin 12 (.NET 10) and 1.1.0.0 for Jellyfin 10.11 (.NET 9). Jellyfin installs the one for its\nown version.\n\n- Shrinks Jellyfin's pictures: posters to 900 pixels tall and photos of cast and crew to 400 pixels wide, both settings. Smaller pictures are left alone.\n- Checked before it replaces: each smaller copy is written beside the original, opened again and decoded in full, and swapped in only when it has the right size and format and is smaller.\n- Backup first: each original is copied to a backup folder before its first shrink. Restore original pictures puts them back; Delete backup frees the space when you are sure.\n- When you choose: a task in Scheduled Tasks, every Sunday at 03:30 until you change it, at the lowest priority. New pictures can be shrunk soon after Jellyfin saves them (deactivated by default).\n- Space: the pictures now, the backup and the space saved, on the settings page. A finished run sends no notification.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/releases/download/v1.1.1.0/picture-shrinker_1.1.0.0_jellyfin-10.11.zip",
+        "checksum": "e58a2d0e45dcd7083ebe2a5b21715a6e",
+        "timestamp": "2026-11-15T23:22:40Z"
+      }
+    ]
   }
 ]
