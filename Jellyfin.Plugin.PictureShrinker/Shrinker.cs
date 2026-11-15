@@ -581,13 +581,17 @@ public sealed class Shrinker
     }
 
     /// <summary>
-    /// Gives the memory a run used back to the system once it ends (a full, compacting collection, once per run), so
-    /// Jellyfin is no larger between runs than it was before the first.
+    /// Gives the memory a run used back to the system once it ends, so Jellyfin is no larger between runs than it was
+    /// before the first: a full, compacting collection (once per run), Skia's own caches emptied, and the C library's
+    /// free memory handed back (on Jellyfin 12's .NET 10 the decoded pictures' native memory otherwise stays with
+    /// Jellyfin).
     /// </summary>
     internal static void ReturnMemory()
     {
         System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
         GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, blocking: true, compacting: true);
+        SKGraphics.PurgeAllCaches();
+        Unix.TrimNativeHeap();
     }
 
     private static void Note(RunRecord rec, ShrinkSettings s, string path, string? why)

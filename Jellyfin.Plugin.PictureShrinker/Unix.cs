@@ -110,6 +110,23 @@ internal static class Unix
         }
     }
 
+    /// <summary>Hands the C library's free memory back to the system (glibc's malloc_trim; nothing where it is missing).</summary>
+    public static void TrimNativeHeap()
+    {
+        if (!OperatingSystem.IsLinux())
+        {
+            return;
+        }
+
+        try
+        {
+            _ = malloc_trim(0);
+        }
+        catch (Exception e) when (e is EntryPointNotFoundException or DllNotFoundException)
+        {
+        }
+    }
+
     private static long IoprioSetNumber() => RuntimeInformation.ProcessArchitecture switch
     {
         Architecture.X64 => 251,
@@ -126,6 +143,9 @@ internal static class Unix
 
     [DllImport("libc", SetLastError = true)]
     private static extern int gettid();
+
+    [DllImport("libc")]
+    private static extern int malloc_trim(nuint pad);
 
     [DllImport("libc", SetLastError = true)]
     private static extern int setpriority(int which, uint who, int prio);
