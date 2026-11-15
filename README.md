@@ -1,6 +1,6 @@
 # Picture shrinker for Jellyfin
 
-Works on any Jellyfin 10.11 server; you do not need Starboard.
+Works on any Jellyfin 10.11 or Jellyfin 12 server; you do not need Starboard.
 
 A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
 
@@ -20,24 +20,33 @@ are sure.
 
 ## How to install it in Jellyfin
 
-You need Jellyfin 10.11 and an administrator account. Everything is in Jellyfin's own dashboard.
+You need Jellyfin 10.11 or Jellyfin 12 and an administrator account. Everything is in Jellyfin's own dashboard. The
+repository has a build for each: Jellyfin installs the one for its own version (1.1.1.0 on Jellyfin 12, 1.1.0.0 on
+Jellyfin 10.11).
+
+| Your Jellyfin | Version it installs | Built for |
+|---|---|---|
+| 12.0 to 12.4 | 1.1.1.0 | .NET 10 |
+| 10.11 | 1.1.0.0 | .NET 9 |
+
+To see your version: **Dashboard**; it is under the server name at the top of the menu.
 
 1. Open Jellyfin in a web browser and sign in as an administrator.
-2. Open the menu, then **Dashboard**.
-3. Under **Plugins**, open **Repositories** (in some versions it is a tab called **Repositories** on the **Plugins**
-   page).
-4. Choose **+** (Add) and fill in:
-   - **Repository name:** `Picture shrinker`
+2. Open the menu, then **Dashboard**, then **Plugins**.
+3. Choose **Manage Repositories** (on Jellyfin 10.11: the **Repositories** tab), then **New Repository** (on 10.11:
+   **+**). Fill in:
+   - **Repository Name:** `Picture shrinker`
    - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/main/manifest.json`
-5. Choose **Save**.
-6. Open **Catalogue** (under **Plugins**). Find **Picture shrinker** in the **General** group and open it.
-7. Choose **Install**, then confirm.
-8. Restart Jellyfin: **Dashboard**, then **Restart** (or restart its container or service).
+4. Choose **Add** (on 10.11: **Save**).
+5. Back on **Plugins**, choose **Available** (on 10.11: the **Catalogue** tab) and search for `Picture`. Open
+   **Picture shrinker**.
+6. Choose **Install**, then **Install** again to confirm.
+7. Restart Jellyfin: **Dashboard**, then **Restart** (or restart its container or service).
 
 After the restart:
 
-- **The settings** are in **Dashboard**, **Plugins**, **My Plugins**, **Picture shrinker** (choose its card, then
-  **Settings**).
+- **The settings** are in **Dashboard**, **Plugins**: choose **Installed** (on 10.11: **My Plugins**), open
+  **Picture shrinker**, then **Settings**.
 - **The tasks** are in **Dashboard**, **Scheduled Tasks**, under **Picture shrinker**: **Shrink pictures** and
   **Restore original pictures**.
 
@@ -49,7 +58,8 @@ If you use Starboard, it can do all of this for you in **Settings**, **Apps**, *
 
 ### What it picks
 
-It looks only in Jellyfin's metadata folder (in the official Docker image, `/config/metadata`):
+It looks only in Jellyfin's metadata folder (in the official Docker image, `/config/metadata`; in the LinuxServer.io
+image, `/config/data/metadata`).
 
 | Picture | Where Jellyfin keeps it | Shrunk to |
 |---|---|---|
@@ -95,8 +105,9 @@ A picture that cannot be read is left as it is and listed on the settings page w
 
 - Each original is copied once, before its first shrink, to the backup folder, keeping its place under `library` or
   `People`, so each one can be matched back. The folder is `picture-shrinker/originals` in Jellyfin's data folder
-  (in the official Docker image, `/config/data/picture-shrinker/originals`) unless you choose another in
-  **Backup folder**.
+  (in the official Docker image, `/config/data/picture-shrinker/originals`; in the LinuxServer.io image,
+  `/config/data/data/picture-shrinker/originals`) unless you choose another in **Backup folder**. The Space section
+  on the settings page names the folder it uses.
 - A copy already in the backup is never replaced, so a picture shrunk again at a new size still has its first
   original there.
 - If the copy fails, or the backup disk would have less than 100 MB free, the picture is not shrunk and the run says
@@ -153,12 +164,13 @@ the space saved, and how it ended.
 
 1. To keep the pictures as they are now, skip to step 3. To put the originals back, follow the steps above first.
 2. To free the backup's space, choose **Delete backup** on the settings page.
-3. In **Dashboard**, **Plugins**, **My Plugins**, open **Picture shrinker** and choose **Uninstall**, then restart
-   Jellyfin.
+3. In **Dashboard**, **Plugins**, **Installed** (on Jellyfin 10.11: **My Plugins**), open **Picture shrinker** and
+   choose **Uninstall**, then restart Jellyfin.
 4. If you did not delete the backup, its folder stays in Jellyfin's data folder (`picture-shrinker/originals`); you
    can delete it yourself. Two small files stay too, which you can delete: its settings,
    `plugins/configurations/Jellyfin.Plugin.PictureShrinker.xml`, and its figures, `plugins/Jellyfin.Plugin.PictureShrinker`,
-   both in Jellyfin's configuration folder (`/config` in the official Docker image).
+   both in the folder that holds Jellyfin's `plugins` folder (`/config` in the official Docker image, `/config/data`
+   in the LinuxServer.io image).
 
 ## How much it uses
 
@@ -185,22 +197,30 @@ plug-in kept about 60 MB after a run; it now hands that memory back when each ru
 
 ## Why SkiaSharp
 
-Jellyfin 10.11 already loads SkiaSharp 3.116 for its own pictures (`Jellyfin.Drawing.Skia`), with its native library
-for amd64 and arm64. This plug-in uses that copy: the release zip holds only the plug-in's own DLL (about 100 KB), so
-there is nothing native to ship, nothing to download, and no second copy of an image library in memory. ImageSharp
-would have added about 2 MB to every install and a second decoder, and its licence needs care for some uses.
+Jellyfin already loads SkiaSharp for its own pictures (`Jellyfin.Drawing.Skia`), with its native library for amd64
+and arm64: version 3.116 in Jellyfin 10.11 and 3.119 in Jellyfin 12. Each build of this plug-in uses that copy: the
+release zip holds only the plug-in's own DLL (about 100 KB), so there is nothing native to ship, nothing to download,
+and no second copy of an image library in memory. ImageSharp would have added about 2 MB to every install and a second
+decoder, and its licence needs care for some uses.
 
 ## Build it
 
-The build runs in Docker with the .NET 9 SDK, the version Jellyfin 10.11 targets:
+One source makes two builds. `JELLYFIN_TARGET` picks which: `12` (the default) builds for Jellyfin 12 with the .NET 10
+SDK, and `10.11` builds for Jellyfin 10.11 with the .NET 9 SDK. The builds run in Docker:
 
 ```
-tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests   # unit tests and the shared test pictures
-tools/package.sh 1.1.0.0                                           # artifacts/picture-shrinker_1.1.0.0.zip and its checksum
+JELLYFIN_TARGET=12 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests      # unit tests and the shared test pictures
+JELLYFIN_TARGET=10.11 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests   # the same for the 10.11 build
+tools/package.sh                                                                         # both zips of the newest release in CHANGELOG.md
 ```
 
-A release is one step: push a tag such as `v1.1.0.0`. The **Release** workflow builds and tests it, makes the zip and
-its MD5 checksum, creates the GitHub release, and adds the version to `manifest.json`.
+The zips are `artifacts/picture-shrinker_1.1.1.0_jellyfin-12.zip` and
+`artifacts/picture-shrinker_1.1.0.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
+workflow builds and tests both on every change.
+
+A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.1.1.0`. The **Release** workflow
+builds and tests both builds, makes both zips and their MD5 checksums, creates one GitHub release with both, and adds
+both versions to `manifest.json`. [SYNC.md](SYNC.md) explains the version numbers.
 
 The rules (sizes, quality, checks, backup) are in `rules.json`, shared with Starboard's version. [SYNC.md](SYNC.md)
 says how the two are kept in step.
