@@ -1,8 +1,10 @@
 # What is new
 
-## 1.1.0.0
+## 1.1.1.0 for Jellyfin 12 and 1.1.0.0 for Jellyfin 10.11
 
-The first version for Jellyfin, with rules 1.1 (the same as the Starboard plug-in 1.1.0).
+The first version for Jellyfin, with rules 1.1 (the same as the Starboard plug-in 1.1.0), in two builds from the same
+source: 1.1.1.0 for Jellyfin 12 (.NET 10) and 1.1.0.0 for Jellyfin 10.11 (.NET 9). Jellyfin installs the one for its
+own version.
 
 - **Shrinks Jellyfin's pictures:** posters to 900 pixels tall and photos of cast and crew to 400 pixels wide, both settings. Smaller pictures are left alone.
 - **Checked before it replaces:** each smaller copy is written beside the original, opened again and decoded in full, and swapped in only when it has the right size and format and is smaller.

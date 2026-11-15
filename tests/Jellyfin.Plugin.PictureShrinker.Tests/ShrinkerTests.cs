@@ -54,6 +54,27 @@ public sealed class ShrinkerTests : IDisposable
         => Directory.GetFiles(root, "*", SearchOption.AllDirectories)
             .ToDictionary(f => Path.GetRelativePath(root, f), f => Convert.ToHexString(SHA256.HashData(File.ReadAllBytes(f))));
 
+    // The build -------------------------------------------------------------------------------------------------
+
+    [Fact]
+    public void BuiltForTheRightJellyfin()
+    {
+        // The 10.11 build is .NET 9 against Jellyfin 10.11 and SkiaSharp 3.116; the 12 build .NET 10 against Jellyfin 12
+        // and SkiaSharp 3.119, the versions each Jellyfin loads. An even third version number is 10.11, odd is 12.
+        var plugin = typeof(Plugin).Assembly;
+        var refs = plugin.GetReferencedAssemblies().ToDictionary(a => a.Name!, a => a.Version!);
+#if JELLYFIN_10_11
+        (int net, int jellyfin, int skiaMinor, int parity) = (9, 10, 116, 0);
+#else
+        (int net, int jellyfin, int skiaMinor, int parity) = (10, 12, 119, 1);
+#endif
+        Assert.Equal(net, Environment.Version.Major);
+        Assert.Equal(jellyfin, refs["MediaBrowser.Controller"].Major);
+        Assert.Equal(jellyfin, refs["MediaBrowser.Common"].Major);
+        Assert.Equal(skiaMinor, typeof(SKBitmap).Assembly.GetName().Version!.Minor);
+        Assert.Equal(parity, plugin.GetName().Version!.Build % 2);
+    }
+
     // The rules file ---------------------------------------------------------------------------------------------
 
     [Fact]

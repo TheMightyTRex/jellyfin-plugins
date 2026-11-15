@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>$(PluginFramework)</TargetFramework>
     <RootNamespace>Jellyfin.Plugin.PictureShrinker</RootNamespace>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
     <ImplicitUsings>disable</ImplicitUsings>
@@ -9,11 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- Jellyfin provides all of these at run time; only this plug-in's own DLL goes in the release zip. -->
-    <PackageReference Include="Jellyfin.Controller" Version="10.11.0" />
-    <PackageReference Include="Jellyfin.Model" Version="10.11.0" />
-    <!-- The SkiaSharp that Jellyfin 10.11 already loads for its own pictures (Jellyfin.Drawing.Skia). -->
-    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+    <!-- Jellyfin provides all of these at run time; only this plug-in's own DLL goes in the release zip. The versions
+         follow JellyfinTarget (Directory.Build.props): the oldest Jellyfin of each line, so one build suits all of it. -->
+    <PackageReference Include="Jellyfin.Controller" Version="$(JellyfinPackageVersion)" />
+    <PackageReference Include="Jellyfin.Model" Version="$(JellyfinPackageVersion)" />
+    <!-- The SkiaSharp that Jellyfin already loads for its own pictures (Jellyfin.Drawing.Skia). -->
+    <PackageReference Include="SkiaSharp" Version="$(SkiaSharpVersion)" />
   </ItemGroup>
 
   <ItemGroup>

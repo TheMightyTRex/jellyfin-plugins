@@ -1,8 +1,10 @@
 name: Release
 
-# The one step to publish a version: push its tag, such as v1.1.0.0. This builds and tests it, makes the release zip
-# and its checksum, creates the GitHub release with the zip, and adds the version to manifest.json on main, so every
-# Jellyfin with this repository sees the update.
+# The one step to publish a version: push its tag, named by the Jellyfin 12 version, such as v1.1.1.0 (an odd third
+# number). This builds and tests both builds from the tagged commit: the Jellyfin 10.11 one (1.1.0.0, .NET 9, targetAbi
+# 10.11.0.0) and the Jellyfin 12 one (1.1.1.0, .NET 10, targetAbi 12.0.0.0). It makes each zip and its MD5 checksum,
+# creates one GitHub release with both zips, and adds both versions to manifest.json on main, so every Jellyfin with
+# this repository sees the update and picks the build for its own version (SYNC.md).
 
 on:
   push:
@@ -12,46 +14,76 @@ permissions:
   contents: write
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - jellyfin: "10.11"
+            dotnet: "9.0.x"
+          - jellyfin: "12"
+            dotnet: "10.0.x"
+    name: Build for Jellyfin ${{ matrix.jellyfin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: The tag names a Jellyfin 12 version with notes in CHANGELOG.md
+        id: v
+        run: |
+          set -- $(python3 tools/manifest.py pair "${GITHUB_REF_NAME#v}")
+          if [ "${{ matrix.jellyfin }}" = "10.11" ]; then echo "version=$1" >> "$GITHUB_OUTPUT"; else echo "version=$2" >> "$GITHUB_OUTPUT"; fi
+          test -n "$(python3 -c 'import sys; sys.path.insert(0, "tools"); import manifest; print(manifest.changelog(sys.argv[1]))' "$1")"
+          test -n "$(python3 -c 'import sys; sys.path.insert(0, "tools"); import manifest; print(manifest.changelog(sys.argv[1]))' "$2")"
+      - name: Unit tests
+        run: dotnet test tests/Jellyfin.Plugin.PictureShrinker.Tests -c Release -p:JellyfinTarget=${{ matrix.jellyfin }}
+      - name: Release zip and checksum
+        run: LOCAL=1 tools/package.sh "${{ steps.v.outputs.version }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zip-${{ matrix.jellyfin }}
+          path: artifacts/picture-shrinker_*.zip*
+
   release:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/download-artifact@v4
         with:
-          dotnet-version: "9.0.x"
-      - name: Build the tagged commit
-        run: git checkout "${GITHUB_REF_NAME}"
-      - name: Unit tests
-        run: dotnet test tests/Jellyfin.Plugin.PictureShrinker.Tests -c Release
-      - name: Release zip and checksum
-        id: zip
-        run: |
-          version="${GITHUB_REF_NAME#v}"
-          LOCAL=1 tools/package.sh "$version"
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-          echo "checksum=$(cat artifacts/picture-shrinker_${version}.zip.md5)" >> "$GITHUB_OUTPUT"
-      - name: GitHub release
+          path: artifacts
+          merge-multiple: true
+      - name: GitHub release with both zips
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          v="${{ steps.zip.outputs.version }}"
-          python3 - "$v" > notes.md <<'PY'
-          import re, sys
-          v = sys.argv[1]
-          text = open("CHANGELOG.md", encoding="utf-8").read()
-          m = re.search(rf"^## {re.escape(v)}\b.*?$(.*?)(?=^## |\Z)", text, re.M | re.S)
-          print(m.group(1).strip() if m else "")
+          git checkout "${GITHUB_REF_NAME}"
+          set -- $(python3 tools/manifest.py pair "${GITHUB_REF_NAME#v}")
+          python3 - "$2" > notes.md <<'PY'
+          import sys
+          sys.path.insert(0, "tools")
+          import manifest
+          print(manifest.changelog(sys.argv[1]))
+          print()
+          print("Two builds, one for each Jellyfin: Jellyfin picks the right one from this repository.")
           PY
-          gh release create "${GITHUB_REF_NAME}" "artifacts/picture-shrinker_${v}.zip" --title "Picture shrinker ${v}" --notes-file notes.md
-      - name: Add the version to manifest.json
+          ls -l artifacts
+          gh release create "${GITHUB_REF_NAME}" artifacts/picture-shrinker_*.zip --title "Picture shrinker ${2} for Jellyfin 12 and ${1} for Jellyfin 10.11" --notes-file notes.md
+      - name: Add both versions to manifest.json
         run: |
-          v="${{ steps.zip.outputs.version }}"
+          set -- $(python3 tools/manifest.py pair "${GITHUB_REF_NAME#v}")
           git checkout main
-          python3 tools/manifest.py add "$v" "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/picture-shrinker_${v}.zip" "${{ steps.zip.outputs.checksum }}"
+          for v in "$1" "$2"; do
+            t="$(python3 tools/manifest.py target "$v")"
+            z="picture-shrinker_${v}_jellyfin-${t}.zip"
+            python3 tools/manifest.py add "$v" "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${z}" "$(cat "artifacts/${z}.md5")"
+          done
           git config user.name "TheMightyTRexUK"
           git config user.email "196487809+TheMightyTRex@users.noreply.github.com"
-          git commit -am "manifest.json: Picture shrinker ${v}"
+          git commit -am "manifest.json: Picture shrinker ${2} for Jellyfin 12 and ${1} for Jellyfin 10.11"
           git push origin main
