@@ -169,7 +169,7 @@ the Starboard version on the same sample.
 | | Jellyfin version (this plug-in) | Starboard version |
 |---|---|---|
 | Where it runs | Inside Jellyfin | Its own container beside Jellyfin |
-| Memory at rest | No change measurable: Jellyfin with the plug-in was 164 MB, as before the run | 13 MB (its whole container) |
+| Memory at rest | At most about 15 MB more than Jellyfin without it (164 MB against 148 MB; the samples overlap) | 13 MB (its whole container) |
 | Memory at the peak of a run | About 20 MB more than Jellyfin at rest (183 MB against 164 MB) | 33 MB (its whole container) |
 | Memory after a run | Back to Jellyfin at rest (164 MB) | 23 MB (the image library stays loaded) |
 | Processor time for the run | 35 seconds | 39 seconds |
@@ -178,8 +178,9 @@ the Starboard version on the same sample.
 | Space saved | 758.8 MB (776.3 MB to 17.5 MB) | 758.4 MB (776.3 MB to 17.9 MB) |
 | Jellyfin's answers during the run | `/System/Info` every 2 seconds: median 25 ms, slowest 68 ms (at rest: 30 ms and 59 ms) | Not affected (a separate container) |
 
-Both work at the lowest priority. The Jellyfin version uses slightly less processor time and, with no container of its
-own, less memory at rest; the Starboard version keeps its memory apart from Jellyfin's. An earlier build of this
+Both work at the lowest priority. At rest both are small (about 13 to 15 MB). The Jellyfin version uses slightly
+less processor time and less memory during a run; the Starboard version keeps its memory apart from Jellyfin's, so a
+problem in it can never slow Jellyfin. An earlier build of this
 plug-in kept about 60 MB after a run; it now hands that memory back when each run ends.
 
 ## Why SkiaSharp
