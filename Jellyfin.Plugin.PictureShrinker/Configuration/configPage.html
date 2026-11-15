@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <title>Picture shrinker</title>
+</head>
+<body>
+<div id="PictureShrinkerConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox">
+    <style>
+        #PictureShrinkerConfigPage .psSpace { display: grid; grid-template-columns: repeat(auto-fit, minmax(14em, 1fr)); gap: 1em; margin: 0 0 1em; }
+        #PictureShrinkerConfigPage .psFigure { padding: 1em; border-radius: 0.3em; background: rgba(128, 128, 128, 0.12); }
+        #PictureShrinkerConfigPage .psFigure h3 { margin: 0 0 0.3em; font-size: 1em; font-weight: 500; }
+        #PictureShrinkerConfigPage .psNumber { font-size: 1.6em; margin: 0; }
+        #PictureShrinkerConfigPage .psNote { margin: 0.3em 0 0.6em; opacity: 0.85; }
+        #PictureShrinkerConfigPage .psWarning { border-left: 0.3em solid #e0a000; padding: 0.5em 1em; margin: 0.5em 0 1em; }
+        #PictureShrinkerConfigPage .psRuns { width: 100%; border-collapse: collapse; margin-top: 0.5em; }
+        #PictureShrinkerConfigPage .psRuns th, #PictureShrinkerConfigPage .psRuns td { text-align: left; padding: 0.4em 0.6em; border-bottom: 1px solid rgba(128, 128, 128, 0.3); }
+        #PictureShrinkerConfigPage .psRuns td.num, #PictureShrinkerConfigPage .psRuns th.num { text-align: right; }
+        #PictureShrinkerConfigPage .psTableWrap { overflow-x: auto; }
+        #PictureShrinkerConfigPage fieldset { border: 0; padding: 0; margin: 0 0 2em; }
+        #PictureShrinkerConfigPage legend { font-size: 1.3em; margin-bottom: 0.6em; padding: 0; }
+        #PictureShrinkerConfigPage dialog { max-width: 32em; padding: 1.5em; border: 0; border-radius: 0.3em; background: #202020; color: #fff; }
+        #PictureShrinkerConfigPage dialog::backdrop { background: rgba(0, 0, 0, 0.6); }
+        #PictureShrinkerConfigPage .psButtons { display: flex; flex-wrap: wrap; gap: 0.5em; margin-top: 1em; }
+        #PictureShrinkerConfigPage .psButtons .emby-button { margin: 0; }
+        #PictureShrinkerConfigPage .psReason { margin: 0.4em 0 0; }
+        #PictureShrinkerConfigPage :focus-visible { outline: 0.15em solid #00a4dc; outline-offset: 0.15em; }
+    </style>
+    <div data-role="content">
+        <div class="content-primary">
+            <h2 class="sectionTitle">Picture shrinker</h2>
+            <p>Shrinks the posters and photos of cast and crew Jellyfin keeps, so they take less space. Each original is backed up and each smaller copy is checked before it replaces the original. Runs are set in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>, under Picture shrinker.</p>
+
+            <section aria-labelledby="psSpaceTitle">
+                <h2 id="psSpaceTitle" class="sectionTitle">Space</h2>
+                <p id="psMeasured" class="fieldDescription">Measuring the pictures...</p>
+                <div class="psSpace">
+                    <div class="psFigure">
+                        <h3>Pictures now</h3>
+                        <p class="psNumber" id="psLive">-</p>
+                        <p class="psNote" id="psLiveNote"></p>
+                    </div>
+                    <div class="psFigure">
+                        <h3>Backup of the originals</h3>
+                        <p class="psNumber" id="psBackup">-</p>
+                        <p class="psNote" id="psBackupNote"></p>
+                        <button is="emby-button" type="button" class="raised button-cancel" id="psDelete" aria-describedby="psDeleteReason">Delete backup</button>
+                        <p class="psReason fieldDescription" id="psDeleteReason"></p>
+                    </div>
+                    <div class="psFigure">
+                        <h3>Space saved</h3>
+                        <p class="psNumber" id="psSaved">-</p>
+                        <p class="psNote" id="psSavedNote"></p>
+                    </div>
+                </div>
+                <div class="psButtons">
+                    <button is="emby-button" type="button" class="raised" id="psShrinkNow">Shrink now</button>
+                    <button is="emby-button" type="button" class="raised" id="psMeasure">Measure again</button>
+                </div>
+                <p id="psSaid" role="status" aria-live="polite"></p>
+                <p id="psProblem" class="psWarning" role="alert" hidden></p>
+            </section>
+
+            <form id="PictureShrinkerConfigForm">
+                <fieldset>
+                    <legend>What to shrink</legend>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="IncludePosters" aria-describedby="IncludePostersHelp">
+                            <span>Posters</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="IncludePostersHelp">The poster of each film, series, season and collection in Jellyfin's metadata folder. Backdrops, logos and other pictures are left alone.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="IncludePeople" aria-describedby="IncludePeopleHelp">
+                            <span>Photos of cast and crew</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="IncludePeopleHelp">The photo of each actor, director and writer.</div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Sizes</legend>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PosterHeight">Posters no taller than (pixels)</label>
+                        <input is="emby-input" type="number" id="PosterHeight" min="300" max="3000" required aria-describedby="PosterHeightHelp">
+                        <div class="fieldDescription" id="PosterHeightHelp">A poster taller than this is shrunk to this height, from 300 to 3,000. 900 pixels looks sharp on a television.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="PersonWidth">Photos of people no wider than (pixels)</label>
+                        <input is="emby-input" type="number" id="PersonWidth" min="100" max="2000" required aria-describedby="PersonWidthHelp">
+                        <div class="fieldDescription" id="PersonWidthHelp">A photo of a cast or crew member wider than this is shrunk to this width, from 100 to 2,000.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="Quality">Quality</label>
+                        <input is="emby-input" type="number" id="Quality" min="50" max="100" required aria-describedby="QualityHelp">
+                        <div class="fieldDescription" id="QualityHelp">For JPEG and WebP pictures, from 50 to 100. 85 keeps them sharp; lower saves more space. PNG pictures stay lossless.</div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Backup</legend>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="Backup" aria-describedby="BackupHelp BackupWarning">
+                            <span>Back up each original before it is replaced</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="BackupHelp">Activated by default. Each original is copied once, before its first shrink, and a copy already there is never replaced. If the copy fails or the backup disk is short of space, the picture is not shrunk. Restore original pictures, in Scheduled Tasks, puts them back.</div>
+                        <p class="psWarning" id="BackupWarning" hidden>Backup is deactivated: pictures shrunk from now on cannot be put back. Jellyfin can download them again from the internet with Refresh metadata, but pictures you chose or uploaded yourself are lost.</p>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="BackupFolder">Backup folder</label>
+                        <input is="emby-input" type="text" id="BackupFolder" aria-describedby="BackupFolderHelp" autocomplete="off" spellcheck="false">
+                        <div class="fieldDescription" id="BackupFolderHelp">Leave it empty for the folder in Jellyfin's data folder. The first run needs about as much free space there as the pictures take now.</div>
+                    </div>
+                </fieldset>
+
+                <fieldset>
+                    <legend>When to shrink</legend>
+                    <p>Shrink pictures runs every Sunday at 03:30 until you change its triggers in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>: every day or every week, at the time you choose. It runs at the lowest priority, so a quiet time is best. It sends no notification: its results are on this page.</p>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="OnceAMonth" aria-describedby="OnceAMonthHelp">
+                            <span>Once a month</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="OnceAMonthHelp">With a weekly trigger, it runs only the first time in each month. Shrink now on this page always runs.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="ShrinkNewPictures" aria-describedby="ShrinkNewPicturesHelp">
+                            <span>Shrink new pictures soon after Jellyfin saves them</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="ShrinkNewPicturesHelp">Deactivated by default. When activated, posters and photos Jellyfin saves are shrunk once they are a few minutes old, with the same checks and backup.</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="NewPictureMinutes">Wait before shrinking a new picture (minutes)</label>
+                        <input is="emby-input" type="number" id="NewPictureMinutes" min="1" max="1440" required aria-describedby="NewPictureMinutesHelp">
+                        <div class="fieldDescription" id="NewPictureMinutesHelp">Jellyfin may still be writing a picture it has just saved. 10 minutes is safe.</div>
+                    </div>
+                </fieldset>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block emby-button">
+                        <span>Save</span>
+                    </button>
+                </div>
+            </form>
+
+            <section aria-labelledby="psRunsTitle">
+                <h2 id="psRunsTitle" class="sectionTitle">Last runs</h2>
+                <p id="psNoRuns">No runs yet.</p>
+                <div class="psTableWrap" id="psRunsWrap" tabindex="0" role="region" aria-labelledby="psRunsTitle" hidden>
+                    <table class="psRuns" id="psRuns">
+                        <thead>
+                        <tr>
+                            <th scope="col">When</th>
+                            <th scope="col">What</th>
+                            <th scope="col" class="num">Shrunk</th>
+                            <th scope="col" class="num">Left as they were</th>
+                            <th scope="col" class="num">Not shrunk</th>
+                            <th scope="col">Saved</th>
+                            <th scope="col">How it ended</th>
+                        </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <dialog id="psConfirm" aria-labelledby="psConfirmTitle" aria-describedby="psConfirmText">
+        <h2 id="psConfirmTitle">Delete the backup?</h2>
+        <div id="psConfirmText">
+            <p id="psConfirmSize"></p>
+            <p>The original pictures in the backup are removed for good. Restore original pictures can no longer put those pictures back. The shrunk pictures stay in Jellyfin.</p>
+        </div>
+        <div class="psButtons">
+            <button is="emby-button" type="button" class="raised" id="psConfirmCancel" autofocus>Cancel</button>
+            <button is="emby-button" type="button" class="raised button-delete" id="psConfirmDelete">Delete backup</button>
+        </div>
+    </dialog>
+
+    <script type="text/javascript">
+        (function () {
+            var pluginId = '80bf9325-d299-4e24-ac74-c087aeec3011';
+            var page = document.querySelector('#PictureShrinkerConfigPage');
+            var whatWords = { shrink: 'Shrink pictures', 'new': 'New pictures', restore: 'Restore', 'delete': 'Deleting the backup' };
+            var last = null;
+
+            function $(id) { return page.querySelector('#' + id); }
+
+            function size(n) {
+                n = Number(n || 0);
+                var units = [['GB', 1e9], ['MB', 1e6], ['KB', 1e3]];
+                for (var i = 0; i < units.length; i++) {
+                    if (Math.abs(n) >= units[i][1]) { return (n / units[i][1]).toFixed(1) + ' ' + units[i][0]; }
+                }
+                return n.toLocaleString('en-GB') + ' bytes';
+            }
+
+            function count(n, one, many) { return Number(n || 0).toLocaleString('en-GB') + ' ' + (n === 1 ? one : many); }
+
+            function when(text) {
+                return new Date(text).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            }
+
+            function say(text) {
+                var box = $('psSaid');
+                box.textContent = '';
+                window.setTimeout(function () { box.textContent = text; }, 50);
+            }
+
+            function post(path) {
+                return ApiClient.ajax({ type: 'POST', url: ApiClient.getUrl('PictureShrinker/' + path), dataType: 'json' });
+            }
+
+            function showStatus(s) {
+                last = s;
+                var sp = s.Space;
+                $('psMeasured').textContent = 'Measured ' + when(sp.Measured) + '.';
+                $('psLive').textContent = size(sp.LiveBytes);
+                $('psLiveNote').textContent = count(sp.LiveCount, 'poster or photo', 'posters and photos') + ' in Jellyfin\'s metadata folder.';
+                $('psBackup').textContent = size(sp.BackupBytes);
+                $('psBackupNote').textContent = count(sp.BackupCount, 'original picture', 'original pictures') + ' in ' + s.BackupFolder + '.';
+                $('psSaved').textContent = size(sp.Saved);
+                $('psSavedNote').textContent = count(sp.ShrunkTotal, 'picture', 'pictures') + ' shrunk so far.';
+                var reason = '';
+                if (s.Running) {
+                    reason = 'Not available while ' + (whatWords[s.Running] || 'a run').toLowerCase() + ' is running.';
+                } else if (!sp.BackupCount) {
+                    reason = 'There is no backup to delete.';
+                }
+                var del = $('psDelete');
+                del.disabled = !!reason;
+                del.textContent = sp.BackupCount ? 'Delete backup (frees ' + size(sp.BackupBytes) + ')' : 'Delete backup';
+                $('psDeleteReason').textContent = reason;
+                $('psShrinkNow').disabled = !!s.Running;
+                var problem = $('psProblem');
+                problem.hidden = !s.Problem;
+                problem.textContent = s.Problem || '';
+                $('BackupFolder').placeholder = s.DefaultBackupFolder;
+                var body = $('psRuns').querySelector('tbody');
+                body.innerHTML = '';
+                (s.Runs || []).forEach(function (r) {
+                    var tr = document.createElement('tr');
+                    var cells = [when(r.Start), whatWords[r.Kind] || r.Kind, r.Shrunk.toLocaleString('en-GB'), r.Left.toLocaleString('en-GB'),
+                        (r.Failed + r.NotBackedUp).toLocaleString('en-GB'), size(r.Before - r.After), r.Stopped || 'Finished'];
+                    cells.forEach(function (c, i) {
+                        var td = document.createElement('td');
+                        td.textContent = c;
+                        if (i >= 2 && i <= 4) { td.className = 'num'; }
+                        tr.appendChild(td);
+                    });
+                    body.appendChild(tr);
+                });
+                $('psRunsWrap').hidden = !(s.Runs || []).length;
+                $('psNoRuns').hidden = !!(s.Runs || []).length;
+            }
+
+            function measure() {
+                return ApiClient.getJSON(ApiClient.getUrl('PictureShrinker/Status')).then(showStatus);
+            }
+
+            function showBackupWarning() {
+                $('BackupWarning').hidden = $('Backup').checked;
+            }
+
+            page.addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    $('IncludePosters').checked = c.IncludePosters;
+                    $('IncludePeople').checked = c.IncludePeople;
+                    $('PosterHeight').value = c.PosterHeight;
+                    $('PersonWidth').value = c.PersonWidth;
+                    $('Quality').value = c.Quality;
+                    $('Backup').checked = c.Backup;
+                    $('BackupFolder').value = c.BackupFolder || '';
+                    $('OnceAMonth').checked = c.OnceAMonth;
+                    $('ShrinkNewPictures').checked = c.ShrinkNewPictures;
+                    $('NewPictureMinutes').value = c.NewPictureMinutes;
+                    showBackupWarning();
+                    return measure();
+                }).finally(function () { Dashboard.hideLoadingMsg(); });
+            });
+
+            $('Backup').addEventListener('change', showBackupWarning);
+
+            $('PictureShrinkerConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    c.IncludePosters = $('IncludePosters').checked;
+                    c.IncludePeople = $('IncludePeople').checked;
+                    c.PosterHeight = parseInt($('PosterHeight').value, 10);
+                    c.PersonWidth = parseInt($('PersonWidth').value, 10);
+                    c.Quality = parseInt($('Quality').value, 10);
+                    c.Backup = $('Backup').checked;
+                    c.BackupFolder = $('BackupFolder').value.trim();
+                    c.OnceAMonth = $('OnceAMonth').checked;
+                    c.ShrinkNewPictures = $('ShrinkNewPictures').checked;
+                    c.NewPictureMinutes = parseInt($('NewPictureMinutes').value, 10);
+                    return ApiClient.updatePluginConfiguration(pluginId, c);
+                }).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                    say('Settings saved.');
+                    return measure();
+                }).finally(function () { Dashboard.hideLoadingMsg(); });
+                return false;
+            });
+
+            $('psShrinkNow').addEventListener('click', function () {
+                post('ShrinkNow').then(function (r) { say(r.Said); return measure(); });
+            });
+
+            $('psMeasure').addEventListener('click', function () {
+                measure().then(function () { say('Measured again.'); });
+            });
+
+            var dialog = $('psConfirm');
+            $('psDelete').addEventListener('click', function () {
+                if (!last) { return; }
+                $('psConfirmSize').textContent = 'This deletes ' + count(last.Space.BackupCount, 'original picture', 'original pictures') + ' and frees ' + size(last.Space.BackupBytes) + '.';
+                dialog.showModal();
+                $('psConfirmCancel').focus();
+            });
+            $('psConfirmCancel').addEventListener('click', function () {
+                dialog.close();
+                $('psDelete').focus();
+            });
+            dialog.addEventListener('cancel', function () {
+                window.setTimeout(function () { $('psDelete').focus(); }, 0);
+            });
+            $('psConfirmDelete').addEventListener('click', function () {
+                dialog.close();
+                say('Deleting the backup...');
+                post('DeleteBackup').then(function (r) {
+                    say(r.Said);
+                    return measure();
+                }).then(function () { $('psMeasure').focus(); });
+            });
+        })();
+    </script>
+</div>
+</body>
+</html>

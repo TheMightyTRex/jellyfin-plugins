@@ -1,0 +1,12 @@
+[
+  {
+    "guid": "80bf9325-d299-4e24-ac74-c087aeec3011",
+    "name": "Picture shrinker",
+    "description": "Shrinks the posters and photos of people Jellyfin keeps, so they take less space.",
+    "overview": "Posters to 900 pixels tall and photos of cast and crew to 400 pixels wide, on the schedule you choose. Each original is backed up and each smaller copy checked before it replaces the original.",
+    "owner": "TheMightyTRexUK",
+    "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/main/images/logo.png",
+    "versions": []
+  }
+]

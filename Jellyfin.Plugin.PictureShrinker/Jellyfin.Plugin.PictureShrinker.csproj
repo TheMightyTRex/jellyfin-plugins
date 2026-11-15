@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>Jellyfin.Plugin.PictureShrinker</RootNamespace>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Jellyfin provides all of these at run time; only this plug-in's own DLL goes in the release zip. -->
+    <PackageReference Include="Jellyfin.Controller" Version="10.11.0" />
+    <PackageReference Include="Jellyfin.Model" Version="10.11.0" />
+    <!-- The SkiaSharp that Jellyfin 10.11 already loads for its own pictures (Jellyfin.Drawing.Skia). -->
+    <PackageReference Include="SkiaSharp" Version="3.116.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Jellyfin.Plugin.PictureShrinker.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Configuration\configPage.html" />
+    <EmbeddedResource Include="..\rules.json" LogicalName="Jellyfin.Plugin.PictureShrinker.rules.json" />
+  </ItemGroup>
+
+</Project>

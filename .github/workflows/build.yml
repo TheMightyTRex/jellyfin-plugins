@@ -1,0 +1,26 @@
+name: Build and test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "9.0.x"
+      - name: Unit tests, the shared test pictures and the rules file
+        run: dotnet test tests/Jellyfin.Plugin.PictureShrinker.Tests -c Release
+      - name: Release zip and checksum (not published)
+        run: LOCAL=1 tools/package.sh 0.0.0.0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: picture-shrinker-zip
+          path: artifacts/picture-shrinker_*.zip*
