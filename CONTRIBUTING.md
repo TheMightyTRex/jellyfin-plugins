@@ -30,6 +30,21 @@ folder and the Jellyfin 12 version:
 git tag picture-shrinker-v1.2.5.0 && git push origin picture-shrinker-v1.2.5.0
 ```
 
+### What Jellyfin shows as the notes
+
+Jellyfin shows each version's notes as Markdown under **Revision history**, where both builds of a release are listed.
+So `tools/manifest.py` writes each version's `changelog` from the CHANGELOG.md section in this shape, for every
+plug-in:
+
+- It starts with a heading naming the Jellyfin the build is for, `### For Jellyfin 12` or `### For Jellyfin 10.11`,
+  which Jellyfin shows larger.
+- Under it come the notes, with `### Added` and the other section names written as `Added:`, so the Jellyfin heading
+  is the only heading.
+- A sentence about the rules version and the Starboard plug-in that shares it, such as "Rules 1.2, the same as the
+  Starboard plug-in 1.2.0.", is left out. Rules versions stay in SYNC.md and CHANGELOG.md.
+
+`python3 tools/manifest.py check` fails on a version whose notes break this.
+
 The **Release** workflow builds and tests both builds of that plug-in, makes both zips with their MD5 checksums,
 creates one GitHub release with both, and adds both versions to that plug-in's entry in `manifest.json`. Every other
 plug-in's entry stays as it is. Nothing else is needed: every Jellyfin with the repository offers the update.

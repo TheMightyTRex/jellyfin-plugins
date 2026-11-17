@@ -110,14 +110,37 @@ def pair(plugin, version=None):
     return f"{a}.{b}.{int(c) - 1}.{d}", version
 
 
+# The rules version and the Starboard plug-in that shares it stay in SYNC.md and CHANGELOG.md, not in Jellyfin's notes
+# (owner, 17 November 2026): a sentence such as "Rules 1.2, the same as the Starboard plug-in 1.2.0." is left out.
+RULES_NOTES = [
+    re.compile(r",? with rules \d+\.\d+ \(the same as the Starboard plug-in [\d.]*\d\)"),
+    re.compile(r"\bRules \d+\.\d+\b[^\n]*?(?:\n(?!\n)[^\n]*?)*?Starboard plug-in[\s\S]*?\.(?=\s+[A-Z]|\s*$)[ \t]*\n?"),
+]
+
+
+def jellyfin_notes(version, body):
+    """The text Jellyfin shows for one version: a heading naming the Jellyfin the build is for (Jellyfin shows the
+    changelog as Markdown, so it reads larger), then the notes without the rules sentence."""
+    body = body.strip()
+    body = re.sub(r"\A### For Jellyfin [\d.]+\s*", "", body)
+    for pattern in RULES_NOTES:
+        body = pattern.sub("", body)
+    body = re.sub(r"[ \t]+\n", "\n", body)
+    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+    return f"### For Jellyfin {target(version)}\n\n{body}".strip()
+
+
 def changelog(plugin, version):
     text = _changelog_text(plugin)
     m = re.search(rf"^## [^\n]*?(?<![\d.]){re.escape(version)}(?![\d.])[^\n]*$(.*?)(?=^## |\Z)", text, re.M | re.S)
     body = m.group(1) if m else ""
-    # Jellyfin shows the text as it is: "### Added" reads "Added:", and the link references at the end are left out.
+    if not body.strip():
+        return ""
+    # "### Added" reads "Added:", so the only heading is the Jellyfin one, and the link references at the end are
+    # left out.
     body = re.sub(r"^### (\w+)[ \t]*$", r"\1:", body, flags=re.M)
     body = re.sub(r"^\[[^\]]+\]: \S+[ \t]*$", "", body, flags=re.M)
-    return body.strip().replace("**", "")
+    return jellyfin_notes(version, body.replace("**", ""))
 
 
 def _now():
@@ -193,6 +216,12 @@ def check():
             for need in ("version", "targetAbi", "sourceUrl", "checksum"):
                 if not v.get(need):
                     problems.append(f"{p.get('name')} {v.get('version')}: no {need}")
+            if v.get("targetAbi") and v.get("changelog") is not None and not str(v.get("changelog")).startswith(
+                    f"### For Jellyfin {target(v['version'])}\n"):
+                problems.append(f"{p.get('name')} {v.get('version')}: the changelog does not start with "
+                                f"'### For Jellyfin {target(v['version'])}'")
+            if "Starboard plug-in" in str(v.get("changelog")) and re.search(r"\b[Rr]ules \d", str(v.get("changelog"))):
+                problems.append(f"{p.get('name')} {v.get('version')}: the changelog names the rules version")
             if v.get("checksum") and not re.fullmatch(r"[0-9a-f]{32}", v["checksum"]):
                 problems.append(f"{p.get('name')} {v.get('version')}: the checksum is not an MD5")
     for line in problems:

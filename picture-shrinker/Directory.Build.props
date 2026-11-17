@@ -10,6 +10,9 @@
     <JellyfinTarget Condition="'$(JellyfinTarget)' == ''">12</JellyfinTarget>
     <BaseIntermediateOutputPath>obj/jellyfin-$(JellyfinTarget)/</BaseIntermediateOutputPath>
     <BaseOutputPath>bin/jellyfin-$(JellyfinTarget)/</BaseOutputPath>
+    <!-- The other build's obj and bin folders are not source: without this, building both in one folder fails with
+         duplicate assembly attributes. -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj/**;bin/**</DefaultItemExcludes>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(JellyfinTarget)' == '10.11'">
