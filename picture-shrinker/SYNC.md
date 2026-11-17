@@ -46,7 +46,7 @@ two never shrink the same pictures.
 2. If the change affects a test picture's result, change `tools/make-test-pictures.py` and run it, so
    `tests/pictures/expected.json` says the new result.
 3. Change the code here until `dotnet test` passes for both builds
-   (`JELLYFIN_TARGET=12 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests`, and again with
+   (`JELLYFIN_TARGET=12 tools/dotnet.sh picture-shrinker test tests/Jellyfin.Plugin.PictureShrinker.Tests`, and again with
    `JELLYFIN_TARGET=10.11`; GitHub's **Build and test** workflow runs both).
 4. In starboard-plugins, run `python3 tools/sync_picture_rules.py`, which copies `rules.json` to
    `picture-shrinker/rules.json` and `tests/pictures` to `tests/picture-shrinker-shared`.
@@ -85,11 +85,11 @@ Why this way:
   the highest version number among them. It has no upper limit. So Jellyfin 10.11 offers only the 10.11 build, and
   Jellyfin 12 offers both and must find its own build to be the higher one. An odd third number for the 12 build, one
   higher than the 10.11 build, does that.
-- The two builds are always released together, from one tag named by the 12 build (`v1.1.1.0` makes 1.1.0.0 and
+- The two builds are always released together, from one tag named by the 12 build (`picture-shrinker-v1.1.1.0` makes 1.1.0.0 and
   1.1.1.0). A 10.11 build released alone would be higher than the last 12 build and Jellyfin 12 would offer it.
 - The first two numbers stay the rules version, as before, and the fourth stays 0.
 - Each build targets the first release of its Jellyfin line (10.11.0, 12.0.0), so it suits every later release in
   that line, as Jellyfin's own plug-ins do (their Jellyfin 12 builds all say targetAbi 12.0.0.0).
 
-The next fix is 1.2.4.0 for 10.11 and 1.2.5.0 for 12, tagged `v1.2.5.0`. If a later Jellyfin needs a third build,
+The next fix is 1.2.4.0 for 10.11 and 1.2.5.0 for 12, tagged `picture-shrinker-v1.2.5.0`. If a later Jellyfin needs a third build,
 this scheme has to change; until then, Starboard offers the plug-in on Jellyfin 10.11 and 12 only.

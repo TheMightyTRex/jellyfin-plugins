@@ -1,7 +1,11 @@
 # Jellyfin catalogue logo for Picture shrinker (16:9, as Jellyfin's catalogue shows it), on dark blue (owner, 15 November
 # 2026). A film poster shrinks inside a dashed outline of its old size, with corner arrows pointing in, a
-# cast photo beside it, and the name. Drawn at 3x and scaled down for smooth edges.
+# cast photo beside it, and the name. Drawn at 3x and scaled down for smooth edges. Writes images/logo.png in this
+# plug-in's folder, the picture its own entry in manifest.json names (imageUrl). Needs Pillow and the design system's
+# font file in FONT (relative to where it is run). Usage: python3 picture-shrinker/tools/make-logo.py
+import os
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "images", "logo.png")
 W, H, S = 1280, 720, 3
 FONT = "fonts/atkinson-hyperlegible-next.woff2"  # Atkinson Hyperlegible Next, from the TRex design system
 img = Image.new("RGB", (W * S, H * S))
@@ -74,4 +78,4 @@ d.text(s(590, 250), "Picture", font=f1, fill=WHITE)
 d.text(s(590, 360), "shrinker", font=f1, fill=WHITE)
 d.text(s(594, 500), "Smaller posters and photos,", font=f2, fill=CREAM)
 d.text(s(594, 550), "the same pictures", font=f2, fill=CREAM)
-img.resize((W, H), Image.LANCZOS).save("logo.png", optimize=True)
+img.resize((W, H), Image.LANCZOS).save(OUT, optimize=True)

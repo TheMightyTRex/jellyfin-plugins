@@ -7,6 +7,10 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+### Changed
+
+- **One repository address for every plug-in:** Picture shrinker has moved to TheMightyTRex/jellyfin-plugins, whose one address, `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json`, lists every version of it and of the other Jellyfin plug-ins by TheMightyTRexUK. The old address keeps working for the versions it already lists.
+
 ## [1.2.5.0] for Jellyfin 12 and [1.2.4.0] for Jellyfin 10.11 (17 November 2026)
 
 Rules 1.2 are unchanged, so the Starboard plug-in keeps the same rules. Wording from the design system audit of 17

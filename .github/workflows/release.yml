@@ -1,0 +1,100 @@
+name: Release
+
+# The one step to publish a version of one plug-in: push a tag named <plug-in folder>-v<its Jellyfin 12 version>, such
+# as picture-shrinker-v1.2.5.0 (an odd third number). This builds and tests both builds of that plug-in from the
+# tagged commit: the Jellyfin 10.11 one (1.2.4.0, .NET 9, targetAbi 10.11.0.0) and the Jellyfin 12 one (1.2.5.0,
+# .NET 10, targetAbi 12.0.0.0). It makes each zip and its MD5 checksum, creates one GitHub release with both zips, and
+# adds both versions to that plug-in's entry in manifest.json on main, with the plug-in's own picture
+# (<plug-in>/images/logo.png). Every other plug-in's entry stays as it is.
+
+on:
+  push:
+    tags: ["*-v*.*.*.*"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: manifest
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        include:
+          - jellyfin: "10.11"
+            dotnet: "9.0.x"
+          - jellyfin: "12"
+            dotnet: "10.0.x"
+    name: Build for Jellyfin ${{ matrix.jellyfin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: The tag names a plug-in folder and a Jellyfin 12 version with notes in its CHANGELOG.md
+        id: v
+        run: |
+          plugin="${GITHUB_REF_NAME%-v*}"
+          v12="${GITHUB_REF_NAME##*-v}"
+          test -f "$plugin/build.yaml"
+          set -- $(python3 tools/manifest.py "$plugin" pair "$v12")
+          test -n "$(python3 tools/manifest.py "$plugin" changelog "$1")"
+          test -n "$(python3 tools/manifest.py "$plugin" changelog "$2")"
+          test -f "$plugin/images/logo.png"
+          echo "plugin=$plugin" >> "$GITHUB_OUTPUT"
+          echo "project=$(python3 tools/manifest.py "$plugin" project)" >> "$GITHUB_OUTPUT"
+          if [ "${{ matrix.jellyfin }}" = "10.11" ]; then echo "version=$1" >> "$GITHUB_OUTPUT"; else echo "version=$2" >> "$GITHUB_OUTPUT"; fi
+      - name: Tests
+        working-directory: ${{ steps.v.outputs.plugin }}
+        run: dotnet test "tests/${{ steps.v.outputs.project }}.Tests" -c Release -p:JellyfinTarget=${{ matrix.jellyfin }}
+      - name: Release zip and checksum
+        run: LOCAL=1 tools/package.sh "${{ steps.v.outputs.plugin }}" "${{ steps.v.outputs.version }}"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: zip-${{ matrix.jellyfin }}
+          path: artifacts/${{ steps.v.outputs.plugin }}_*.zip*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      - name: GitHub release with both zips
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          plugin="${GITHUB_REF_NAME%-v*}"
+          git checkout "${GITHUB_REF_NAME}"
+          set -- $(python3 tools/manifest.py "$plugin" pair "${GITHUB_REF_NAME##*-v}")
+          name="$(python3 -c 'import sys; sys.path.insert(0, "tools"); import manifest; print(manifest.build_yaml(sys.argv[1])["name"])' "$plugin")"
+          { python3 tools/manifest.py "$plugin" changelog "$2"; echo; echo "Two builds, one for each Jellyfin: Jellyfin picks the right one from this repository."; } > notes.md
+          ls -l artifacts
+          gh release create "${GITHUB_REF_NAME}" artifacts/${plugin}_*.zip --title "${name} ${2} for Jellyfin 12 and ${1} for Jellyfin 10.11" --notes-file notes.md
+      - name: Add both versions to the plug-in's entry in manifest.json
+        run: |
+          plugin="${GITHUB_REF_NAME%-v*}"
+          set -- $(python3 tools/manifest.py "$plugin" pair "${GITHUB_REF_NAME##*-v}")
+          git checkout main
+          git pull --ff-only origin main
+          name="$(python3 -c 'import sys; sys.path.insert(0, "tools"); import manifest; print(manifest.build_yaml(sys.argv[1])["name"])' "$plugin")"
+          for v in "$1" "$2"; do
+            t="$(python3 tools/manifest.py "$plugin" target "$v")"
+            z="${plugin}_${v}_jellyfin-${t}.zip"
+            python3 tools/manifest.py "$plugin" add "$v" "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${z}" "$(cat "artifacts/${z}.md5")"
+          done
+          python3 tools/manifest.py check
+          git config user.name "TheMightyTRexUK"
+          git config user.email "196487809+TheMightyTRex@users.noreply.github.com"
+          git commit -am "manifest.json: ${name} ${2} for Jellyfin 12 and ${1} for Jellyfin 10.11"
+          git push origin main

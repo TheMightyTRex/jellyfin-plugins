@@ -46,8 +46,11 @@ To find your version, go to **Dashboard**: the version is under the server name 
 2. Open the menu, then **Dashboard**, then **Plugins**.
 3. Choose **Manage Repositories** (on Jellyfin 10.11: the **Repositories** tab), then **New Repository** (on 10.11:
    **+**). Fill in:
-   - **Repository Name:** `Picture shrinker`
-   - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugin-picture-shrinker/main/manifest.json`
+   - **Repository Name:** `TheMightyTRexUK`
+   - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json`
+
+   This one address lists every Jellyfin plug-in by TheMightyTRexUK. If you added the old Picture shrinker address
+   (`jellyfin-plugin-picture-shrinker`), add this one and remove the old one: this one lists every version.
 4. Choose **Add** (on 10.11: **Save**).
 5. Back on **Plugins**, choose **Available** (on 10.11: the **Catalogue** tab) and search for `Picture`. Open
    **Picture shrinker**.
@@ -286,21 +289,24 @@ decoder, and its licence needs care for some uses.
 ## Build it
 
 One source makes two builds. `JELLYFIN_TARGET` picks which: `12` (the default) builds for Jellyfin 12 with the .NET 10
-SDK, and `10.11` builds for Jellyfin 10.11 with the .NET 9 SDK. The builds run in Docker:
+SDK, and `10.11` builds for Jellyfin 10.11 with the .NET 9 SDK. The builds run in Docker, from the top of the
+[jellyfin-plugins](https://github.com/TheMightyTRex/jellyfin-plugins) repository, whose tools every plug-in shares:
 
 ```
-JELLYFIN_TARGET=12 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests      # unit tests and the shared test pictures
-JELLYFIN_TARGET=10.11 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker.Tests   # the same for the 10.11 build
-tools/package.sh                                                                         # both zips of the newest release in CHANGELOG.md
+JELLYFIN_TARGET=12 tools/dotnet.sh picture-shrinker test tests/Jellyfin.Plugin.PictureShrinker.Tests      # unit tests and the shared test pictures
+JELLYFIN_TARGET=10.11 tools/dotnet.sh picture-shrinker test tests/Jellyfin.Plugin.PictureShrinker.Tests   # the same for the 10.11 build
+tools/package.sh picture-shrinker                                                                         # both zips of the newest release in CHANGELOG.md
 ```
 
 The zips are `artifacts/picture-shrinker_1.2.3.0_jellyfin-12.zip` and
 `artifacts/picture-shrinker_1.2.2.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
 workflow builds and tests both on every change.
 
-A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.2.3.0`. The **Release** workflow
-builds and tests both builds, makes both zips and their MD5 checksums, creates one GitHub release with both, and adds
-both versions to `manifest.json`. [SYNC.md](SYNC.md) explains the version numbers.
+A release is one step: push a tag named by the plug-in's folder and its Jellyfin 12 version, such as
+`picture-shrinker-v1.2.5.0`. The **Release** workflow builds and tests both builds, makes both zips and their MD5
+checksums, creates one GitHub release with both, and adds both versions to Picture shrinker's entry in the
+repository's one `manifest.json`. Versions up to 1.2.3.0 were released from the old repository,
+TheMightyTRex/jellyfin-plugin-picture-shrinker, and `manifest.json` still lists them from there. [SYNC.md](SYNC.md) explains the version numbers.
 
 The rules (sizes, quality, checks, backup) are in `rules.json`, shared with Starboard's version. [SYNC.md](SYNC.md)
 says how the two are kept in step.
