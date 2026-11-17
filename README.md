@@ -14,7 +14,7 @@ You do not need Starboard: each plug-in works on any Jellyfin 10.11 or Jellyfin 
 | Plug-in | What it does | Folder |
 |---|---|---|
 | Picture shrinker | Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space. | [picture-shrinker](picture-shrinker) |
-| Audio description | Coming soon, in the folder `audio-description`. | |
+| Audio description | Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have. Not released yet. | [audio-description](audio-description) |
 
 Each plug-in has two builds, one for Jellyfin 12 (.NET 10) and one for Jellyfin 10.11 (.NET 9). Jellyfin installs the
 one for its own version.

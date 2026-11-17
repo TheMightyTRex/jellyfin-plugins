@@ -167,15 +167,16 @@ Jellyfin needs to be able to write in your film and series folders to add a trac
 ## Build it
 
 One source makes two builds. `JELLYFIN_TARGET` picks which: `12` (the default) builds for Jellyfin 12 with the .NET 10
-SDK, and `10.11` builds for Jellyfin 10.11 with the .NET 9 SDK. The builds run in Docker:
+SDK, and `10.11` builds for Jellyfin 10.11 with the .NET 9 SDK. The builds run in Docker, from the top of the
+jellyfin-plugins repository:
 
 ```
-JELLYFIN_TARGET=12 tools/dotnet.sh test tests/Jellyfin.Plugin.AudioDescription.Tests      # unit tests and the rules file
-JELLYFIN_TARGET=10.11 tools/dotnet.sh test tests/Jellyfin.Plugin.AudioDescription.Tests   # the same for the 10.11 build
+JELLYFIN_TARGET=12 tools/dotnet.sh audio-description test tests/Jellyfin.Plugin.AudioDescription.Tests      # unit tests and the rules file
+JELLYFIN_TARGET=10.11 tools/dotnet.sh audio-description test tests/Jellyfin.Plugin.AudioDescription.Tests   # the same for the 10.11 build
 ```
 
 The release zips, their checksums and `manifest.json` are made by the jellyfin-plugins repository's own tools and
-workflows, for every plug-in in it. [SYNC.md](SYNC.md) explains the version numbers.
+workflows, for every plug-in in it ([CONTRIBUTING.md](../CONTRIBUTING.md)). [SYNC.md](SYNC.md) explains the version numbers.
 
 The rules (the words that mean audio description, the tag, the collection, the file names and the length check) are
 in `rules.json`, shared with Starboard's version. [SYNC.md](SYNC.md) says how the two are kept in step.

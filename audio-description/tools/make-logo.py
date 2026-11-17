@@ -1,10 +1,12 @@
 # Jellyfin catalogue logo for Audio description (16:9, as Jellyfin's catalogue shows it), on the same dark blue as
 # Picture shrinker's, so the two look like a set (owner, 17 November 2026: "Each jellyfin plugin needs its own image").
 # A film frame with sprocket holes, a sunset scene in it, and a narrator's speech bubble with sound waves coming from
-# it, with the name. Drawn at 3x and scaled down for smooth edges. Run from the plug-in folder:
-#   python3 tools/make-logo.py [FONT]   (FONT defaults to the design system's Atkinson Hyperlegible Next)
+# it, with the name. Drawn at 3x and scaled down for smooth edges. Writes images/logo.png in this plug-in's folder, the
+# picture its own entry in manifest.json names (imageUrl), from wherever it is run:
+#   python3 audio-description/tools/make-logo.py [FONT]   (FONT defaults to the design system's Atkinson Hyperlegible Next)
 import os, sys
 from PIL import Image, ImageDraw, ImageFont, ImageFilter
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "images", "logo.png")
 W, H, S = 1280, 720, 3
 FONT = sys.argv[1] if len(sys.argv) > 1 else os.path.expanduser("~/src/design-system/fonts/atkinson-hyperlegible-next.woff2")
 img = Image.new("RGB", (W * S, H * S))
@@ -57,4 +59,4 @@ d.text(s(640, 230), "Audio", font=f1, fill=WHITE)
 d.text(s(640, 340), "description", font=f1, fill=WHITE)
 d.text(s(644, 480), "Find, tag and play the", font=f2, fill=CREAM)
 d.text(s(644, 530), "described sound track", font=f2, fill=CREAM)
-img.resize((W, H), Image.LANCZOS).save("images/logo.png", optimize=True)
+img.resize((W, H), Image.LANCZOS).save(OUT, optimize=True)

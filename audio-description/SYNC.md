@@ -50,8 +50,8 @@ add the same track twice.
 
 1. Change `rules.json` here, and raise `rules_version` (read 'Version numbers').
 2. Change the code here until `dotnet test` passes for both builds
-   (`JELLYFIN_TARGET=12 tools/dotnet.sh test tests/Jellyfin.Plugin.AudioDescription.Tests`, and again with
-   `JELLYFIN_TARGET=10.11`).
+   (from the top of jellyfin-plugins, `JELLYFIN_TARGET=12 tools/dotnet.sh audio-description test
+   tests/Jellyfin.Plugin.AudioDescription.Tests`, and again with `JELLYFIN_TARGET=10.11`).
 3. In starboard-plugins, run `python3 tools/sync_audio_description_rules.py`, which copies `rules.json` to
    `audio-description/rules.json` and `audio-description-tracks/rules.json`.
 4. Change the Starboard plug-ins' code until `python3 -m unittest tests.test_audio_description
