@@ -14,6 +14,7 @@ namespace Jellyfin.Plugin.PictureShrinker;
 /// Shrink new pictures soon after Jellyfin saves them (deactivated by default). Jellyfin's library events name the
 /// pictures; each waits until it is a few minutes old, as Jellyfin may still be writing it, then is shrunk with the
 /// same checks and backup as a scheduled run. While deactivated it only notes nothing: one check of a setting per event.
+/// Until the backup choice is made, it says so in the log and shrinks nothing.
 /// </summary>
 public sealed class NewPictureWatcher : IHostedService, IDisposable
 {
@@ -80,6 +81,13 @@ public sealed class NewPictureWatcher : IHostedService, IDisposable
 
         try
         {
+            if (!_service.Settings().Chosen)
+            {
+                _log.LogInformation("Picture shrinker: {Said}", Shrinker.ChooseFirst);
+                _waiting.Clear();
+                return;
+            }
+
             var age = TimeSpan.FromMinutes(Math.Max(1, _service.Config.NewPictureMinutes));
             var ready = _waiting.Where(kv => DateTime.UtcNow - kv.Value >= age && Older(kv.Key, age)).Select(kv => kv.Key).ToList();
             if (ready.Count == 0)

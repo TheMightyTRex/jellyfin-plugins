@@ -23,7 +23,7 @@ public class ShrinkPicturesTask : IScheduledTask
 
     public string Key => "PictureShrinkerShrink";
 
-    public string Description => "Shrinks posters and photos of cast and crew to the sizes on the Picture shrinker page, at the lowest priority. A run stops itself after 115 minutes and the next one carries on.";
+    public string Description => "Shrinks posters, backdrops, logos, photos of cast and crew and the other picture types to the sizes on the Picture shrinker page, at the lowest priority. A run stops itself after 115 minutes and the next one carries on.";
 
     public string Category => "Picture shrinker";
 
@@ -43,6 +43,12 @@ public class ShrinkPicturesTask : IScheduledTask
         if (rec is null)
         {
             _log.LogInformation("Picture shrinker: something else is running (new pictures, a restore or deleting the backup), so this run did not start");
+            return;
+        }
+
+        if (rec.Stopped == Shrinker.ChooseFirst)
+        {
+            progress.Report(100); // nothing shrunk until the backup choice is made; the task does not fail
             return;
         }
 

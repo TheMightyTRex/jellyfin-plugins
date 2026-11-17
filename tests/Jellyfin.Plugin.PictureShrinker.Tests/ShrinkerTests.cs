@@ -40,15 +40,17 @@ public sealed class ShrinkerTests : IDisposable
         }
     }
 
-    private ShrinkSettings Settings(bool backup = true, Func<string, long>? free = null, string? backupRoot = null) => new()
+    private ShrinkSettings Settings(bool backup = true, Func<string, long>? free = null, string? backupRoot = null, string? choice = null) => new()
     {
         MetadataRoot = _meta,
-        Backup = backup,
+        Choice = choice ?? (backup ? Shrinker.Keep : Shrinker.JustShrink),
         BackupRoot = backupRoot ?? _backup,
         FreeSpace = free ?? Shrinker.FreeSpaceOf
     };
 
-    private Shrinker Make(ShrinkSettings s) => new(() => s, new StateStore(Path.Combine(_dir, "state.json")), NullLogger.Instance);
+    private Shrinker Make(ShrinkSettings s) => Make(() => s);
+
+    private Shrinker Make(Func<ShrinkSettings> s) => new(s, new StateStore(Path.Combine(_dir, "state.json")), NullLogger.Instance);
 
     private static Dictionary<string, string> Hashes(string root)
         => Directory.GetFiles(root, "*", SearchOption.AllDirectories)
@@ -82,7 +84,7 @@ public sealed class ShrinkerTests : IDisposable
     {
         var file = Rules.Parse(File.ReadAllText(Here("rules.json")));
         Assert.Equal(JsonSerializer.Serialize(file), JsonSerializer.Serialize(Rules.Current));
-        Assert.Equal("1.1", file.RulesVersion);
+        Assert.Equal("1.2", file.RulesVersion);
     }
 
     [Fact]
@@ -91,10 +93,37 @@ public sealed class ShrinkerTests : IDisposable
         using var doc = JsonDocument.Parse(File.ReadAllText(Here("rules.json")));
         var r = doc.RootElement;
         var c = new PluginConfiguration();
-        Assert.Equal(r.GetProperty("kinds").GetProperty("poster").GetProperty("default").GetInt32(), c.PosterHeight);
-        Assert.Equal(r.GetProperty("kinds").GetProperty("person").GetProperty("default").GetInt32(), c.PersonWidth);
+        var kinds = r.GetProperty("kinds");
+        Assert.Equal(new[] { "poster", "person", "backdrop", "thumb", "logo", "banner", "disc", "clearart" }, kinds.EnumerateObject().Select(k => k.Name));
+        Assert.Equal(Enum.GetNames<PictureKind>().Select(n => n.ToLowerInvariant()), kinds.EnumerateObject().Select(k => k.Name));
+        var sizes = new Dictionary<string, int>
+        {
+            ["poster"] = c.PosterHeight, ["person"] = c.PersonWidth, ["backdrop"] = c.BackdropWidth, ["thumb"] = c.ThumbWidth,
+            ["logo"] = c.LogoWidth, ["banner"] = c.BannerWidth, ["disc"] = c.DiscWidth, ["clearart"] = c.ClearartWidth
+        };
+        var ticks = new Dictionary<string, bool>
+        {
+            ["poster"] = c.IncludePosters, ["person"] = c.IncludePeople, ["backdrop"] = c.IncludeBackdrops, ["thumb"] = c.IncludeThumbs,
+            ["logo"] = c.IncludeLogos, ["banner"] = c.IncludeBanners, ["disc"] = c.IncludeDiscs, ["clearart"] = c.IncludeClearart
+        };
+        var settings = new ShrinkSettings();
+        foreach (var k in kinds.EnumerateObject())
+        {
+            Assert.Equal(k.Value.GetProperty("default").GetInt32(), sizes[k.Name]);
+            Assert.Equal(k.Value.GetProperty("shrink_by_default").GetBoolean(), ticks[k.Name]);
+            Assert.True(ticks[k.Name]); // every kind is on by default
+            Assert.Equal(sizes[k.Name], settings.Limit(Enum.Parse<PictureKind>(k.Name, true)));
+        }
+
+        Assert.Equal((1920, 640, 3840), (c.BackdropWidth, Rules.Current.Backdrop.Min, Rules.Current.Backdrop.Max));
+        Assert.Equal(r.GetProperty("shrink_all").GetProperty("default").GetBoolean(), c.ShrinkAll);
+        Assert.True(c.ShrinkAll);
+        Assert.True(settings.ShrinkAll);
         Assert.Equal(r.GetProperty("quality").GetProperty("default").GetInt32(), c.Quality);
-        Assert.Equal(r.GetProperty("backup").GetProperty("default").GetBoolean(), c.Backup);
+        Assert.Equal(JsonValueKind.Null, r.GetProperty("backup").GetProperty("default").ValueKind);
+        Assert.Equal(string.Empty, c.BackupChoice); // no default: the person chooses
+        Assert.Equal(new[] { Shrinker.Keep, Shrinker.JustShrink }, Rules.Current.Backup.Choices);
+        Assert.Equal(new[] { Shrinker.PicturesItShrinks, Shrinker.EveryPicture }, Rules.Current.StartAgain.Kinds);
         Assert.Equal(r.GetProperty("new_pictures").GetProperty("default").GetBoolean(), c.ShrinkNewPictures);
         Assert.Equal(r.GetProperty("new_pictures").GetProperty("min_age_seconds").GetInt32() / 60, c.NewPictureMinutes);
         Assert.Equal(115, r.GetProperty("run_limit_minutes").GetInt32());
@@ -106,14 +135,118 @@ public sealed class ShrinkerTests : IDisposable
     [InlineData(PictureKind.Poster, 1003, 1800, 502, 900)] // 501.5 rounds to 502
     [InlineData(PictureKind.Person, 800, 1201, 400, 600)] // 600.5 rounds to 600
     [InlineData(PictureKind.Person, 1000, 1000, 400, 400)]
+    [InlineData(PictureKind.Backdrop, 3840, 2160, 1920, 1080)]
+    [InlineData(PictureKind.Backdrop, 2560, 1067, 1920, 800)] // 800.25 rounds to 800
+    [InlineData(PictureKind.Thumb, 1920, 1080, 1280, 720)]
+    [InlineData(PictureKind.Logo, 1000, 388, 800, 310)] // 310.4 rounds to 310
+    [InlineData(PictureKind.Banner, 1000, 185, 1000, 185)] // already 1000 wide: left alone
+    [InlineData(PictureKind.Disc, 1000, 1000, 500, 500)]
+    [InlineData(PictureKind.Clearart, 1000, 562, 800, 450)] // 449.6 rounds to 450
     public void SizesFollowTheRules(PictureKind kind, int w, int h, int ew, int eh)
-        => Assert.Equal((ew, eh), Shrinker.Target(kind, w, h, 900, 400));
+        => Assert.Equal((ew, eh), Shrinker.Target(kind, w, h, new ShrinkSettings().Limit(kind)) ?? (w, h));
+
+    [Theory]
+    [InlineData("library/0a/0a1b/backdrop.jpg", PictureKind.Backdrop)]
+    [InlineData("library/0a/0a1b/backdrop1.jpg", PictureKind.Backdrop)]
+    [InlineData("library/0a/0a1b/backdrop12.webp", PictureKind.Backdrop)]
+    [InlineData("library/0a/0a1b/poster.jpg", PictureKind.Poster)]
+    [InlineData("library/0a/0a1b/landscape.jpg", PictureKind.Thumb)]
+    [InlineData("library/0a/0a1b/logo.png", PictureKind.Logo)]
+    [InlineData("library/0a/0a1b/banner.jpg", PictureKind.Banner)]
+    [InlineData("library/0a/0a1b/disc.png", PictureKind.Disc)]
+    [InlineData("library/0a/0a1b/clearart.png", PictureKind.Clearart)]
+    [InlineData("People/A/Alice Example/folder.jpg", PictureKind.Person)]
+    public void EachKindIsFound(string rel, PictureKind kind)
+        => Assert.Equal(kind, Shrinker.KindOf(_meta, Path.Combine(_meta, rel.Replace('/', Path.DirectorySeparatorChar))));
+
+    [Theory]
+    [InlineData("library/0a/0a1b/folder.jpg")]
+    [InlineData("library/0a/0a1b/.backdrop.jpg")]
+    [InlineData("library/0a/0a1b/backdrop.gif")]
+    [InlineData("collections/x/backdrop.jpg")]
+    [InlineData("library/0a/0a1b/backdrop.jpg.picture-shrinker-tmp")]
+    public void OtherFilesAreLeftAlone(string rel)
+        => Assert.Null(Shrinker.KindOf(_meta, Path.Combine(_meta, rel.Replace('/', Path.DirectorySeparatorChar))));
+
+    [Fact]
+    public void ShrinkAllShrinksEveryKindWhateverTheTicks()
+    {
+        var path = BigBackdrop();
+        var noneTicked = new ShrinkSettings
+        {
+            MetadataRoot = _meta, Choice = Shrinker.Keep, BackupRoot = _backup, ShrinkAll = true,
+            Posters = false, People = false, Backdrops = false, Thumbs = false, Logos = false, Banners = false, Discs = false, Clearart = false
+        };
+        var rec = Make(noneTicked).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
+        Assert.Equal(11, rec.Shrunk); // the ten shared pictures and the big backdrop
+        Assert.Equal(1920, rec.Sizes["backdrop"]);
+        using var codec = SKCodec.Create(path);
+        Assert.Equal((1920, 1080), (codec.Info.Width, codec.Info.Height));
+    }
+
+    [Fact]
+    public void ABackdropIsShrunkToTheWidthWhenTickedAndLeftAloneWhenNot()
+    {
+        var path = BigBackdrop();
+        var before = File.ReadAllBytes(path);
+        var off = new ShrinkSettings { MetadataRoot = _meta, Choice = Shrinker.Keep, BackupRoot = _backup, ShrinkAll = false, Backdrops = false };
+        var rec = Make(off).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
+        Assert.Equal(before, File.ReadAllBytes(path));
+        Assert.Equal(9, rec.Shrunk); // every other kind is still ticked; neither backdrop is shrunk
+        Assert.False(File.Exists(Path.Combine(_backup, "library", "0a", "0a1b", "backdrop1.jpg")));
+
+        var on = new ShrinkSettings { MetadataRoot = _meta, Choice = Shrinker.Keep, BackupRoot = _backup, ShrinkAll = false, Backdrops = true };
+        Assert.Equal(2, Make(on).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!.Shrunk); // both backdrops
+        using var codec = SKCodec.Create(path);
+        Assert.Equal((1920, 1080), (codec.Info.Width, codec.Info.Height));
+        Assert.Equal(SKEncodedImageFormat.Jpeg, codec.EncodedFormat);
+        Assert.Equal(before, File.ReadAllBytes(Path.Combine(_backup, "library", "0a", "0a1b", "backdrop1.jpg")));
+    }
+
+    [Fact]
+    public void WithShrinkAllOffOnlyTheTickedKindsAreShrunk()
+    {
+        var onlyLogos = new ShrinkSettings
+        {
+            MetadataRoot = _meta, Choice = Shrinker.JustShrink, ShrinkAll = false,
+            Posters = false, People = false, Backdrops = false, Thumbs = false, Logos = true, Banners = false, Discs = false, Clearart = false
+        };
+        var rec = Make(onlyLogos).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
+        Assert.Equal(1, rec.Shrunk);
+        using var codec = SKCodec.Create(Path.Combine(_meta, "library", "1c", "1c2d", "logo.png"));
+        Assert.Equal((800, 267), (codec.Info.Width, codec.Info.Height));
+    }
+
+    [Fact]
+    public void APngLogoKeepsItsTransparency()
+    {
+        var path = Path.Combine(_meta, "library", "1c", "1c2d", "logo.png");
+        Assert.Equal(Outcome.Shrunk, Shrinker.ShrinkOne(Settings(backup: false), path, PictureKind.Logo).Outcome);
+        using var bitmap = SKBitmap.Decode(path);
+        Assert.Equal((800, 267), (bitmap.Width, bitmap.Height));
+        Assert.Equal(0, bitmap.GetPixel(20, 130).Alpha); // the left quarter is fully transparent
+        Assert.Equal(255, bitmap.GetPixel(780, 130).Alpha); // the right is opaque
+    }
+
+    private string BigBackdrop()
+    {
+        var path = Path.Combine(_meta, "library", "0a", "0a1b", "backdrop1.jpg");
+        using var bitmap = new SKBitmap(3840, 2160);
+        using var canvas = new SKCanvas(bitmap);
+        using var paint = new SKPaint { Shader = SKShader.CreateLinearGradient(new SKPoint(0, 0), new SKPoint(3840, 2160), new[] { SKColors.SteelBlue, SKColors.Orange }, SKShaderTileMode.Clamp) };
+        canvas.DrawRect(0, 0, 3840, 2160, paint);
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Jpeg, 92);
+        File.WriteAllBytes(path, data.ToArray());
+        return path;
+    }
 
     [Fact]
     public void SmallPicturesAreLeftAlone()
     {
-        Assert.Null(Shrinker.Target(PictureKind.Poster, 2000, 900, 900, 400));
-        Assert.Null(Shrinker.Target(PictureKind.Person, 400, 3000, 900, 400));
+        Assert.Null(Shrinker.Target(PictureKind.Poster, 2000, 900, 900));
+        Assert.Null(Shrinker.Target(PictureKind.Person, 400, 3000, 400));
+        Assert.Null(Shrinker.Target(PictureKind.Backdrop, 1920, 4000, 1920));
     }
 
     // The shared test pictures -----------------------------------------------------------------------------------
@@ -182,7 +315,7 @@ public sealed class ShrinkerTests : IDisposable
         var before = Hashes(_meta);
         var rec = Make(Settings(backupRoot: Path.Combine(blocker, "originals"))).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
         Assert.Equal(0, rec.Shrunk);
-        Assert.Equal(7, rec.NotBackedUp);
+        Assert.Equal(10, rec.NotBackedUp);
         Assert.Contains("could not be backed up", rec.Stopped);
         Assert.Equal(before, Hashes(_meta));
     }
@@ -217,19 +350,103 @@ public sealed class ShrinkerTests : IDisposable
         Assert.True(shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!.Shrunk > 0);
         Assert.NotEqual(original, Hashes(_meta));
         var rec = shrinker.Restore(CancellationToken.None)!;
-        Assert.Equal(7, rec.Restored);
+        Assert.Equal(10, rec.Restored);
         Assert.Equal(original, Hashes(_meta));
         Assert.Equal(0, shrinker.Measure().Saved); // nothing is saved once every picture is back
         Assert.Equal(0, shrinker.Measure().ShrunkTotal);
-        Assert.Equal(7, shrinker.Restore(CancellationToken.None)!.AlreadyOriginal); // the backup is kept
+        Assert.Equal(10, shrinker.Restore(CancellationToken.None)!.AlreadyOriginal); // the backup is kept
     }
 
     [Fact]
-    public void BackupDeactivatedShrinksWithoutBackup()
+    public void JustShrinkShrinksWithoutBackup()
     {
         var rec = Make(Settings(backup: false)).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
-        Assert.Equal(7, rec.Shrunk);
+        Assert.Equal(10, rec.Shrunk);
         Assert.False(Directory.Exists(_backup));
+    }
+
+    [Fact]
+    public void KeepBacksUpEachOriginal()
+    {
+        var rec = Make(Settings(choice: Shrinker.Keep)).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
+        Assert.Equal(10, rec.Shrunk);
+        Assert.Equal(10, rec.BackedUp);
+        Assert.Equal(10, Directory.GetFiles(_backup, "*", SearchOption.AllDirectories).Length);
+    }
+
+    // The backup choice ------------------------------------------------------------------------------------------
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("on")]
+    public void NothingIsShrunkUntilTheChoiceIsMade(string choice)
+    {
+        var before = Hashes(_meta);
+        var shrinker = Make(Settings(choice: choice));
+        var rec = shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
+        Assert.Equal("Not shrunk: choose Keep a backup copy or Just shrink, in its settings, first", rec.Stopped);
+        Assert.Equal(0, rec.Shrunk);
+        var only = Directory.GetFiles(Path.Combine(_meta, "library"), "poster.*", SearchOption.AllDirectories);
+        Assert.Equal(Shrinker.ChooseFirst, shrinker.Run("new", TimeSpan.FromMinutes(5), CancellationToken.None, null, only)!.Stopped);
+        Assert.Equal(before, Hashes(_meta));
+        Assert.False(Directory.Exists(_backup));
+        Assert.Empty(shrinker.Store.Load().Runs); // it does nothing, and does not fail
+    }
+
+    [Fact]
+    public void RestoreAndDeleteBackupWorkBeforeTheChoiceIsMade()
+    {
+        var original = Hashes(_meta);
+        var s = Settings(choice: Shrinker.Keep);
+        var shrinker = Make(() => s);
+        shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None);
+        s = Settings(choice: string.Empty);
+        Assert.Equal(10, shrinker.Restore(CancellationToken.None)!.Restored);
+        Assert.Equal(original, Hashes(_meta));
+        Assert.True(shrinker.DeleteBackup().Done);
+        Assert.Equal(0, shrinker.Measure().BackupCount);
+    }
+
+    [Fact]
+    public void TheUpdateFrom11DropsTheOldSettingAndKeepsTheBackup()
+    {
+        // A 1.1 settings file, with the old on and off backup setting activated.
+        const string old = """
+            <?xml version="1.0" encoding="utf-8"?>
+            <PluginConfiguration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+              <PosterHeight>800</PosterHeight>
+              <PersonWidth>400</PersonWidth>
+              <Quality>85</Quality>
+              <IncludePosters>true</IncludePosters>
+              <IncludePeople>true</IncludePeople>
+              <Backup>true</Backup>
+              <BackupFolder>/srv/originals</BackupFolder>
+              <ShrinkNewPictures>false</ShrinkNewPictures>
+              <NewPictureMinutes>10</NewPictureMinutes>
+              <OnceAMonth>false</OnceAMonth>
+            </PluginConfiguration>
+            """;
+        var xml = new System.Xml.Serialization.XmlSerializer(typeof(PluginConfiguration));
+        var c = (PluginConfiguration)xml.Deserialize(new StringReader(old))!;
+        Assert.Equal(string.Empty, c.BackupChoice); // unset, so the person chooses again
+        Assert.Equal("/srv/originals", c.BackupFolder);
+        Assert.Equal(800, c.PosterHeight);
+        var saved = new StringWriter();
+        xml.Serialize(saved, c);
+        Assert.DoesNotContain("<Backup>", saved.ToString(), StringComparison.Ordinal);
+
+        // The backup made by 1.1 is kept while the choice is unset, and whatever is chosen.
+        var s = Settings(choice: Shrinker.Keep);
+        var shrinker = Make(() => s);
+        shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None);
+        var backup = Hashes(_backup);
+        s = Settings(choice: string.Empty);
+        shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None);
+        Assert.Equal(backup, Hashes(_backup));
+        s = Settings(choice: Shrinker.JustShrink);
+        shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None);
+        Assert.Equal(backup, Hashes(_backup));
+        Assert.Equal(10, shrinker.Measure().BackupCount);
     }
 
     // Space and deleting the backup ------------------------------------------------------------------------------
@@ -239,11 +456,11 @@ public sealed class ShrinkerTests : IDisposable
     {
         var shrinker = Make(Settings());
         var start = shrinker.Measure();
-        Assert.Equal(11, start.LiveCount); // the posters and photos under library and People, failed ones included
+        Assert.Equal(14, start.LiveCount); // every kind under library and People, failed ones included
         Assert.Equal(0, start.BackupCount);
         var rec = shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
         var end = shrinker.Measure();
-        Assert.Equal(7, end.BackupCount);
+        Assert.Equal(10, end.BackupCount);
         Assert.Equal(rec.Before, end.BackupBytes);
         Assert.Equal(rec.Before - rec.After, end.Saved);
         Assert.Equal(start.LiveBytes - end.Saved, end.LiveBytes);
@@ -266,7 +483,7 @@ public sealed class ShrinkerTests : IDisposable
         var result = shrinker.DeleteBackup();
 
         Assert.True(result.Done);
-        Assert.Equal(8, result.Files); // seven originals and the link itself
+        Assert.Equal(11, result.Files); // ten originals and the link itself
         Assert.Equal(size, result.Bytes);
         Assert.Equal("outside", File.ReadAllText(outside));
         Assert.True(File.Exists(notOurs));
@@ -287,7 +504,7 @@ public sealed class ShrinkerTests : IDisposable
             Assert.Contains("running", result.Said);
         }
 
-        Assert.Equal(7, shrinker.Measure().BackupCount);
+        Assert.Equal(10, shrinker.Measure().BackupCount);
     }
 
     [Fact]

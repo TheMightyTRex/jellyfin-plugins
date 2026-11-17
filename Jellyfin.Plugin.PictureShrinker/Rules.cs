@@ -23,6 +23,9 @@ public sealed class Rules
     [JsonPropertyName("kinds")]
     public Dictionary<string, KindRule> Kinds { get; set; } = new();
 
+    [JsonPropertyName("shrink_all")]
+    public ShrinkAllRule ShrinkAll { get; set; } = new();
+
     [JsonPropertyName("extensions")]
     public List<string> Extensions { get; set; } = new();
 
@@ -50,6 +53,9 @@ public sealed class Rules
     [JsonPropertyName("backup")]
     public BackupRule Backup { get; set; } = new();
 
+    [JsonPropertyName("start_again")]
+    public StartAgainRule StartAgain { get; set; } = new();
+
     [JsonPropertyName("new_pictures")]
     public NewPicturesRule NewPictures { get; set; } = new();
 
@@ -65,6 +71,18 @@ public sealed class Rules
     public KindRule Poster => Kinds["poster"];
 
     public KindRule Person => Kinds["person"];
+
+    public KindRule Backdrop => Kinds["backdrop"];
+
+    public KindRule Thumb => Kinds["thumb"];
+
+    public KindRule Logo => Kinds["logo"];
+
+    public KindRule Banner => Kinds["banner"];
+
+    public KindRule Disc => Kinds["disc"];
+
+    public KindRule Clearart => Kinds["clearart"];
 
     public static Rules Parse(string json)
         => JsonSerializer.Deserialize<Rules>(json) ?? throw new InvalidDataException("rules.json is empty");
@@ -96,6 +114,15 @@ public sealed class Rules
 
         [JsonPropertyName("max")]
         public int Max { get; set; }
+
+        [JsonPropertyName("shrink_by_default")]
+        public bool ShrinkByDefault { get; set; }
+    }
+
+    public sealed class ShrinkAllRule
+    {
+        [JsonPropertyName("default")]
+        public bool Default { get; set; }
     }
 
     public sealed class Range
@@ -112,8 +139,18 @@ public sealed class Rules
 
     public sealed class BackupRule
     {
+        /// <summary>Gets or sets the backup choice a new install starts with: null, so the person chooses.</summary>
         [JsonPropertyName("default")]
-        public bool Default { get; set; }
+        public string? Default { get; set; }
+
+        [JsonPropertyName("choices")]
+        public List<string> Choices { get; set; } = new();
+
+        [JsonPropertyName("ask_after_install")]
+        public bool AskAfterInstall { get; set; }
+
+        [JsonPropertyName("ask_after_update_to")]
+        public string AskAfterUpdateTo { get; set; } = string.Empty;
 
         [JsonPropertyName("folder")]
         public string Folder { get; set; } = string.Empty;
@@ -123,6 +160,33 @@ public sealed class Rules
 
         [JsonPropertyName("keep_free_bytes")]
         public long KeepFreeBytes { get; set; }
+    }
+
+    public sealed class StartAgainRule
+    {
+        [JsonPropertyName("kinds")]
+        public List<string> Kinds { get; set; } = new();
+
+        [JsonPropertyName("deletes_backup")]
+        public bool DeletesBackup { get; set; }
+
+        [JsonPropertyName("clears_records")]
+        public bool ClearsRecords { get; set; }
+
+        [JsonPropertyName("keeps_backup_choice")]
+        public bool KeepsBackupChoice { get; set; }
+
+        [JsonPropertyName("aside_suffix")]
+        public string AsideSuffix { get; set; } = string.Empty;
+
+        [JsonPropertyName("settle_every_minutes")]
+        public int SettleEveryMinutes { get; set; }
+
+        [JsonPropertyName("put_back_after_hours")]
+        public int PutBackAfterHours { get; set; }
+
+        [JsonPropertyName("pause_between_refreshes_ms")]
+        public int PauseBetweenRefreshesMs { get; set; }
     }
 
     public sealed class NewPicturesRule

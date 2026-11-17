@@ -30,7 +30,7 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
 
     public override Guid Id => Guid.Parse(PluginId);
 
-    public override string Description => "Shrinks the posters and photos of people Jellyfin keeps, so they take less space. Each picture is backed up and checked before it replaces the original.";
+    public override string Description => "Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space. Each smaller copy is checked before it replaces the original, and you choose whether each original is backed up first.";
 
     public IEnumerable<PluginPageInfo> GetPages()
     {

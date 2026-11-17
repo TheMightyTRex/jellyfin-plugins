@@ -23,7 +23,7 @@ public class RestorePicturesTask : IScheduledTask
 
     public string Key => "PictureShrinkerRestore";
 
-    public string Description => "Puts back the original posters and photos from the Picture shrinker backup. The backup is kept. Deactivate the Shrink pictures triggers first, or the next run shrinks them again.";
+    public string Description => "Puts back the original pictures from the Picture shrinker backup. The backup is kept. Deactivate the Shrink pictures triggers first, or the next run shrinks them again.";
 
     public string Category => "Picture shrinker";
 

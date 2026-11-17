@@ -26,9 +26,10 @@ GUID = "80bf9325-d299-4e24-ac74-c087aeec3011"
 TARGETS = {"10.11": "10.11.0.0", "12": "12.0.0.0"}
 NAME = "Picture shrinker"
 OWNER = "TheMightyTRexUK"
-DESCRIPTION = "Shrinks the posters and photos of people Jellyfin keeps, so they take less space."
-OVERVIEW = ("Posters to 900 pixels tall and photos of cast and crew to 400 pixels wide, on the schedule you choose. "
-            "Each original is backed up and each smaller copy checked before it replaces the original.")
+DESCRIPTION = "Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space."
+OVERVIEW = ("Posters to 900 pixels tall, backdrops to 1,920 wide, photos of cast and crew to 400 wide and the other "
+            "picture types to their own sizes, on the schedule you choose. "
+            "Each smaller copy is checked before it replaces the original, and you choose whether the originals are backed up first.")
 
 
 def target(version):

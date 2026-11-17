@@ -8,26 +8,31 @@ A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
 
 ## What it does
 
-Jellyfin keeps a copy of every poster and every photo of an actor or crew member it shows, often much larger than any
-screen needs. On a large library they can take tens of gigabytes. Picture shrinker makes them smaller:
+Jellyfin keeps a copy of every poster, backdrop, logo and photo of an actor or crew member it shows, often much larger
+than any screen needs. On a large library they can take tens of gigabytes. Picture shrinker makes them smaller, for
+example:
 
 - **Posters** become 900 pixels tall, which is still sharp on a television.
+- **Backdrops** become 1,920 pixels wide, sharp on a 1080p screen.
 - **Photos of cast and crew** become 400 pixels wide.
 
-Before a picture is replaced, its original is copied to a backup folder, and the smaller copy is checked. If anything
-is wrong, the original stays as it was. You can put every original back with one task, and delete the backup when you
-are sure.
+Every picture type is shrunk by default; the table below has them all.
+
+Before a picture is replaced, the smaller copy is checked. If anything is wrong, the original stays as it was. You
+choose whether each original is copied to a backup folder first: with a backup you can put every original back with
+one task, and delete the backup when you are sure. **Start again** clears everything and has Jellyfin download the
+pictures again.
 
 ## How to install it in Jellyfin
 
 You need Jellyfin 10.11 or Jellyfin 12 and an administrator account. Everything is in Jellyfin's own dashboard. The
-repository has a build for each: Jellyfin installs the one for its own version (1.1.1.0 on Jellyfin 12, 1.1.0.0 on
+repository has a build for each: Jellyfin installs the one for its own version (1.2.1.0 on Jellyfin 12, 1.2.0.0 on
 Jellyfin 10.11).
 
 | Your Jellyfin | Version it installs | Built for |
 |---|---|---|
-| 12.0 to 12.4 | 1.1.1.0 | .NET 10 |
-| 10.11 | 1.1.0.0 | .NET 9 |
+| 12.0 to 12.4 | 1.2.1.0 | .NET 10 |
+| 10.11 | 1.2.0.0 | .NET 9 |
 
 To see your version: **Dashboard**; it is under the server name at the top of the menu.
 
@@ -50,7 +55,9 @@ After the restart:
 - **The tasks** are in **Dashboard**, **Scheduled Tasks**, under **Picture shrinker**: **Shrink pictures** and
   **Restore original pictures**.
 
-Nothing is shrunk until the first run: every Sunday at 03:30, or when you choose **Shrink now** on its settings page.
+Nothing is shrunk until you choose, on its settings page under **Original pictures**, **Keep a backup copy of each
+original** or **Just shrink, with no backup**. There is no default. Then the first run is every Sunday at 03:30, or
+when you choose **Shrink now**.
 
 If you use Starboard, it can do all of this for you in **Settings**, **Apps**, **Jellyfin**, **Picture shrinker**.
 
@@ -63,12 +70,23 @@ image, `/config/data/metadata`).
 
 | Picture | Where Jellyfin keeps it | Shrunk to |
 |---|---|---|
-| Posters | `poster.jpg`, `poster.png` or `poster.webp` under `library` | At most 900 pixels tall (**Posters no taller than**) |
-| Photos of cast and crew | Pictures under `People` | At most 400 pixels wide (**Photos of people no wider than**) |
+| Posters | `poster.*` under `library` | At most 900 pixels tall (**Posters no taller than**, 300 to 3,000) |
+| Photos of cast and crew | Pictures under `People` | At most 400 pixels wide (**Photos of people no wider than**, 100 to 2,000) |
+| Backdrops | `backdrop.*`, `backdrop1.*` and so on under `library` | At most 1,920 pixels wide (640 to 3,840) |
+| Thumbnails | `landscape.*` under `library` (Jellyfin saves its Thumb pictures with this name) | At most 1,280 pixels wide (480 to 3,840) |
+| Logos | `logo.*` under `library` | At most 800 pixels wide (300 to 2,000) |
+| Banners | `banner.*` under `library` | At most 1,000 pixels wide (300 to 3,000) |
+| Disc art | `disc.*` under `library` | At most 500 pixels wide (200 to 2,000) |
+| Clear art | `clearart.*` under `library` | At most 800 pixels wide (300 to 2,000) |
 
-Backdrops, logos, thumbnails, pictures saved beside your media files and every other picture are left alone. A picture
-that is already small enough is only opened to read its size, never written. Each picture keeps its format: JPEG and
-WebP at **Quality** 85, PNG lossless. You can leave out posters or photos of people with **What to shrink**.
+Only `.jpg`, `.jpeg`, `.png` and `.webp` pictures are shrunk, and never hidden files. Pictures saved beside your media
+files, and every other picture, are left alone. A picture that is already small enough is only opened to read its
+size, never written. Each picture keeps its format: JPEG and WebP at **Quality** 85, PNG lossless and with its
+transparency, which matters for logos and clear art.
+
+**What to shrink**, at the top of the settings page, holds the backup choice, **Shrink all picture types** and a tick
+for each type. **Shrink all picture types** is on by default: every type is shrunk, and the ticks cannot be changed.
+Turn it off to choose the types yourself; each is ticked by default. Each type's size is under **Sizes**.
 
 ### The checks before a replace
 
@@ -77,7 +95,7 @@ For each picture that is too big:
 1. A smaller copy is written to a hidden file beside it.
 2. The copy is opened again and decoded in full, and must have exactly the new size and the original's format.
 3. The copy must be smaller in bytes than the original. If it is not, the original is kept.
-4. With backup activated, the original is copied to the backup folder (see below). If that fails, the picture is not
+4. With **Keep a backup copy** chosen, the original is copied to the backup folder (see below). If that fails, the picture is not
    shrunk.
 5. The copy takes the original's file mode and owner and replaces it in one step (a rename), so Jellyfin never reads
    half a picture.
@@ -101,7 +119,19 @@ A picture that cannot be read is left as it is and listed on the settings page w
 
 ### The backup
 
-**Back up each original before it is replaced** is activated by default:
+**Original pictures** on the settings page has two choices, and neither is chosen until you choose one:
+
+- **Keep a backup copy of each original:** the backup below.
+- **Just shrink, with no backup:** no extra space is used, and pictures shrunk from then on cannot be put back.
+
+Until you choose, nothing is shrunk: a scheduled run, a new picture and **Shrink now** each say "Not shrunk: choose
+Keep a backup copy or Just shrink, in its settings, first", and the settings page shows a notice at the top.
+**Restore original pictures**, **Delete backup** and **Start again** still work.
+
+After the update from version 1.1, the old on and off backup setting is no longer used, so you choose again. A backup
+folder you already have is kept whichever you choose; **Delete backup** removes it.
+
+With **Keep a backup copy**:
 
 - Each original is copied once, before its first shrink, to the backup folder, keeping its place under `library` or
   `People`, so each one can be matched back. The folder is `picture-shrinker/originals` in Jellyfin's data folder
@@ -118,25 +148,60 @@ A picture that cannot be read is left as it is and listed on the settings page w
   backup shows. It removes only the pictures the shrinker put in the backup folder, never anything outside it, and is
   not available while a run is going.
 
-If you deactivate backup, the settings page warns that pictures shrunk from then on cannot be put back.
+If you choose **Just shrink**, the settings page warns that pictures shrunk from then on cannot be put back.
+
+### Start again
+
+**Start again**, on the settings page, clears everything and has Jellyfin download pictures again from the internet.
+There are two, and each asks you first:
+
+- **Start again: the pictures it shrinks:** every type in the table above, whatever is ticked in **What to shrink**
+  (it is a reset, so a type you turned off after shrinking it comes back too).
+- **Start again: every picture:** Jellyfin replaces every picture of every film, series, season, collection and
+  person, backdrops and logos included. Pictures you added yourself in Jellyfin are replaced. This downloads much
+  more and can take many hours.
+
+Each one, in order:
+
+1. Is refused while a run, a restore or another Start again is going, and says so.
+2. Deletes the backup, with the same safe rules as **Delete backup**.
+3. Clears the records: the last runs, the space saved and the failures. Your choice of backup is kept.
+4. Asks Jellyfin to download the pictures again, as refreshes in Jellyfin's own queue at low priority, with a short
+   pause between them, so Jellyfin and the server are not flooded:
+   - **The pictures it shrinks:** each picture is moved aside to a hidden file in the same folder
+     (`.poster.jpg.picture-shrinker-old`), and Jellyfin refreshes the film, series, season, collection or person it
+     belongs to. It refreshes the pictures in full but replaces none it has, so it downloads only the missing one,
+     at full size. Metadata is filled in only where it is missing.
+   - **Every picture:** nothing is moved. Jellyfin refreshes each library, with everything in it, and each person,
+     replacing every picture.
+
+The old picture is kept until Jellyfin has a new one, so a poster you uploaded yourself, or one no source has, is
+never lost. Every 10 minutes while any are waiting, and at the start of each run, the shrinker checks them: once
+Jellyfin has saved a new picture in that folder, the old one is deleted; after 24 hours with none, the old one is put
+back under its own name. **Space saved** says how many are waiting, put back and replaced. The list is kept in the
+plug-in's figures, so it carries on after a restart.
+
+The next run shrinks the new pictures, backing them up first if **Keep a backup copy** is chosen.
 
 ### The Space section
 
 The settings page shows, measured when the page opens and after each thing you do on it:
 
-- **Pictures now:** the size and number of the posters and photos it looks after.
+- **Pictures now:** the size and number of the pictures of the types it shrinks.
 - **Backup of the originals:** the size and number of pictures in the backup, with **Delete backup** and the space it
   frees.
 - **Space saved:** the space saved now and how many pictures are shrunk. Pictures put back by **Restore original
-  pictures** no longer count.
+  pictures** no longer count. After **Start again**, it also says how many pictures are waiting for Jellyfin, how many
+  were replaced by a new one and how many were put back.
 
 Below, **Last runs** lists each run: when, what started it, how many were shrunk, left as they were and not shrunk,
 the space saved, and how it ended.
 
 ## Risks, and how to undo them
 
-- **Pictures are changed in place.** Jellyfin shows the smaller picture straight away. With backup activated (the
-  default) you can put the originals back; without it you cannot.
+- **Pictures are changed in place.** Jellyfin shows the smaller picture straight away. With **Keep a backup copy**
+  you can put the originals back; with **Just shrink** you cannot, but **Start again** can have Jellyfin download
+  them again.
 - **The backup uses space until you remove it.** The first run copies every picture it shrinks, so it may need almost
   as much free space as the pictures take now. The Space section shows how much. When you are happy with the
   pictures, **Delete backup** frees it.
@@ -214,11 +279,11 @@ JELLYFIN_TARGET=10.11 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker
 tools/package.sh                                                                         # both zips of the newest release in CHANGELOG.md
 ```
 
-The zips are `artifacts/picture-shrinker_1.1.1.0_jellyfin-12.zip` and
-`artifacts/picture-shrinker_1.1.0.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
+The zips are `artifacts/picture-shrinker_1.2.1.0_jellyfin-12.zip` and
+`artifacts/picture-shrinker_1.2.0.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
 workflow builds and tests both on every change.
 
-A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.1.1.0`. The **Release** workflow
+A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.2.1.0`. The **Release** workflow
 builds and tests both builds, makes both zips and their MD5 checksums, creates one GitHub release with both, and adds
 both versions to `manifest.json`. [SYNC.md](SYNC.md) explains the version numbers.
 

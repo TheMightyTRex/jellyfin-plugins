@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jellyfin.Plugin.PictureShrinker.Api;
 
-/// <summary>What the settings page reads and does: the space, the runs, Shrink now and Delete backup. Administrators only.</summary>
+/// <summary>What the settings page reads and does: the space, the runs, Shrink now, Delete backup and Start again. Administrators only.</summary>
 [ApiController]
 [Route("PictureShrinker")]
 [Authorize(Policy = Policies.RequiresElevation)]
@@ -38,6 +38,12 @@ public class PictureShrinkerController : ControllerBase
             Running = shrinker.Busy,
             Progress = shrinker.Progress,
             Problem = settings.Problem(),
+            BackupChoice = settings.Choice,
+            settings.Chosen,
+            Waiting = state.Aside.Count,
+            state.Replaced,
+            state.PutBack,
+            state.LastStartAgain,
             MetadataFolder = settings.MetadataRoot,
             BackupFolder = settings.BackupRoot,
             DefaultBackupFolder = _service.DefaultBackupFolder,
@@ -53,6 +59,11 @@ public class PictureShrinkerController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     public ActionResult<object> ShrinkNow()
     {
+        if (!_service.Settings().Chosen)
+        {
+            return new { Done = false, Said = Shrinker.ChooseFirst + "." };
+        }
+
         if (_service.Shrinker.Running)
         {
             return new { Done = false, Said = "Already running. This page says how far it has gone." };
@@ -70,5 +81,29 @@ public class PictureShrinkerController : ControllerBase
     {
         var result = _service.Shrinker.DeleteBackup();
         return new { result.Done, result.Files, result.Bytes, result.Said, Space = _service.Shrinker.Measure() };
+    }
+
+    /// <summary>
+    /// Start again: the pictures it shrinks. Deletes the backup and the records (the backup choice is kept), moves each
+    /// poster, backdrop and photo of a person aside, whatever is ticked, and has Jellyfin download it again. Refused while
+    /// anything else is going.
+    /// </summary>
+    [HttpPost("StartAgainPictures")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<object> StartAgainPictures() => StartAgain(Shrinker.PicturesItShrinks);
+
+    /// <summary>
+    /// Start again: every picture. Deletes the backup and the records (the backup choice is kept) and has Jellyfin
+    /// replace every picture of each library and each person. Refused while anything else is going.
+    /// </summary>
+    [HttpPost("StartAgainAll")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<object> StartAgainAll() => StartAgain(Shrinker.EveryPicture);
+
+    private ActionResult<object> StartAgain(string kind)
+    {
+        var result = _service.StartAgain(kind);
+        var said = result.Said.EndsWith('.') ? result.Said : result.Said + ".";
+        return new { result.Done, Said = said, Space = _service.Shrinker.Measure() };
     }
 }

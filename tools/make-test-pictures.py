@@ -28,6 +28,18 @@ def photo(w, h, mode="RGB", seed=1):
     return im.convert(mode)
 
 
+def logo(w, h, seed=1):
+    """A logo: a picture whose left half fades to fully transparent, so a shrink must keep the transparency."""
+    im = photo(w, h, seed=seed).convert("RGBA")
+    mask = Image.new("L", (w, h))
+    mpx = mask.load()
+    for y in range(h):
+        for x in range(w):
+            mpx[x, y] = 0 if x < w // 4 else min(255, (x - w // 4) * 255 // (w // 4))
+    im.putalpha(mask)
+    return im
+
+
 def save(rel, im, fmt, **kw):
     path = os.path.join(META, rel)
     os.makedirs(os.path.dirname(path), exist_ok=True)
@@ -50,8 +62,12 @@ def main():
 
     save("library/0a/0a1b/poster.jpg", photo(1000, 1500, seed=1), "JPEG", quality=92)
     want("library/0a/0a1b/poster.jpg", "shrunk", "a poster taller than 900 pixels", "poster", (600, 900), "JPEG")
-    save("library/0a/0a1b/backdrop.jpg", photo(960, 540, seed=2), "JPEG", quality=92)
-    want("library/0a/0a1b/backdrop.jpg", "ignored", "backdrops are left alone")
+    save("library/0a/0a1b/backdrop.jpg", photo(2400, 1350, seed=2), "JPEG", quality=92)
+    want("library/0a/0a1b/backdrop.jpg", "shrunk", "a backdrop wider than 1920 pixels", "backdrop", (1920, 1080), "JPEG")
+    save("library/1c/1c2d/logo.png", logo(900, 300, seed=15), "PNG")
+    want("library/1c/1c2d/logo.png", "shrunk", "a PNG logo wider than 800 pixels keeps its transparency", "logo", (800, 267), "PNG")
+    save("library/3a/3a4b/landscape.jpg", photo(1400, 700, seed=16), "JPEG", quality=92)
+    want("library/3a/3a4b/landscape.jpg", "shrunk", "a thumbnail (Jellyfin saves it as landscape) wider than 1280 pixels", "thumb", (1280, 640), "JPEG")
     save("library/1c/1c2d/poster.png", photo(700, 1050, seed=3), "PNG")
     want("library/1c/1c2d/poster.png", "shrunk", "a PNG poster stays PNG", "poster", (600, 900), "PNG")
     save("library/2e/2e3f/poster.webp", photo(900, 1350, seed=4), "WEBP", quality=92)

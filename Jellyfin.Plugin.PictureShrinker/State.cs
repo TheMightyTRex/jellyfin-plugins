@@ -15,6 +15,48 @@ public sealed class DeleteRecord
     public long Bytes { get; set; }
 }
 
+/// <summary>
+/// A picture Start again moved aside to a hidden file, waiting for Jellyfin to download a new one. It is kept in the
+/// state, so the list survives a restart.
+/// </summary>
+public sealed class AsideRecord
+{
+    /// <summary>Gets or sets the picture's own full path; the old one is beside it, hidden.</summary>
+    public string Path { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets "poster", "person" or "backdrop".</summary>
+    public string Kind { get; set; } = string.Empty;
+
+    public DateTimeOffset At { get; set; }
+}
+
+/// <summary>What the last Start again did.</summary>
+public sealed class StartAgainRecord
+{
+    public string Kind { get; set; } = string.Empty;
+
+    public DateTimeOffset At { get; set; }
+
+    /// <summary>Gets or sets when every refresh had been asked for; empty while it is still asking.</summary>
+    public DateTimeOffset? Queued { get; set; }
+
+    public int BackupFiles { get; set; }
+
+    public long BackupBytes { get; set; }
+
+    /// <summary>Gets or sets the pictures moved aside (the pictures it shrinks only).</summary>
+    public int MovedAside { get; set; }
+
+    public int Libraries { get; set; }
+
+    public int Items { get; set; }
+
+    public int People { get; set; }
+
+    /// <summary>Gets or sets the films, series and people no longer in Jellyfin; their pictures were put back at once.</summary>
+    public int NotFound { get; set; }
+}
+
 /// <summary>The totals and the last runs, kept in the plug-in's own folder.</summary>
 public sealed class State
 {
@@ -31,6 +73,34 @@ public sealed class State
     public RestoreRecord? LastRestore { get; set; }
 
     public DeleteRecord? LastDelete { get; set; }
+
+    public StartAgainRecord? LastStartAgain { get; set; }
+
+    /// <summary>Gets or sets the pictures moved aside, waiting for Jellyfin to download a new one.</summary>
+    public List<AsideRecord> Aside { get; set; } = new();
+
+    /// <summary>Gets or sets how many old pictures were deleted because Jellyfin saved a new one, since the last Start again.</summary>
+    public int Replaced { get; set; }
+
+    /// <summary>Gets or sets how many old pictures were put back after a day with no new one, since the last Start again.</summary>
+    public int PutBack { get; set; }
+
+    /// <summary>
+    /// Clears the records for Start again: the runs and their failures, the space saved and the month of the last full
+    /// run. The pictures still waiting are kept, so none is lost; the backup choice is in the settings and is not here.
+    /// </summary>
+    public void ClearRecords()
+    {
+        Shrunk = 0;
+        Before = 0;
+        After = 0;
+        Runs.Clear();
+        LastFullRunMonth = string.Empty;
+        LastRestore = null;
+        LastDelete = null;
+        Replaced = 0;
+        PutBack = 0;
+    }
 
     public void AddRun(RunRecord rec)
     {

@@ -14,13 +14,16 @@ They must shrink the same pictures in the same way, so a picture never depends o
 
 | What | Where it is set | How it is checked |
 |---|---|---|
-| The sizes: posters 900 pixels tall, photos of people 400 pixels wide, with their limits | `rules.json`, `kinds` | Both test suites compare their defaults and limits with `rules.json` |
-| Which pictures: `poster.*` under `library`, anything under `People`, only `.jpg`, `.jpeg`, `.png` and `.webp`, never hidden files | `rules.json`, `kinds`, `extensions`, `skip_hidden` | The shared test pictures |
+| The sizes: posters 900 pixels tall; photos of people 400, backdrops 1,920, thumbnails 1,280, logos 800, banners 1,000, disc art 500 and clear art 800 pixels wide, with their limits | `rules.json`, `kinds` | Both test suites compare their defaults and limits with `rules.json` |
+| Which pictures: eight kinds, in this order, each matched by the start of its file name under its folder: `poster`, `backdrop` (backdrop.jpg, backdrop1.jpg and so on), `landscape` (Jellyfin's Thumb), `logo`, `banner`, `disc` and `clearart` under `library`, and anything under `People`; only `.jpg`, `.jpeg`, `.png` and `.webp`, never hidden files | `rules.json`, `kinds`, `extensions`, `skip_hidden` | The shared test pictures (a backdrop small enough, a PNG logo and a landscape thumbnail among them) |
+| What is shrunk: Shrink all picture types, on by default, shrinks every kind whatever the ticks; with it off, each kind's own tick, all on by default | `rules.json`, `shrink_all`, `kinds` (`shrink_by_default`) | Unit tests in each repository |
 | Quality 85 for JPEG and WebP, PNG lossless, each picture keeps its format | `rules.json`, `quality`, `formats` | The shared test pictures |
 | Rounding half to even, so 500.5 pixels becomes 500 | `rules.json`, `rounding` | The shared test pictures (`library/7b/7b8c/poster.jpg`) |
 | The checks before a replace: decodes in full, right size, right format, smaller than the original | `rules.json`, `checks` | The shared test pictures (a broken and a cut-short picture) |
 | Keep the original's mode and owner | `rules.json`, `keep_from_original` | Unit tests in each repository |
-| Backup before the first shrink, activated by default, never overwritten, at least 100 MB left free, no backup means no shrink | `rules.json`, `backup` | Unit tests in each repository |
+| Backup before the first shrink, never overwritten, at least 100 MB left free, no backup means no shrink | `rules.json`, `backup` | Unit tests in each repository |
+| The backup choice: `keep` or `none`, no default, asked after install and again after the update to 1.2 (the old setting is dropped, the backup folder kept); nothing is shrunk until it is made; Restore, Delete backup and Start again still work | `rules.json`, `backup` (`default`, `choices`, `ask_after_install`, `ask_after_update_to`) | Unit tests in each repository |
+| Start again, the pictures it shrinks (every kind, whatever is ticked) and every picture: refused while anything else is going, deletes the backup, clears the records but not the choice, moves the pictures it shrinks aside to `.<name>.picture-shrinker-old` and asks Jellyfin for refreshes (replace all images false, or true for every picture) at low priority 50 ms apart; old pictures deleted once Jellyfin has a new one, put back after 24 hours, checked every 10 minutes while any wait | `rules.json`, `start_again` | Unit tests in each repository |
 | Restore puts back byte-identical originals, keeps the backup, and takes them off the space saved | Code | Unit tests in each repository |
 | Delete backup removes only the pictures in the backup folder, never follows a link, is refused during a run | Code | Unit tests in each repository |
 | New pictures: deactivated by default, wait 10 minutes | `rules.json`, `new_pictures` | Both test suites compare their defaults with `rules.json` |
@@ -58,6 +61,8 @@ each week and on each change, and fails when its copy differs.
 Both versions share the first two numbers, which are the rules version:
 
 - **Rules 1.1** is the Jellyfin version **1.1.x.0** and the Starboard version **1.1.x**.
+- **Rules 1.2** (the backup choice, Start again and every picture type) is the Jellyfin version **1.2.x.0** (1.2.0.0 for Jellyfin 10.11
+  and 1.2.1.0 for Jellyfin 12) and the Starboard version **1.2.x**.
 - A change to `rules.json` or to what a run does raises the second number in both, such as 1.2.
 - A fix that changes nothing the rules cover raises only the third number, in the version that needs it.
 - The fourth number of the Jellyfin version is always 0 (Jellyfin plug-in versions have four numbers).
@@ -86,5 +91,5 @@ Why this way:
 - Each build targets the first release of its Jellyfin line (10.11.0, 12.0.0), so it suits every later release in
   that line, as Jellyfin's own plug-ins do (their Jellyfin 12 builds all say targetAbi 12.0.0.0).
 
-The next fix is 1.1.2.0 for 10.11 and 1.1.3.0 for 12, tagged `v1.1.3.0`. If a later Jellyfin needs a third build,
+The next fix is 1.2.2.0 for 10.11 and 1.2.3.0 for 12, tagged `v1.2.3.0`. If a later Jellyfin needs a third build,
 this scheme has to change; until then, Starboard offers the plug-in on Jellyfin 10.11 and 12 only.
