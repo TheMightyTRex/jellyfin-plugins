@@ -1,0 +1,42 @@
+name: Build and test
+
+# Both builds, from the same source: Jellyfin 10.11 (.NET 9) and Jellyfin 12 (.NET 10). Each runs the unit tests and
+# the shared test pictures, and makes its zip (not published) with the versions of the newest release in CHANGELOG.md.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - jellyfin: "10.11"
+            dotnet: "9.0.x"
+          - jellyfin: "12"
+            dotnet: "10.0.x"
+    name: Jellyfin ${{ matrix.jellyfin }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ matrix.dotnet }}
+      - name: Unit tests, the shared test pictures and the rules file
+        run: dotnet test tests/Jellyfin.Plugin.PictureShrinker.Tests -c Release -p:JellyfinTarget=${{ matrix.jellyfin }}
+      - name: Release zip and checksum (not published)
+        run: |
+          for v in $(python3 tools/manifest.py pair); do
+            if [ "$(python3 tools/manifest.py target "$v")" = "${{ matrix.jellyfin }}" ]; then LOCAL=1 tools/package.sh "$v"; fi
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: picture-shrinker-jellyfin-${{ matrix.jellyfin }}
+          path: artifacts/picture-shrinker_*.zip*

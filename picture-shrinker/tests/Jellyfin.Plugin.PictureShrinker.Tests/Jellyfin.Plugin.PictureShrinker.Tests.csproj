@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(PluginFramework)</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+    <!-- Only the tests need Skia's native library: inside Jellyfin it is already there. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="$(SkiaSharpVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Jellyfin.Plugin.PictureShrinker\Jellyfin.Plugin.PictureShrinker.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\pictures\**\*" LinkBase="pictures" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\rules.json" Link="rules.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.PictureShrinker\Configuration\configPage.html" Link="wording\configPage.html" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\README.md" Link="wording\README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\SYNC.md" Link="wording\SYNC.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.PictureShrinker\**\*.cs" Exclude="..\..\Jellyfin.Plugin.PictureShrinker\obj\**;..\..\Jellyfin.Plugin.PictureShrinker\bin\**" LinkBase="wording\code" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
