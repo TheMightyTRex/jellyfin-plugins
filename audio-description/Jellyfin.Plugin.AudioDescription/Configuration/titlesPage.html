@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <title>Titles with audio description</title>
+</head>
+<body>
+<div id="AudioDescriptionTitlesPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-button">
+    <style>
+        #AudioDescriptionTitlesPage .adTabs { display: flex; flex-wrap: wrap; gap: 0.3em; margin: 0 0 1.5em; padding: 0; border-bottom: 1px solid rgba(128, 128, 128, 0.4); }
+        #AudioDescriptionTitlesPage .adTabs a { display: inline-block; padding: 0.6em 1em; color: inherit; text-decoration: none; border-bottom: 0.2em solid transparent; }
+        #AudioDescriptionTitlesPage .adTabs a[aria-current="page"] { border-bottom-color: #00a4dc; font-weight: 600; }
+        #AudioDescriptionTitlesPage .adTabs a:hover { text-decoration: underline; }
+        #AudioDescriptionTitlesPage .adtShow { border: 0; padding: 0; margin: 1em 0; display: flex; flex-wrap: wrap; gap: 0.5em 1.5em; align-items: center; }
+        #AudioDescriptionTitlesPage .adtShow legend { float: left; margin-right: 1em; padding: 0; font-weight: 500; }
+        #AudioDescriptionTitlesPage .adtShow label { display: inline-flex; gap: 0.4em; align-items: center; min-height: 2.75em; cursor: pointer; }
+        #AudioDescriptionTitlesPage .adtShow input { width: 1.2em; height: 1.2em; margin: 0; }
+        #AudioDescriptionTitlesPage section { margin: 0 0 2em; }
+        #AudioDescriptionTitlesPage h3 { font-size: 1.4em; margin: 0 0 0.4em; }
+        #AudioDescriptionTitlesPage h4 { font-size: 1.25em; margin: 1em 0 0.2em; }
+        #AudioDescriptionTitlesPage h5 { font-size: 1.05em; margin: 1.5em 0 0.2em; }
+        #AudioDescriptionTitlesPage .adtNote { margin: 0.2em 0 0.6em; opacity: 0.85; }
+        #AudioDescriptionTitlesPage .adtWrap { overflow-x: auto; }
+        #AudioDescriptionTitlesPage table { width: 100%; border-collapse: collapse; }
+        #AudioDescriptionTitlesPage th, #AudioDescriptionTitlesPage td { text-align: left; vertical-align: top; padding: 0.5em 0.6em; border-bottom: 1px solid rgba(128, 128, 128, 0.3); }
+        #AudioDescriptionTitlesPage thead th { font-weight: 600; }
+        #AudioDescriptionTitlesPage tbody th { font-weight: 600; }
+        #AudioDescriptionTitlesPage tbody th a { color: inherit; text-decoration: underline; }
+        #AudioDescriptionTitlesPage .adtNum { white-space: nowrap; }
+        #AudioDescriptionTitlesPage .adtState { white-space: nowrap; font-weight: 500; }
+        #AudioDescriptionTitlesPage :focus-visible { outline: 0.15em solid #00a4dc; outline-offset: 0.15em; }
+    </style>
+    <div data-role="content">
+        <div class="content-primary">
+            <h2 class="sectionTitle">Audio description</h2>
+            <nav class="adTabs" aria-label="Audio description pages">
+                <a href="#/configurationpage?name=Audio%20description">Settings</a>
+                <a href="#/configurationpage?name=AudioDescriptionTitles" aria-current="page">Titles with audio description</a>
+            </nav>
+            <h3 id="adtHeading" tabindex="-1">Titles with audio description</h3>
+            <p id="adtIntro">Reading the list…</p>
+
+            <fieldset class="adtShow" id="adtShow" hidden>
+                <legend>Show</legend>
+                <label><input type="radio" name="adtShow" value="all" checked><span id="adtAll">All</span></label>
+                <label><input type="radio" name="adtShow" value="films"><span id="adtFilmsChoice">Films</span></label>
+                <label><input type="radio" name="adtShow" value="series"><span id="adtSeriesChoice">Series</span></label>
+            </fieldset>
+            <p id="adtShown" role="status" aria-live="polite" class="adtNote"></p>
+
+            <section id="adtFilms" aria-labelledby="adtFilmsHeading" hidden>
+                <h4 id="adtFilmsHeading">Films</h4>
+                <p class="adtNote" id="adtFilmsCount"></p>
+                <div class="adtWrap">
+                    <table id="adtFilmsTable">
+                        <caption class="hide">Films with audio description</caption>
+                        <thead>
+                            <tr><th scope="col">Title</th><th scope="col">Year</th><th scope="col">Described track</th><th scope="col">Status</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="adtSeries" aria-labelledby="adtSeriesHeading" hidden>
+                <h4 id="adtSeriesHeading">Series</h4>
+                <p class="adtNote" id="adtSeriesCount"></p>
+                <div id="adtSeriesList"></div>
+            </section>
+        </div>
+    </div>
+    <script type="text/javascript">
+        (function () {
+            var page = document.querySelector('#AudioDescriptionTitlesPage');
+            var data = null;
+            var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+            function $(id) { return page.querySelector('#' + id); }
+
+            function plural(n, one, many) { return Number(n || 0).toLocaleString('en-GB') + ' ' + (n === 1 ? one : many); }
+
+            function withYear(name, year) { return year ? name + ' (' + year + ')' : name; }
+
+            function checkedWords(at) {
+                var d = new Date(at);
+                return 'Checked ' + d.getDate() + ' ' + months[d.getMonth()] + ' at ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+            }
+
+            function detailsLink(id, words) {
+                var a = document.createElement('a');
+                a.href = '#/details?id=' + encodeURIComponent(id) + '&serverId=' + encodeURIComponent(ApiClient.serverId());
+                a.textContent = words;
+                return a;
+            }
+
+            function cell(tag, text, cls) {
+                var c = document.createElement(tag);
+                if (tag === 'th') { c.scope = 'row'; }
+                if (cls) { c.className = cls; }
+                if (typeof text === 'string') { c.textContent = text; } else { c.appendChild(text); }
+                return c;
+            }
+
+            function row(cells) {
+                var tr = document.createElement('tr');
+                cells.forEach(function (c) { tr.appendChild(c); });
+                return tr;
+            }
+
+            function table(caption, heads, rows) {
+                var wrap = document.createElement('div');
+                wrap.className = 'adtWrap';
+                var t = document.createElement('table');
+                var cap = document.createElement('caption');
+                cap.className = 'hide';
+                cap.textContent = caption;
+                t.appendChild(cap);
+                var thead = document.createElement('thead');
+                var tr = document.createElement('tr');
+                heads.forEach(function (h) {
+                    var th = document.createElement('th');
+                    th.scope = 'col';
+                    th.textContent = h;
+                    tr.appendChild(th);
+                });
+                thead.appendChild(tr);
+                t.appendChild(thead);
+                var body = document.createElement('tbody');
+                rows.forEach(function (r) { body.appendChild(r); });
+                t.appendChild(body);
+                wrap.appendChild(t);
+                return wrap;
+            }
+
+            function seriesCount(d) {
+                return plural(d.Series.length, 'series', 'series') + ', ' + plural(d.EpisodeCount, 'described episode', 'described episodes');
+            }
+
+            function showFilms(d) {
+                var body = $('adtFilmsTable').querySelector('tbody');
+                body.innerHTML = '';
+                d.Films.forEach(function (f) {
+                    body.appendChild(row([
+                        cell('th', detailsLink(f.Id, f.Title)),
+                        cell('td', f.Year ? String(f.Year) : 'Not known', 'adtNum'),
+                        cell('td', f.Track),
+                        cell('td', f.Status, 'adtState')
+                    ]));
+                });
+                $('adtFilmsCount').textContent = plural(d.Films.length, 'film', 'films');
+            }
+
+            function showSeries(d) {
+                var list = $('adtSeriesList');
+                list.innerHTML = '';
+                d.Series.forEach(function (s, i) {
+                    var h = document.createElement('h5');
+                    h.id = 'adtSeries' + i;
+                    h.textContent = s.Title;
+                    list.appendChild(h);
+                    var p = document.createElement('p');
+                    p.className = 'adtNote';
+                    p.textContent = s.Status + '. Described track: ' + s.Track;
+                    list.appendChild(p);
+                    list.appendChild(table(s.Title + ': described episodes', ['Episode', 'Described track', 'Status'], s.Items.map(function (e) {
+                        return row([cell('th', detailsLink(e.Id, e.Title)), cell('td', e.Track), cell('td', e.Status, 'adtState')]);
+                    })));
+                });
+                $('adtSeriesCount').textContent = seriesCount(d);
+            }
+
+            function shownWords(choice, d) {
+                if (choice === 'films') { return 'Showing ' + plural(d.Films.length, 'film', 'films') + '.'; }
+                if (choice === 'series') { return 'Showing ' + seriesCount(d) + '.'; }
+                return 'Showing ' + plural(d.Films.length, 'film', 'films') + ' and ' + seriesCount(d) + '.';
+            }
+
+            function apply(choice, say) {
+                var any = data && (data.Films.length || data.Series.length);
+                $('adtFilms').hidden = !any || choice === 'series' || !data.Films.length;
+                $('adtSeries').hidden = !any || choice === 'films' || !data.Series.length;
+                if (say) { $('adtShown').textContent = shownWords(choice, data); }
+            }
+
+            function show(d) {
+                data = d;
+                var any = d.Films.length || d.Series.length;
+                var intro;
+                if (!d.Checked) {
+                    intro = 'Find and tag has not run yet. Select Find and tag now on the Settings tab, or wait for tonight’s run at 04:20.';
+                } else if (!any) {
+                    intro = 'No film or series in Jellyfin has a described sound track yet. ' + checkedWords(d.Checked) + '.';
+                } else {
+                    intro = plural(d.Films.length, 'film', 'films') + ' and ' + plural(d.EpisodeCount, 'episode', 'episodes') + ' in '
+                        + plural(d.Series.length, 'series', 'series') + ' have a described sound track. ' + checkedWords(d.Checked)
+                        + '. Each title opens its page in Jellyfin.';
+                }
+
+                $('adtIntro').textContent = intro;
+                $('adtShow').hidden = !any;
+                $('adtAll').textContent = 'All (' + (d.Films.length + d.Series.length).toLocaleString('en-GB') + ')';
+                $('adtFilmsChoice').textContent = 'Films (' + d.Films.length.toLocaleString('en-GB') + ')';
+                $('adtSeriesChoice').textContent = 'Series (' + d.Series.length.toLocaleString('en-GB') + ')';
+                showFilms(d);
+                showSeries(d);
+                var chosen = page.querySelector('input[name="adtShow"]:checked');
+                apply(chosen ? chosen.value : 'all', false);
+            }
+
+            Array.prototype.forEach.call(page.querySelectorAll('input[name="adtShow"]'), function (input) {
+                input.addEventListener('change', function () { apply(input.value, true); });
+            });
+
+            page.addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getJSON(ApiClient.getUrl('AudioDescription/Titles')).then(show, function () {
+                    $('adtIntro').textContent = 'The list did not load. Reload the page to try again.';
+                }).finally(function () { Dashboard.hideLoadingMsg(); });
+            });
+        })();
+    </script>
+</div>
+</body>
+</html>

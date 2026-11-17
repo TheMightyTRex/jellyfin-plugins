@@ -51,6 +51,8 @@ To find your version, go to **Dashboard**: the version is under the server name 
 After the restart:
 
 - **The settings** are in **Dashboard**, **Plugins**: choose **Installed**, open **Audio description**, then **Settings**.
+- **Titles with audio description** is the second tab at the top of the settings page: every film and episode with a
+  described track. Read [Titles with audio description](#titles-with-audio-description).
 - **The tasks** are in **Dashboard**, **Scheduled Tasks**, under **Audio description**: **Find and tag audio
   description** and **Add description tracks**.
 
@@ -84,6 +86,25 @@ file, so the words are what can be read.
 
 To find the titles in an app, filter a library by the tag **Audio description**, or open the **Audio description**
 collection.
+
+## Titles with audio description
+
+A page beside **Settings**: choose **Titles with audio description** in the tabs at the top of the settings page. It
+lists every film and every described episode that Find and tag has tagged, so it is up to date after each run. It is
+the same page, with the same columns and words, as **Titles with audio description** in the Starboard plug-in.
+
+- **The first line** says how many films, and how many episodes in how many series, have a described sound track, and
+  when Find and tag last ran.
+- **Show** chooses **All**, **Films** or **Series**, each with its count. The list changes at once, and a screen reader
+  hears how many are shown.
+- **Films** is a table: **Title**, **Year**, **Described track** (the track's name, as Jellyfin shows it) and
+  **Status** (**Described**).
+- **Series** has a heading for each series, with its year, how many of its episodes are described, such as "3 of 6
+  episodes described", and its described track. Under it, a table of its described episodes in order: **Episode**
+  (such as "S1 E3: Part three"), **Described track** and **Status**.
+- **Each title is a link** to its page in Jellyfin.
+
+It reads only the tagged films and episodes, their sound tracks, and each series' episode count, when the page opens.
 
 ## Play the described track
 

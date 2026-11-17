@@ -24,6 +24,9 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         Instance = this;
     }
 
+    /// <summary>The name of the page Titles with audio description, in its address: #/configurationpage?name=AudioDescriptionTitles.</summary>
+    public const string TitlesPage = "AudioDescriptionTitles";
+
     public static Plugin? Instance { get; private set; }
 
     public override string Name => "Audio description";
@@ -38,6 +41,14 @@ public class Plugin : BasePlugin<PluginConfiguration>, IHasWebPages
         {
             Name = Name,
             EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.configPage.html", GetType().Namespace)
+        };
+
+        // Titles with audio description: a second page, opened from the tabs at the top of both pages.
+        yield return new PluginPageInfo
+        {
+            Name = TitlesPage,
+            DisplayName = "Titles with audio description",
+            EmbeddedResourcePath = string.Format(CultureInfo.InvariantCulture, "{0}.Configuration.titlesPage.html", GetType().Namespace)
         };
     }
 }

@@ -46,6 +46,7 @@ In Jellyfin, go to **Dashboard**, **Plugins**, **Manage Repositories**, then **N
 
 - [Install Audio description](audio-description/install.md)
 - [Find the films and series with audio description](audio-description/find-and-tag.md)
+- [Titles with audio description](audio-description/titles-with-audio-description.md)
 - [Play the described track for the people who want it](audio-description/play-the-described-track.md)
 - [Add a description track you have](audio-description/add-a-track.md)
 

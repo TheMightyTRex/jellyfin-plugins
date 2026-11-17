@@ -9,7 +9,7 @@
     <style>
         #AudioDescriptionConfigPage .adFigures { display: grid; grid-template-columns: repeat(auto-fit, minmax(12em, 1fr)); gap: 1em; margin: 0 0 1em; }
         #AudioDescriptionConfigPage .adFigure { padding: 1em; border-radius: 0.3em; background: rgba(128, 128, 128, 0.12); }
-        #AudioDescriptionConfigPage .adFigure h4 { margin: 0 0 0.3em; font-size: 1em; font-weight: 500; }
+        #AudioDescriptionConfigPage .adFigure h3 { margin: 0 0 0.3em; font-size: 1em; font-weight: 500; }
         #AudioDescriptionConfigPage .adNumber { font-size: 1.6em; margin: 0; }
         #AudioDescriptionConfigPage .adNote { margin: 0.3em 0 0.6em; opacity: 0.85; }
         #AudioDescriptionConfigPage .adNotice { border-left: 0.3em solid #00a4dc; padding: 0.5em 1em; margin: 0.5em 0 1em; }
@@ -29,12 +29,20 @@
         #AudioDescriptionConfigPage .adAct select { min-width: 12em; }
         #AudioDescriptionConfigPage .adAct .emby-button { margin: 0; }
         #AudioDescriptionConfigPage .adPeople .checkboxContainer { margin-bottom: 0.4em; }
+        #AudioDescriptionConfigPage .adTabs { display: flex; flex-wrap: wrap; gap: 0.3em; margin: 0 0 1.5em; padding: 0; border-bottom: 1px solid rgba(128, 128, 128, 0.4); }
+        #AudioDescriptionConfigPage .adTabs a { display: inline-block; padding: 0.6em 1em; color: inherit; text-decoration: none; border-bottom: 0.2em solid transparent; }
+        #AudioDescriptionConfigPage .adTabs a[aria-current="page"] { border-bottom-color: #00a4dc; font-weight: 600; }
+        #AudioDescriptionConfigPage .adTabs a:hover { text-decoration: underline; }
         #AudioDescriptionConfigPage :focus-visible { outline: 0.15em solid #00a4dc; outline-offset: 0.15em; }
     </style>
     <div data-role="content">
         <div class="content-primary">
             <h2 class="sectionTitle">Audio description</h2>
-            <p>Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in finds the films and series that have one and tags them, plays the described track for the people who choose it, and adds a description track you already have. Its tasks are in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>, under Audio description.</p>
+            <nav class="adTabs" aria-label="Audio description pages">
+                <a href="#/configurationpage?name=Audio%20description" aria-current="page">Settings</a>
+                <a href="#/configurationpage?name=AudioDescriptionTitles">Titles with audio description</a>
+            </nav>
+            <p>Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in finds the films and series that have one and tags them, lists them on Titles with audio description, plays the described track for the people who choose it, and adds a description track you already have. Its tasks are in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>, under Audio description.</p>
 
             <form id="AudioDescriptionConfigForm">
                 <fieldset aria-describedby="adFindHelp">
@@ -42,17 +50,17 @@
                     <p class="fieldDescription" id="adFindHelp">Each film and episode with a described sound track, and its series, gets the tag <strong id="adTagName">Audio description</strong>. Every Jellyfin app, televisions included, can filter by a tag. The tag comes off when the track goes. It runs every night at 04:20 and after each library scan.</p>
                     <div class="adFigures">
                         <div class="adFigure">
-                            <h4>Films</h4>
+                            <h3>Films</h3>
                             <p class="adNumber" id="adFilms">0</p>
                             <p class="adNote">with a described track</p>
                         </div>
                         <div class="adFigure">
-                            <h4>Episodes</h4>
+                            <h3>Episodes</h3>
                             <p class="adNumber" id="adEpisodes">0</p>
                             <p class="adNote" id="adSeriesNote">in 0 series</p>
                         </div>
                         <div class="adFigure">
-                            <h4>Last run</h4>
+                            <h3>Last run</h3>
                             <p class="adNumber" id="adWhen">Not yet</p>
                             <p class="adNote" id="adLastNote">Find and tag has not run yet.</p>
                         </div>

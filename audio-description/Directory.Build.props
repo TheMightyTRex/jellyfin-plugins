@@ -16,14 +16,14 @@
     <PluginFramework>net9.0</PluginFramework>
     <JellyfinPackageVersion>10.11.0</JellyfinPackageVersion>
     <DefineConstants>$(DefineConstants);JELLYFIN_10_11</DefineConstants>
-    <Version>1.0.0.0</Version>
+    <Version>1.0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(JellyfinTarget)' == '12'">
     <PluginFramework>net10.0</PluginFramework>
     <JellyfinPackageVersion>12.0.0</JellyfinPackageVersion>
     <DefineConstants>$(DefineConstants);JELLYFIN_12</DefineConstants>
-    <Version>1.0.1.0</Version>
+    <Version>1.0.3.0</Version>
   </PropertyGroup>
 
   <PropertyGroup>

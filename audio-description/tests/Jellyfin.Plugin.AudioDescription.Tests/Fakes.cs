@@ -115,6 +115,11 @@ public sealed class FakeJellyfin
             items = items.Where(i => i.Name.Contains(first, StringComparison.OrdinalIgnoreCase));
         }
 
+        if (q.Tags.Length > 0)
+        {
+            items = items.Where(i => (i.Tags ?? Array.Empty<string>()).Any(t => q.Tags.Contains(t, StringComparer.OrdinalIgnoreCase)));
+        }
+
         if (q.AncestorIds.Length > 0)
         {
             items = items.Where(i => i is Episode e && q.AncestorIds.Contains(e.SeriesId));

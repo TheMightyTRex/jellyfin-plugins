@@ -19,6 +19,7 @@
   <ItemGroup>
     <None Include="..\..\rules.json" Link="rules.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\Jellyfin.Plugin.AudioDescription\Configuration\configPage.html" Link="wording\configPage.html" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.AudioDescription\Configuration\titlesPage.html" Link="wording\titlesPage.html" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\README.md" Link="wording\README.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\SYNC.md" Link="wording\SYNC.md" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\CHANGELOG.md" Link="wording\CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />

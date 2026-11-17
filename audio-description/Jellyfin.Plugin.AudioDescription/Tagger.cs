@@ -53,6 +53,10 @@ public sealed class Tagger
     /// <summary>Whether an item has a described sound track, by Jellyfin's own record of its streams.</summary>
     public bool HasDescribedTrack(BaseItem item) => Words.DescribedTrack(_media.GetMediaStreams(item.Id)) is not null;
 
+    /// <summary>Titles with audio description: every tagged film and episode with a described track, by series.</summary>
+    public TitlesAnswer Titles(DateTimeOffset? checkedAt)
+        => DescribedTitles.Build(_library, id => Words.DescribedTrack(_media.GetMediaStreams(id)) is { } s ? (s.DisplayTitle ?? s.Title ?? "Audio description") : null, checkedAt);
+
     /// <summary>A whole pass over the library. Returns null when a pass is already running.</summary>
     public async Task<TagRecord?> RunAsync(string why, IProgress<double>? progress, CancellationToken cancellationToken)
     {

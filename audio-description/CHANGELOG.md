@@ -7,6 +7,18 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+## [1.0.3.0] for Jellyfin 12 and [1.0.2.0] for Jellyfin 10.11 (17 November 2026)
+
+Rules 1.0, unchanged. The same page as the Starboard plug-in Audio description 1.4.0.
+
+### Added
+
+- **Titles with audio description:** a page beside Settings, chosen from the tabs at the top of both pages, that lists every film and every described episode, by series, from the tags Find and tag gives. Films have their year, described track and status; each series has how many of its episodes are described, such as 3 of 6 episodes described, and its episodes in order. Show All, Films or Series, each with its count. Each title opens its page in Jellyfin. The same page, columns and words as in the Starboard plug-in.
+
+### Fixed
+
+- **Later Jellyfin 10.11 releases, such as 10.11.11:** the settings page loads again. They changed how a plug-in asks for the list of people, so the page could not show its figures, people or tracks.
+
 ## [1.0.1.0] for Jellyfin 12 and [1.0.0.0] for Jellyfin 10.11 (17 November 2026)
 
 Rules 1.0, the same as the Starboard plug-ins Audio description 1.3.0 and Audio description tracks 1.2.0.

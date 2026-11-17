@@ -37,6 +37,18 @@ behaves, and its limits.
 - **The file chooser** is named **Choose a description track**, and choosing **Upload the track** with no file says
   so and moves the focus to the chooser.
 - **Focus is visible:** a blue outline marks the control with the focus.
+- **Two tabs, Settings and Titles with audio description,** are links in a named group, **Audio description pages**,
+  and the open one is marked as the current page.
+
+## Titles with audio description
+
+- **Headings:** the page's title, then **Films** and **Series**, then a heading for each series.
+- **Show** is a group of three radio buttons, **All**, **Films** and **Series**, each with its count. After a change,
+  a polite live region says what is shown, such as "Showing 1 film."
+- **Tables:** each has a caption and column headers, and each row's first cell is its header, the title as a link to
+  its page. The status is a word, **Described**, and each series' status is a sentence, such as "2 of 3 episodes
+  described", never a colour alone.
+- Read [Titles with audio description](../audio-description/titles-with-audio-description.md).
 
 ## Limits
 

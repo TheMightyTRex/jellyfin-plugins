@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Configuration\configPage.html" />
+    <EmbeddedResource Include="Configuration\titlesPage.html" />
     <EmbeddedResource Include="..\rules.json" LogicalName="Jellyfin.Plugin.AudioDescription.rules.json" />
   </ItemGroup>
 
