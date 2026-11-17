@@ -61,8 +61,8 @@ each week and on each change, and fails when its copy differs.
 Both versions share the first two numbers, which are the rules version:
 
 - **Rules 1.1** is the Jellyfin version **1.1.x.0** and the Starboard version **1.1.x**.
-- **Rules 1.2** (the backup choice, Start again and every picture type) is the Jellyfin version **1.2.x.0** (1.2.0.0 for Jellyfin 10.11
-  and 1.2.1.0 for Jellyfin 12) and the Starboard version **1.2.x**.
+- **Rules 1.2** (the backup choice, Start again and every picture type) is the Jellyfin version **1.2.x.0** (1.2.0.0 and 1.2.2.0 for
+  Jellyfin 10.11, 1.2.1.0 and 1.2.3.0 for Jellyfin 12) and the Starboard version **1.2.x**.
 - A change to `rules.json` or to what a run does raises the second number in both, such as 1.2.
 - A fix that changes nothing the rules cover raises only the third number, in the version that needs it.
 - The fourth number of the Jellyfin version is always 0 (Jellyfin plug-in versions have four numbers).

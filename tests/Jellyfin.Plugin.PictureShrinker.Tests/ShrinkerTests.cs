@@ -520,10 +520,11 @@ public sealed class ShrinkerTests : IDisposable
     public void AFinishedRunRaisesNoNotification()
     {
         // The only result of a run is the figures on the settings page: the plug-in never uses Jellyfin's
-        // notifications, activity log or session messages.
+        // notifications or session messages. The Activity list is used only by the reminder to choose a backup
+        // option, before anything is shrunk (1.2.2.0 and 1.2.3.0); a finished run writes nothing there.
         var banned = new[] { "Notification", "IActivityManager", "ISessionManager", "IUserDataManager" };
         var asm = typeof(Shrinker).Assembly;
-        foreach (var type in asm.GetTypes())
+        foreach (var type in asm.GetTypes().Where(t => t != typeof(ChoiceReminder)))
         {
             var used = type.GetConstructors().SelectMany(c => c.GetParameters()).Select(p => p.ParameterType.FullName ?? string.Empty)
                 .Concat(type.GetFields(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static).Select(f => f.FieldType.FullName ?? string.Empty));

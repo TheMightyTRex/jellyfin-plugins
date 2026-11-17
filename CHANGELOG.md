@@ -1,5 +1,19 @@
 # What is new
 
+## 1.2.3.0 for Jellyfin 12 and 1.2.2.0 for Jellyfin 10.11
+
+**Choose a backup option after you install or update, or nothing is shrunk.** Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Just shrink, with no backup, then save. Updating from 1.1 asks again; a backup you already have is kept.
+
+Added:
+
+- **A reminder in the Activity list:** until you choose, Jellyfin's Dashboard shows "Picture shrinker is waiting for you to choose" in its Activity list when Jellyfin starts, and again at most once a day when a run or a new picture is skipped. Jellyfin has no way for a plug-in to show a pop-up, so this is where an administrator sees it. Once you choose, it writes nothing there.
+
+Changed:
+
+- **Shrink pictures shows as failed until you choose:** in Scheduled Tasks, the task ends as failed with the reason, instead of looking as if it worked. A finished run still sends no notification.
+
+Rules 1.2 are unchanged, so the Starboard plug-in stays at 1.2.0.
+
 ## 1.2.1.0 for Jellyfin 12 and 1.2.0.0 for Jellyfin 10.11
 
 Rules 1.2, the same as the Starboard plug-in 1.2.0.

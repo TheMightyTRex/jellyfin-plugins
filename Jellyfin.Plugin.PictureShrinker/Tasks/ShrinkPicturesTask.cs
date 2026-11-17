@@ -11,11 +11,13 @@ namespace Jellyfin.Plugin.PictureShrinker.Tasks;
 public class ShrinkPicturesTask : IScheduledTask
 {
     private readonly ShrinkService _service;
+    private readonly ChoiceReminder _reminder;
     private readonly ILogger<ShrinkPicturesTask> _log;
 
-    public ShrinkPicturesTask(ShrinkService service, ILogger<ShrinkPicturesTask> log)
+    public ShrinkPicturesTask(ShrinkService service, ChoiceReminder reminder, ILogger<ShrinkPicturesTask> log)
     {
         _service = service;
+        _reminder = reminder;
         _log = log;
     }
 
@@ -26,6 +28,18 @@ public class ShrinkPicturesTask : IScheduledTask
     public string Description => "Shrinks posters, backdrops, logos, photos of cast and crew and the other picture types to the sizes on the Picture shrinker page, at the lowest priority. A run stops itself after 115 minutes and the next one carries on.";
 
     public string Category => "Picture shrinker";
+
+    /// <summary>
+    /// Nothing is shrunk until the backup choice is made. The task then ends as failed, with the reason, so Scheduled
+    /// Tasks shows it in red instead of looking as if it worked (1.2.2.0 and 1.2.3.0).
+    /// </summary>
+    internal static void FailUntilChosen(RunRecord rec)
+    {
+        if (rec.Stopped == Shrinker.ChooseFirst)
+        {
+            throw new InvalidOperationException(Shrinker.ChooseFirst + ": Dashboard, Plugins, Picture shrinker, Settings, Original pictures");
+        }
+    }
 
     public async Task ExecuteAsync(IProgress<double> progress, CancellationToken cancellationToken)
     {
@@ -48,9 +62,10 @@ public class ShrinkPicturesTask : IScheduledTask
 
         if (rec.Stopped == Shrinker.ChooseFirst)
         {
-            progress.Report(100); // nothing shrunk until the backup choice is made; the task does not fail
-            return;
+            _reminder.Remind();
         }
+
+        FailUntilChosen(rec);
 
         if (string.IsNullOrEmpty(rec.Stopped))
         {

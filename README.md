@@ -4,6 +4,12 @@ Works on any Jellyfin 10.11 or Jellyfin 12 server; you do not need Starboard.
 
 A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
 
+> [!IMPORTANT]
+> **After you install or update it, choose a backup option, or nothing is shrunk.** In Jellyfin, open **Dashboard**,
+> **Plugins**, **Picture shrinker**, then **Settings**. Under **Original pictures**, choose **Keep a backup copy of each
+> original** or **Just shrink, with no backup**, then **Save**. There is no default. Until you choose, the Dashboard's
+> **Activity** list reminds you and **Shrink pictures** shows as failed in **Scheduled Tasks**.
+
 ![The Space section of Picture shrinker's settings page in Jellyfin 12: 5.2 MB of pictures now, a 5.4 MB backup of the originals with a Delete backup button, 4.3 MB saved with 16 pictures shrunk, and the Shrink now and Measure again buttons](images/settings.png)
 
 ## What it does
@@ -26,13 +32,13 @@ pictures again.
 ## How to install it in Jellyfin
 
 You need Jellyfin 10.11 or Jellyfin 12 and an administrator account. Everything is in Jellyfin's own dashboard. The
-repository has a build for each: Jellyfin installs the one for its own version (1.2.1.0 on Jellyfin 12, 1.2.0.0 on
+repository has a build for each: Jellyfin installs the one for its own version (1.2.3.0 on Jellyfin 12, 1.2.2.0 on
 Jellyfin 10.11).
 
 | Your Jellyfin | Version it installs | Built for |
 |---|---|---|
-| 12.0 to 12.4 | 1.2.1.0 | .NET 10 |
-| 10.11 | 1.2.0.0 | .NET 9 |
+| 12.0 to 12.4 | 1.2.3.0 | .NET 10 |
+| 10.11 | 1.2.2.0 | .NET 9 |
 
 To see your version: **Dashboard**; it is under the server name at the top of the menu.
 
@@ -118,6 +124,9 @@ A picture that cannot be read is left as it is and listed on the settings page w
   shrinking a new picture**), with the same checks and backup.
 - A finished run sends no notification. Its only result is the figures on the settings page; Jellyfin's own
   **Scheduled Tasks** keeps its usual history of when each task ran.
+- Until you choose a backup option, nothing is shrunk: **Shrink pictures** ends as failed in **Scheduled Tasks**, with
+  the reason, and the Dashboard's **Activity** list says "Picture shrinker is waiting for you to choose" when Jellyfin
+  starts, and again at most once a day when a run or a new picture is skipped.
 
 ### The backup
 
@@ -285,11 +294,11 @@ JELLYFIN_TARGET=10.11 tools/dotnet.sh test tests/Jellyfin.Plugin.PictureShrinker
 tools/package.sh                                                                         # both zips of the newest release in CHANGELOG.md
 ```
 
-The zips are `artifacts/picture-shrinker_1.2.1.0_jellyfin-12.zip` and
-`artifacts/picture-shrinker_1.2.0.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
+The zips are `artifacts/picture-shrinker_1.2.3.0_jellyfin-12.zip` and
+`artifacts/picture-shrinker_1.2.2.0_jellyfin-10.11.zip`, each with its MD5 checksum. GitHub's **Build and test**
 workflow builds and tests both on every change.
 
-A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.2.1.0`. The **Release** workflow
+A release is one step: push a tag named by the Jellyfin 12 version, such as `v1.2.3.0`. The **Release** workflow
 builds and tests both builds, makes both zips and their MD5 checksums, creates one GitHub release with both, and adds
 both versions to `manifest.json`. [SYNC.md](SYNC.md) explains the version numbers.
 

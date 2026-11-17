@@ -20,15 +20,17 @@ public sealed class NewPictureWatcher : IHostedService, IDisposable
 {
     private readonly ILibraryManager _library;
     private readonly ShrinkService _service;
+    private readonly ChoiceReminder _reminder;
     private readonly ILogger<NewPictureWatcher> _log;
     private readonly ConcurrentDictionary<string, DateTime> _waiting = new();
     private Timer? _timer;
     private int _busy;
 
-    public NewPictureWatcher(ILibraryManager library, ShrinkService service, ILogger<NewPictureWatcher> log)
+    public NewPictureWatcher(ILibraryManager library, ShrinkService service, ChoiceReminder reminder, ILogger<NewPictureWatcher> log)
     {
         _library = library;
         _service = service;
+        _reminder = reminder;
         _log = log;
     }
 
@@ -84,6 +86,7 @@ public sealed class NewPictureWatcher : IHostedService, IDisposable
             if (!_service.Settings().Chosen)
             {
                 _log.LogInformation("Picture shrinker: {Said}", Shrinker.ChooseFirst);
+                _reminder.Remind();
                 _waiting.Clear();
                 return;
             }
