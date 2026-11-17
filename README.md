@@ -9,6 +9,12 @@ https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.j
 
 You do not need Starboard: each plug-in works on any Jellyfin 10.11 or Jellyfin 12 server. GPLv3 licence.
 
+> [!IMPORTANT]
+> **Picture shrinker: after you install or update it, choose a backup option, or nothing is shrunk.** In Jellyfin,
+> open **Dashboard**, **Plugins**, **Picture shrinker**, then **Settings**. Under **Original pictures**, choose **Keep a
+> backup copy of each original** or **Shrink without a backup**, then **Save**. There is no default. Until you choose,
+> the Dashboard's **Activity** list reminds you and **Shrink pictures** shows as failed in **Scheduled Tasks**.
+
 ## The plug-ins
 
 | Plug-in | What it does | Folder |
