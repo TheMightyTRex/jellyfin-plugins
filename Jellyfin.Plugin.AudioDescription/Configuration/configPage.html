@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <title>Audio description</title>
+</head>
+<body>
+<div id="AudioDescriptionConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-checkbox,emby-select">
+    <style>
+        #AudioDescriptionConfigPage .adFigures { display: grid; grid-template-columns: repeat(auto-fit, minmax(12em, 1fr)); gap: 1em; margin: 0 0 1em; }
+        #AudioDescriptionConfigPage .adFigure { padding: 1em; border-radius: 0.3em; background: rgba(128, 128, 128, 0.12); }
+        #AudioDescriptionConfigPage .adFigure h4 { margin: 0 0 0.3em; font-size: 1em; font-weight: 500; }
+        #AudioDescriptionConfigPage .adNumber { font-size: 1.6em; margin: 0; }
+        #AudioDescriptionConfigPage .adNote { margin: 0.3em 0 0.6em; opacity: 0.85; }
+        #AudioDescriptionConfigPage .adNotice { border-left: 0.3em solid #00a4dc; padding: 0.5em 1em; margin: 0.5em 0 1em; }
+        #AudioDescriptionConfigPage fieldset { border: 0; padding: 0; margin: 0 0 2em; }
+        #AudioDescriptionConfigPage legend { font-size: 1.3em; margin-bottom: 0.6em; padding: 0; }
+        #AudioDescriptionConfigPage fieldset fieldset { margin: 1em 0 1.5em; }
+        #AudioDescriptionConfigPage fieldset fieldset legend { font-size: 1.05em; font-weight: 500; }
+        #AudioDescriptionConfigPage .adButtons { display: flex; flex-wrap: wrap; gap: 0.5em; margin: 1em 0; }
+        #AudioDescriptionConfigPage .adButtons .emby-button { margin: 0; }
+        #AudioDescriptionConfigPage .adTracks { width: 100%; border-collapse: collapse; margin-top: 0.5em; }
+        #AudioDescriptionConfigPage .adTracks th, #AudioDescriptionConfigPage .adTracks td { text-align: left; vertical-align: top; padding: 0.5em 0.6em; border-bottom: 1px solid rgba(128, 128, 128, 0.3); }
+        #AudioDescriptionConfigPage .adTableWrap { overflow-x: auto; }
+        #AudioDescriptionConfigPage .adState { font-weight: 500; white-space: nowrap; }
+        #AudioDescriptionConfigPage .adState-warning { color: #e0a000; }
+        #AudioDescriptionConfigPage .adState-problem { color: #e05050; }
+        #AudioDescriptionConfigPage .adAct { display: flex; flex-wrap: wrap; gap: 0.4em; align-items: center; }
+        #AudioDescriptionConfigPage .adAct select { min-width: 12em; }
+        #AudioDescriptionConfigPage .adAct .emby-button { margin: 0; }
+        #AudioDescriptionConfigPage .adPeople .checkboxContainer { margin-bottom: 0.4em; }
+        #AudioDescriptionConfigPage :focus-visible { outline: 0.15em solid #00a4dc; outline-offset: 0.15em; }
+    </style>
+    <div data-role="content">
+        <div class="content-primary">
+            <h2 class="sectionTitle">Audio description</h2>
+            <p>Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in finds the films and series that have one and tags them, plays the described track for the people who choose it, and adds a description track you already have. Its tasks are in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>, under Audio description.</p>
+
+            <form id="AudioDescriptionConfigForm">
+                <fieldset aria-describedby="adFindHelp">
+                    <legend>Find and tag</legend>
+                    <p class="fieldDescription" id="adFindHelp">Each film and episode with a described sound track, and its series, gets the tag <strong id="adTagName">Audio description</strong>. Every Jellyfin app, televisions included, can filter by a tag. The tag comes off when the track goes. It runs every night at 04:20 and after each library scan.</p>
+                    <div class="adFigures">
+                        <div class="adFigure">
+                            <h4>Films</h4>
+                            <p class="adNumber" id="adFilms">0</p>
+                            <p class="adNote">with a described track</p>
+                        </div>
+                        <div class="adFigure">
+                            <h4>Episodes</h4>
+                            <p class="adNumber" id="adEpisodes">0</p>
+                            <p class="adNote" id="adSeriesNote">in 0 series</p>
+                        </div>
+                        <div class="adFigure">
+                            <h4>Last run</h4>
+                            <p class="adNumber" id="adWhen">Not yet</p>
+                            <p class="adNote" id="adLastNote">Find and tag has not run yet.</p>
+                        </div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="Collection" aria-describedby="CollectionHelp">
+                            <span id="CollectionLabel">Add them to the Audio description collection</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="CollectionHelp">Active by default. The films and series with a described track go into one collection, which every Jellyfin app shows. Deactivate it and the collection stays as it is; remove it in Jellyfin if you do not want it.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="AfterLibraryScan" aria-describedby="AfterLibraryScanHelp">
+                            <span>Find and tag after each library scan</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="AfterLibraryScanHelp">Active by default, so a new film with a described track is tagged soon after Jellyfin finds it.</div>
+                    </div>
+                    <div class="adButtons">
+                        <button is="emby-button" type="button" class="raised button-alt" id="adFindNow"><span>Find and tag now</span></button>
+                    </div>
+                </fieldset>
+
+                <fieldset aria-describedby="adPlayHelp">
+                    <legend>Play the described track</legend>
+                    <p class="fieldDescription" id="adPlayHelp">Inactive until you choose a person. For each person ticked here, when they start a title with a described track and another sound track is playing, Jellyfin asks their app to change to the described track.</p>
+                    <p class="adNotice"><strong>Not every Jellyfin app accepts this.</strong> Jellyfin's web app and some others change the sound track when asked; an app that does not accept it plays as it is, and Jellyfin's log says so. In those apps, choose the described track in the player. Jellyfin remembers that choice for each film and series when Remember audio selections is active in their Playback settings.</p>
+                    <div class="adPeople" id="adPeople" role="group" aria-label="People who want the described track played"></div>
+                    <p class="adNote" id="adNoPeople" hidden>There is nobody in Jellyfin yet.</p>
+                </fieldset>
+
+                <fieldset aria-describedby="adTracksHelp">
+                    <legend>Add a track you have</legend>
+                    <p class="fieldDescription" id="adTracksHelp">Put a description track you already have in the folder, or upload one here. Name it as the film and its year, such as Dune (2021).mp3, or a series with its episode, such as Slow Horses S01E03.mp3. Its length is compared with the film's, and when they agree it is added next to the film as <span id="adTrackTitle">English (Audio Description)</span>, copying the sound without converting it. Nothing is ever deleted.</p>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="TracksFolder">Folder for description tracks</label>
+                        <input is="emby-input" type="text" id="TracksFolder" aria-describedby="TracksFolderHelp">
+                        <div class="fieldDescription" id="TracksFolderHelp">Leave it empty for the folder in Jellyfin's data folder. Jellyfin must be able to read it, and to write next to your films.</div>
+                    </div>
+                    <div class="checkboxContainer checkboxContainer-withDescription">
+                        <label>
+                            <input is="emby-checkbox" type="checkbox" id="WatchFolder" aria-describedby="WatchFolderHelp">
+                            <span>Check the folder every 5 minutes</span>
+                        </label>
+                        <div class="fieldDescription checkboxFieldDescription" id="WatchFolderHelp">Active by default. Each check only lists the folder; a new file is checked straight away. Inactive, the folder is checked every night at 04:40 and when you select Check the folder now.</div>
+                    </div>
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="Language">Language of the description tracks</label>
+                        <select is="emby-select" id="Language" aria-describedby="LanguageHelp"></select>
+                        <div class="fieldDescription" id="LanguageHelp">The track is named after it, such as English (Audio Description).</div>
+                    </div>
+                    <div class="inputContainer">
+                        <label class="inputLabel inputLabelUnfocused" for="ToleranceSeconds">How close the lengths must be (seconds)</label>
+                        <input is="emby-input" type="number" id="ToleranceSeconds" min="1" max="30" required aria-describedby="ToleranceSecondsHelp">
+                        <div class="fieldDescription" id="ToleranceSecondsHelp">From 1 to 30, 5 by default. A track is added only when it is this close to the film's length. A bigger difference usually means another cut of the film.</div>
+                    </div>
+
+                    <fieldset aria-describedby="adUploadHelp">
+                        <legend>Upload a description track</legend>
+                        <p class="fieldDescription" id="adUploadHelp">MP3, M4A and other sound files, or a zip of them, up to 1 GB. It goes into the folder and is checked with the rest.</p>
+                        <div class="adAct">
+                            <input type="file" id="adFile" accept=".mp3,.m4a,.m4b,.aac,.mka,.opus,.ogg,.oga,.flac,.wav,.zip" aria-label="Choose a description track">
+                            <button is="emby-button" type="button" class="raised button-alt" id="adUpload"><span>Upload the track</span></button>
+                        </div>
+                    </fieldset>
+
+                    <h3>Tracks in the folder</h3>
+                    <p class="adNote" id="adFolderNote"></p>
+                    <div class="adButtons">
+                        <button is="emby-button" type="button" class="raised button-alt" id="adCheckFolder"><span>Check the folder now</span></button>
+                        <button is="emby-button" type="button" class="raised button-alt" id="adRefresh"><span>Refresh the list</span></button>
+                    </div>
+                    <p id="adNoTracks">No tracks in the folder yet.</p>
+                    <div class="adTableWrap" id="adTracksWrap" hidden>
+                        <table class="adTracks" id="adTracks">
+                            <caption class="hide">Each description track in the folder and what happened to it</caption>
+                            <thead>
+                                <tr><th scope="col">Track</th><th scope="col">State</th><th scope="col">What happened</th><th scope="col">What you can do</th></tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </fieldset>
+
+                <div>
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>Save</span></button>
+                </div>
+                <p id="adSaid" role="status" aria-live="polite"></p>
+            </form>
+        </div>
+    </div>
+    <script type="text/javascript">
+        (function () {
+            var pluginId = '7a591954-9c27-4ba7-80c3-dc5f0a140692';
+            var page = document.querySelector('#AudioDescriptionConfigPage');
+            var chosenPeople = [];
+
+            function $(id) { return page.querySelector('#' + id); }
+
+            function count(n, one, many) { return Number(n || 0).toLocaleString('en-GB') + ' ' + (n === 1 ? one : many); }
+
+            function when(text) {
+                return new Date(text).toLocaleString('en-GB', { weekday: 'short', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
+            }
+
+            function say(text) {
+                var box = $('adSaid');
+                box.textContent = '';
+                window.setTimeout(function () { box.textContent = text; }, 50);
+            }
+
+            function post(path, query) {
+                return ApiClient.ajax({ type: 'POST', url: ApiClient.getUrl('AudioDescription/' + path, query || {}), dataType: 'json' });
+            }
+
+            function showPeople(users) {
+                var box = $('adPeople');
+                box.innerHTML = '';
+                (users || []).forEach(function (u) {
+                    var wrap = document.createElement('div');
+                    wrap.className = 'checkboxContainer';
+                    var label = document.createElement('label');
+                    var input = document.createElement('input');
+                    input.setAttribute('is', 'emby-checkbox');
+                    input.type = 'checkbox';
+                    input.className = 'adPerson';
+                    input.value = u.Id;
+                    input.checked = chosenPeople.indexOf(u.Id) !== -1;
+                    var span = document.createElement('span');
+                    span.textContent = u.Name;
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    wrap.appendChild(label);
+                    box.appendChild(wrap);
+                });
+                $('adNoPeople').hidden = !!(users || []).length;
+            }
+
+            function showTag(s) {
+                var t = s.LastTag;
+                $('adTagName').textContent = s.Tag;
+                $('CollectionLabel').textContent = 'Add them to the ' + s.CollectionName + ' collection';
+                if (!t) { return; }
+                $('adFilms').textContent = Number(t.Films || 0).toLocaleString('en-GB');
+                $('adEpisodes').textContent = Number(t.Episodes || 0).toLocaleString('en-GB');
+                $('adSeriesNote').textContent = 'in ' + count(t.Series, 'series', 'series');
+                $('adWhen').textContent = when(t.At);
+                var whyWords = { scheduled: 'On its schedule', scan: 'After a library scan', now: 'Find and tag now' };
+                var note = (whyWords[t.Why] || 'Find and tag') + ': checked ' + count(t.Checked, 'film or episode', 'films and episodes')
+                    + ', tagged ' + Number(t.Tagged || 0).toLocaleString('en-GB') + ', took the tag off ' + Number(t.Untagged || 0).toLocaleString('en-GB') + '.';
+                if (t.AddedToCollection || t.TakenFromCollection) {
+                    note += ' Collection: ' + Number(t.AddedToCollection || 0).toLocaleString('en-GB') + ' added, ' + Number(t.TakenFromCollection || 0).toLocaleString('en-GB') + ' taken out.';
+                }
+                if (t.Problem) { note = 'Did not finish: ' + t.Problem; }
+                $('adLastNote').textContent = note;
+            }
+
+            function button(text, onClick) {
+                var b = document.createElement('button');
+                b.setAttribute('is', 'emby-button');
+                b.type = 'button';
+                b.className = 'raised button-alt';
+                var span = document.createElement('span');
+                span.textContent = text;
+                b.appendChild(span);
+                b.addEventListener('click', onClick);
+                return b;
+            }
+
+            function showTracks(s) {
+                var body = $('adTracks').querySelector('tbody');
+                body.innerHTML = '';
+                var rows = s.Tracks || [];
+                rows.forEach(function (r, i) {
+                    var tr = document.createElement('tr');
+                    var name = document.createElement('td');
+                    name.textContent = r.Name;
+                    var state = document.createElement('td');
+                    state.className = 'adState adState-' + r.State;
+                    state.textContent = r.Label;
+                    var detail = document.createElement('td');
+                    detail.textContent = r.Detail;
+                    var act = document.createElement('td');
+                    var box = document.createElement('div');
+                    box.className = 'adAct';
+                    if (r.AskPlaysInStep) {
+                        box.appendChild(button('Yes: put the original away', function () {
+                            post('Tracks/Outcome', { name: r.Name, value: 'right' }).then(done);
+                        }));
+                        box.appendChild(button('No: take the track off', function () {
+                            post('Tracks/Outcome', { name: r.Name, value: 'undo' }).then(done);
+                        }));
+                    } else if ((r.Options || []).length) {
+                        var select = document.createElement('select');
+                        select.id = 'adChoose' + i;
+                        select.setAttribute('aria-label', 'Film or episode for ' + r.Name);
+                        var first = document.createElement('option');
+                        first.value = '';
+                        first.textContent = 'Choose a title';
+                        select.appendChild(first);
+                        r.Options.forEach(function (o) {
+                            var opt = document.createElement('option');
+                            opt.value = o.Id;
+                            opt.textContent = o.Title;
+                            select.appendChild(opt);
+                        });
+                        select.value = r.Chosen || '';
+                        box.appendChild(select);
+                        box.appendChild(button('Check against this title', function () {
+                            if (!select.value) { say('Choose a title for ' + r.Name + ' first.'); select.focus(); return; }
+                            say('Checking ' + r.Name + '…');
+                            post('Tracks/Choose', { name: r.Name, itemId: select.value }).then(done);
+                        }));
+                    }
+                    act.appendChild(box);
+                    [name, state, detail, act].forEach(function (c) { tr.appendChild(c); });
+                    body.appendChild(tr);
+                });
+                $('adTracksWrap').hidden = !rows.length;
+                $('adNoTracks').hidden = !!rows.length;
+                var note = 'Folder: ' + s.Folder + '.';
+                if (s.LastLook) { note += ' Last checked ' + when(s.LastLook) + '.'; }
+                if (s.Checking) { note += ' Checking now.'; }
+                $('adFolderNote').textContent = note;
+                $('adTrackTitle').textContent = s.TrackTitle;
+                $('TracksFolder').placeholder = s.DefaultFolder;
+            }
+
+            function load() {
+                return ApiClient.getJSON(ApiClient.getUrl('AudioDescription/Status')).then(function (s) {
+                    showTag(s);
+                    showPeople(s.Users);
+                    showTracks(s);
+                    return s;
+                });
+            }
+
+            function done(r) {
+                say(r.Said);
+                return load();
+            }
+
+            page.addEventListener('pageshow', function () {
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    $('Collection').checked = c.Collection;
+                    $('AfterLibraryScan').checked = c.AfterLibraryScan;
+                    $('TracksFolder').value = c.TracksFolder || '';
+                    $('WatchFolder').checked = c.WatchFolder;
+                    $('ToleranceSeconds').value = c.ToleranceSeconds;
+                    chosenPeople = c.PlayUsers || [];
+                    return load().then(function (s) {
+                        var lang = $('Language');
+                        lang.innerHTML = '';
+                        Object.keys(s.Languages).forEach(function (code) {
+                            var opt = document.createElement('option');
+                            opt.value = code;
+                            opt.textContent = s.Languages[code];
+                            lang.appendChild(opt);
+                        });
+                        lang.value = c.Language;
+                    });
+                }).finally(function () { Dashboard.hideLoadingMsg(); });
+            });
+
+            $('AudioDescriptionConfigForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+                Dashboard.showLoadingMsg();
+                ApiClient.getPluginConfiguration(pluginId).then(function (c) {
+                    c.Collection = $('Collection').checked;
+                    c.AfterLibraryScan = $('AfterLibraryScan').checked;
+                    c.TracksFolder = $('TracksFolder').value.trim();
+                    c.WatchFolder = $('WatchFolder').checked;
+                    c.Language = $('Language').value;
+                    c.ToleranceSeconds = parseInt($('ToleranceSeconds').value, 10);
+                    c.PlayUsers = Array.prototype.map.call(page.querySelectorAll('.adPerson:checked'), function (i) { return i.value; });
+                    chosenPeople = c.PlayUsers;
+                    return ApiClient.updatePluginConfiguration(pluginId, c);
+                }).then(function (result) {
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                    var now = new Date();
+                    say('Saved at ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2));
+                    return load();
+                }).finally(function () { Dashboard.hideLoadingMsg(); });
+                return false;
+            });
+
+            $('adFindNow').addEventListener('click', function () { post('FindNow').then(done); });
+            $('adCheckFolder').addEventListener('click', function () { post('CheckFolder').then(done); });
+            $('adRefresh').addEventListener('click', function () { load().then(function () { say('The list is up to date.'); }); });
+            $('adUpload').addEventListener('click', function () {
+                var file = $('adFile').files[0];
+                if (!file) { say('Choose a description track first.'); $('adFile').focus(); return; }
+                say('Uploading ' + file.name + '…');
+                fetch(ApiClient.getUrl('AudioDescription/Tracks/Upload', { name: file.name }), {
+                    method: 'POST',
+                    headers: { 'Authorization': 'MediaBrowser Token="' + ApiClient.accessToken() + '"', 'Content-Type': 'application/octet-stream' },
+                    body: file
+                }).then(function (r) { return r.json(); }).then(function (r) {
+                    $('adFile').value = '';
+                    return done(r);
+                }).catch(function () { say('The upload did not finish. Try again, or put the file in the folder.'); });
+            });
+        })();
+    </script>
+</div>
+</body>
+</html>
