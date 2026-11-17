@@ -43,6 +43,8 @@ plug-in:
 - A sentence about the rules version and the Starboard plug-in that shares it, such as "Rules 1.2, the same as the
   Starboard plug-in 1.2.0.", is left out. Rules versions stay in SYNC.md and CHANGELOG.md.
 
+**A warning in every release note.** When people must know something after installing or updating, such as Picture shrinker's backup choice, put it in `<plug-in>/jellyfin-notice.json`, with `from` (the first version it applies to) and `text`. `tools/manifest.py` puts it under the `### For Jellyfin` heading of that version's notes and every later one, with a line (`---`) before the release notes, and `manifest.py check` fails on an entry without it.
+
 `python3 tools/manifest.py check` fails on a version whose notes break this.
 
 The **Release** workflow builds and tests both builds of that plug-in, makes both zips with their MD5 checksums,
