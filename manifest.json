@@ -3,11 +3,27 @@
     "guid": "7a591954-9c27-4ba7-80c3-dc5f0a140692",
     "name": "Audio description",
     "overview": "Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have.",
-    "description": "Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in tags every film, episode and series with one as Audio description, and can put them in a collection, so every Jellyfin app can find them. For each person who chooses it, it asks their app to play the described track. And it adds a description track you already have next to its film, after checking the lengths match.",
+    "description": "Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in tags every film, episode and series with one as Audio description, and can put them in a collection, so every Jellyfin app can find them. Titles with audio description, a page beside its settings, lists every described film and episode, by series, each linking to its page. For each person who chooses it, it asks their app to play the described track. And it adds a description track you already have next to its film, after checking the lengths match.",
     "owner": "TheMightyTRexUK",
     "category": "General",
     "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/audio-description/images/logo.png",
     "versions": [
+      {
+        "version": "1.0.3.0",
+        "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Titles with audio description: a page beside Settings, chosen from the tabs at the top of both pages, that lists every film and every described episode, by series, from the tags Find and tag gives. Films have their year, described track and status; each series has how many of its episodes are described, such as 3 of 6 episodes described, and its episodes in order. Show All, Films or Series, each with its count. Each title opens its page in Jellyfin. The same page, columns and words as in the Starboard plug-in.\n\nFixed:\n\n- Later Jellyfin 10.11 releases, such as 10.11.11: the settings page loads again. They changed how a plug-in asks for the list of people, so the page could not show its figures, people or tracks.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.3.0/audio-description_1.0.3.0_jellyfin-12.zip",
+        "checksum": "f9ef489b9005d0e9e7a1adbe6897bbb1",
+        "timestamp": "2026-11-17T17:22:14Z"
+      },
+      {
+        "version": "1.0.2.0",
+        "changelog": "### For Jellyfin 10.11\n\nAdded:\n\n- Titles with audio description: a page beside Settings, chosen from the tabs at the top of both pages, that lists every film and every described episode, by series, from the tags Find and tag gives. Films have their year, described track and status; each series has how many of its episodes are described, such as 3 of 6 episodes described, and its episodes in order. Show All, Films or Series, each with its count. Each title opens its page in Jellyfin. The same page, columns and words as in the Starboard plug-in.\n\nFixed:\n\n- Later Jellyfin 10.11 releases, such as 10.11.11: the settings page loads again. They changed how a plug-in asks for the list of people, so the page could not show its figures, people or tracks.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.3.0/audio-description_1.0.2.0_jellyfin-10.11.zip",
+        "checksum": "27eec0002e420d93f15c059d661f6e5a",
+        "timestamp": "2026-11-17T17:22:14Z"
+      },
       {
         "version": "1.0.1.0",
         "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Find and tag: every night at 04:20 and after each library scan, each film and episode with a described sound track, and its series, gets the tag Audio description, and the tag comes off when the track goes. Every Jellyfin app, televisions included, can filter by it.\n- The Audio description collection: active by default, the films and series with a described track are in one collection.\n- Play the described track: for each person ticked on the settings page, inactive until chosen. When they start a title with a described track and another track plays, Jellyfin asks their app to change to it. Not every app accepts this; the log says when one does not.\n- Add a track you have: a description track in the folder, or uploaded on the settings page, is matched to its film or episode by its name, its length compared with the film's, and added next to the film as English (Audio Description) when they agree within 5 seconds. The sound is copied without converting it, with Jellyfin's own ffmpeg. Yes and No on the settings page put the original away or take the track off. Nothing is ever deleted.",
