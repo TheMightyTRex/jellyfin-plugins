@@ -1,5 +1,32 @@
 [
   {
+    "guid": "7a591954-9c27-4ba7-80c3-dc5f0a140692",
+    "name": "Audio description",
+    "overview": "Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have.",
+    "description": "Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in tags every film, episode and series with one as Audio description, and can put them in a collection, so every Jellyfin app can find them. For each person who chooses it, it asks their app to play the described track. And it adds a description track you already have next to its film, after checking the lengths match.",
+    "owner": "TheMightyTRexUK",
+    "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/audio-description/images/logo.png",
+    "versions": [
+      {
+        "version": "1.0.1.0",
+        "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Find and tag: every night at 04:20 and after each library scan, each film and episode with a described sound track, and its series, gets the tag Audio description, and the tag comes off when the track goes. Every Jellyfin app, televisions included, can filter by it.\n- The Audio description collection: active by default, the films and series with a described track are in one collection.\n- Play the described track: for each person ticked on the settings page, inactive until chosen. When they start a title with a described track and another track plays, Jellyfin asks their app to change to it. Not every app accepts this; the log says when one does not.\n- Add a track you have: a description track in the folder, or uploaded on the settings page, is matched to its film or episode by its name, its length compared with the film's, and added next to the film as English (Audio Description) when they agree within 5 seconds. The sound is copied without converting it, with Jellyfin's own ffmpeg. Yes and No on the settings page put the original away or take the track off. Nothing is ever deleted.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.1.0/audio-description_1.0.1.0_jellyfin-12.zip",
+        "checksum": "0cb816e636e4d2eef2732b033c672cc0",
+        "timestamp": "2026-11-17T15:52:33Z"
+      },
+      {
+        "version": "1.0.0.0",
+        "changelog": "### For Jellyfin 10.11\n\nAdded:\n\n- Find and tag: every night at 04:20 and after each library scan, each film and episode with a described sound track, and its series, gets the tag Audio description, and the tag comes off when the track goes. Every Jellyfin app, televisions included, can filter by it.\n- The Audio description collection: active by default, the films and series with a described track are in one collection.\n- Play the described track: for each person ticked on the settings page, inactive until chosen. When they start a title with a described track and another track plays, Jellyfin asks their app to change to it. Not every app accepts this; the log says when one does not.\n- Add a track you have: a description track in the folder, or uploaded on the settings page, is matched to its film or episode by its name, its length compared with the film's, and added next to the film as English (Audio Description) when they agree within 5 seconds. The sound is copied without converting it, with Jellyfin's own ffmpeg. Yes and No on the settings page put the original away or take the track off. Nothing is ever deleted.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.1.0/audio-description_1.0.0.0_jellyfin-10.11.zip",
+        "checksum": "9c55bf85a76662e4cc5cc691dc939eb8",
+        "timestamp": "2026-11-17T15:52:33Z"
+      }
+    ]
+  },
+  {
     "guid": "80bf9325-d299-4e24-ac74-c087aeec3011",
     "name": "Picture shrinker",
     "overview": "Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space.",
@@ -8,6 +35,22 @@
     "category": "General",
     "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/picture-shrinker/images/logo.png",
     "versions": [
+      {
+        "version": "1.2.5.0",
+        "changelog": "### For Jellyfin 12\n\n**After you install or update it, choose a backup option, or nothing is shrunk.** Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Shrink without a backup, then Save. There is no default.\n\n---\n\nWording from the design system audit of 17\nNovember 2026.\n\nChanged:\n\n- Shrink without a backup: the backup choice that keeps no copy of the originals has this name. Under Original pictures, the two choices are Keep a backup copy of each original and Shrink without a backup. A choice you already made is kept.\n- Clearer wording on the settings page: Shrink all picture types says Active and Deactivate, each part of the page is named instead of \"above\" or \"below\", the warning and the notice start with what they are, and the two confirmation dialogs put their main button first.\n- The time of the last save: after Save, the settings page says when it saved, such as \"Saved at 16:31\".\n- A plain reason when a backup copy fails: a picture that is not shrunk because its original could not be copied says to check that Jellyfin can write to the backup folder, then gives the technical details.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/picture-shrinker-v1.2.5.0/picture-shrinker_1.2.5.0_jellyfin-12.zip",
+        "checksum": "56d7d6d4e3f2fe85b5cd75ddc716ae08",
+        "timestamp": "2026-11-17T15:53:37Z"
+      },
+      {
+        "version": "1.2.4.0",
+        "changelog": "### For Jellyfin 10.11\n\n**After you install or update it, choose a backup option, or nothing is shrunk.** Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Shrink without a backup, then Save. There is no default.\n\n---\n\nWording from the design system audit of 17\nNovember 2026.\n\nChanged:\n\n- Shrink without a backup: the backup choice that keeps no copy of the originals has this name. Under Original pictures, the two choices are Keep a backup copy of each original and Shrink without a backup. A choice you already made is kept.\n- Clearer wording on the settings page: Shrink all picture types says Active and Deactivate, each part of the page is named instead of \"above\" or \"below\", the warning and the notice start with what they are, and the two confirmation dialogs put their main button first.\n- The time of the last save: after Save, the settings page says when it saved, such as \"Saved at 16:31\".\n- A plain reason when a backup copy fails: a picture that is not shrunk because its original could not be copied says to check that Jellyfin can write to the backup folder, then gives the technical details.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/picture-shrinker-v1.2.5.0/picture-shrinker_1.2.4.0_jellyfin-10.11.zip",
+        "checksum": "a4e6556a108e8fcdf5d52c71c388d494",
+        "timestamp": "2026-11-17T15:53:37Z"
+      },
       {
         "version": "1.2.3.0",
         "changelog": "### For Jellyfin 12\n\n**After you install or update it, choose a backup option, or nothing is shrunk.** Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Shrink without a backup, then Save. There is no default.\n\n---\n\nChoose a backup option after you install or update, or nothing is shrunk. Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Just shrink, with no backup, then save. Updating from 1.1 asks again; a backup you already have is kept.\n\nAdded:\n\n- A reminder in the Activity list: until you choose, Jellyfin's Dashboard shows \"Picture shrinker is waiting for you to choose\" in its Activity list when Jellyfin starts, and again at most once a day when a run or a new picture is skipped. Jellyfin has no way for a plug-in to show a pop-up, so this is where an administrator sees it. Once you choose, it writes nothing there.\n\nChanged:\n\n- Shrink pictures shows as failed until you choose: in Scheduled Tasks, the task ends as failed with the reason, instead of looking as if it worked. A finished run still sends no notification.",
