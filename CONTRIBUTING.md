@@ -77,6 +77,14 @@ To bring in a plug-in that has its own git history, such as `audio-description`,
 table in README.md, and release it with a tag such as `audio-description-v1.0.1.0`. Its entry is added to
 `manifest.json` by that first release.
 
+## The help centre
+
+The help is in `docs`, built into the [help centre](https://themightytrex.github.io/jellyfin-plugins/) by the **Help centre** workflow
+with the design system's help centre builder and `help-centre.json`. Check it with `python3 tools/check_help.py`, which
+also runs `tools/check_words.py`. `tools/help_shots/run.sh` retakes the screenshots from a throwaway Jellyfin with
+made-up data. Write each article to the design system's HELP-WRITING.md and CONTENT-DESIGN.md, with at least 3
+marked-up screenshots for a how-to.
+
 ## Writing
 
 British English, sentence case, no em dashes and no contractions, as in the TRex Design System.

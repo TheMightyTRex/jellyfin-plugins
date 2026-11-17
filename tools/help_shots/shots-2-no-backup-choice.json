@@ -1,0 +1,219 @@
+{
+ "about": "Help centre screenshots, phase 2-no-backup-choice: run in order (tools/help_shots/run.sh). Made-up data only.",
+ "shots": [
+  {
+   "file": "find-and-tag-1-settings-en.png",
+   "route": "/configurationpage?name=Audio%20description",
+   "marks": [
+    {
+     "t": "near:Add them to the Audio description collection|.checkboxContainer",
+     "step": 2,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    },
+    {
+     "t": "near:Find and tag after each library scan|.checkboxContainer",
+     "step": 3,
+     "side": "right",
+     "tail": 90
+    },
+    {
+     "t": "$#adFindNow",
+     "step": 4,
+     "side": "right",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    2,
+    3,
+    4
+   ],
+   "alt": "Audio description's settings, Find and tag, with Add them to the Audio description collection (step 2), Find and tag after each library scan (step 3) and Find and tag now (step 4) outlined"
+  },
+  {
+   "file": "install-audio-description-1-installed-en.png",
+   "route": "/dashboard/plugins?status=Installed",
+   "marks": [
+    {
+     "t": "Installed",
+     "step": 7,
+     "side": "bottom",
+     "tail": 70
+    },
+    {
+     "t": "near:Audio description|.MuiCard-root",
+     "step": 8,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    7,
+    8
+   ],
+   "alt": "The Plugins page with Installed (step 7) and the Audio description card, version 1.0.1.0 Active (step 8), outlined"
+  },
+  {
+   "file": "install-audio-description-2-settings-en.png",
+   "route": "/configurationpage?name=Audio%20description",
+   "actions": [],
+   "marks": [
+    {
+     "t": "$#adFindNow",
+     "step": 10,
+     "side": "right",
+     "tail": 100,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    10
+   ],
+   "alt": "Audio description's settings page, with its Find and tag figures and Find and tag now (step 10) outlined"
+  },
+  {
+   "file": "install-audio-description-3-tasks-en.png",
+   "route": "/dashboard/tasks",
+   "marks": [
+    {
+     "t": "near:Find and tag audio description|.MuiList-root, ul, .paperList",
+     "step": 11,
+     "side": "right",
+     "tail": 110,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    11
+   ],
+   "alt": "Scheduled Tasks, with the Audio description tasks, Add description tracks and Find and tag audio description, outlined (step 11)"
+  },
+  {
+   "file": "install-picture-shrinker-6-installed-en.png",
+   "route": "/dashboard/plugins?status=Installed",
+   "marks": [
+    {
+     "t": "Installed",
+     "step": 9,
+     "side": "bottom",
+     "tail": 70
+    },
+    {
+     "t": "near:Picture shrinker|.MuiCard-root",
+     "step": 10,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    9,
+    10
+   ],
+   "alt": "The Plugins page with Installed (step 9) and the Picture shrinker card, version 1.2.5.0 Active (step 10), outlined"
+  },
+  {
+   "file": "install-picture-shrinker-7-settings-en.png",
+   "route": "/dashboard/plugins?status=Installed&query=Picture",
+   "actions": [
+    {
+     "mouse": [
+      375,
+      233
+     ]
+    }
+   ],
+   "marks": [
+    {
+     "t": "$a.MuiButton-containedPrimary",
+     "step": 11,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    11
+   ],
+   "alt": "Picture shrinker's page under Installed, with Enable plugin active and Settings (step 11) outlined"
+  },
+  {
+   "file": "install-picture-shrinker-8-choose-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#BackupChoiceGroup",
+     "step": 12,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    12
+   ],
+   "alt": "Picture shrinker's settings with the notice that nothing is shrunk until you choose, and Original pictures (step 12) outlined, neither choice made"
+  },
+  {
+   "file": "install-picture-shrinker-9-save-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "actions": [
+    {
+     "check": "$#BackupKeep"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$#PictureShrinkerConfigForm button[type=submit]",
+     "step": 13,
+     "side": "top",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    13
+   ],
+   "alt": "The end of Picture shrinker's settings form, with Save (step 13) outlined"
+  },
+  {
+   "file": "picture-shrinker-not-shrinking-1-task-failed-en.png",
+   "route": "/dashboard/tasks",
+   "marks": [
+    {
+     "t": "near:Shrink pictures|.MuiListItem-root, .MuiListItemButton-root, a, li",
+     "step": 2,
+     "side": "right",
+     "tail": 110,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Scheduled Tasks, with Shrink pictures under Picture shrinker outlined (step 2), saying it last ran and Failed"
+  },
+  {
+   "file": "picture-shrinker-not-shrinking-2-activity-en.png",
+   "route": "/dashboard/activity",
+   "actions": [
+    {
+     "click": "System",
+     "settle": 6000
+    }
+   ],
+   "marks": [
+    {
+     "t": "near:Picture shrinker is waiting for you to choose|tr, .MuiTableRow-root",
+     "step": 3,
+     "side": "bottom",
+     "tail": 70
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The Activity page, System entries, with 'Picture shrinker is waiting for you to choose' outlined (step 3)"
+  }
+ ]
+}

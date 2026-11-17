@@ -1,0 +1,69 @@
+name: Help centre
+# Checks the help (tools/check_help.py), builds the help centre's web pages from docs/ and help-centre.json with the
+# design system's help centre builder (tools/help_centre in TheMightyTRex/design-system), and publishes them on GitHub
+# Pages: https://themightytrex.github.io/jellyfin-plugins/
+# On a pull request it checks and builds only; on main it also publishes.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "help-centre.json"
+      - "manifest.json"
+      - "tools/check_help.py"
+      - "tools/check_words.py"
+      - "tools/words-allowed.txt"
+      - ".github/workflows/help.yml"
+  pull_request:
+    paths:
+      - "docs/**"
+      - "help-centre.json"
+      - "manifest.json"
+      - "tools/check_help.py"
+      - "tools/check_words.py"
+      - "tools/words-allowed.txt"
+      - ".github/workflows/help.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.12"
+      - name: Check the help
+        run: python tools/check_help.py
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: TheMightyTRex/design-system
+          path: _design-system
+          persist-credentials: false
+      - name: Build the pages
+        run: |
+          pip install markdown==3.7 pymdown-extensions==10.9
+          python _design-system/tools/help_centre/build.py --config help-centre.json --out _site --strict
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        if: github.event_name != 'pull_request'
+        with:
+          path: _site
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}help/
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

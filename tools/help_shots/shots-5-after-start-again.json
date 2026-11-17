@@ -1,0 +1,22 @@
+{
+ "about": "Help centre screenshots, phase 5-after-start-again: run in order (tools/help_shots/run.sh). Made-up data only.",
+ "shots": [
+  {
+   "file": "start-again-3-waiting-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "js:document.querySelector('#psSaved').closest('.psFigure')",
+     "step": 4,
+     "side": "bottom",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    4
+   ],
+   "alt": "Space saved after Start again, outlined (step 4): pictures waiting for Jellyfin, replaced by a new one and put back, with example data"
+  }
+ ]
+}

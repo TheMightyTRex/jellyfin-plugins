@@ -2,7 +2,8 @@
 
 Works on any Jellyfin 10.11 or Jellyfin 12 server; you do not need Starboard.
 
-A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
+A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence. Every task, with pictures, is in the
+[help centre](https://themightytrex.github.io/jellyfin-plugins/).
 
 ![Audio description logo](images/logo.png)
 
