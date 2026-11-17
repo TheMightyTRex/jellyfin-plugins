@@ -3,11 +3,6 @@
 
 # Install Audio description
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Install Audio description from Jellyfin's own catalogue and restart Jellyfin. Audio description is a second sound
 track in which a narrator says what is happening, for blind and partially sighted people. The plug-in finds and tags
 the films and series that have one, plays it for the people who choose it, and adds a description track you have.

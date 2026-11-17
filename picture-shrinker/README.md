@@ -45,23 +45,20 @@ To find your version, go to **Dashboard**: the version is under the server name 
 
 1. Open Jellyfin in a web browser and sign in as an administrator.
 2. Open the menu, then **Dashboard**, then **Plugins**.
-3. Choose **Manage Repositories** (on Jellyfin 10.11: the **Repositories** tab), then **New Repository** (on 10.11:
-   **+**). Fill in:
+3. Choose **Manage Repositories**, then **New Repository**. Fill in:
    - **Repository Name:** `TheMightyTRexUK`
    - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json`
 
    This one address lists every Jellyfin plug-in by TheMightyTRexUK. If you added the old Picture shrinker address
    (`jellyfin-plugin-picture-shrinker`), add this one and remove the old one: this one lists every version.
-4. Choose **Add** (on 10.11: **Save**).
-5. Back on **Plugins**, choose **Available** (on 10.11: the **Catalogue** tab) and search for `Picture`. Open
-   **Picture shrinker**.
+4. Choose **Add**.
+5. Back on **Plugins**, choose **Available** and search for `Picture`. Open **Picture shrinker**.
 6. Choose **Install**, then **Install** again to confirm.
 7. Restart Jellyfin: **Dashboard**, then **Restart** (or restart its container or service).
 
 After the restart:
 
-- **The settings** are in **Dashboard**, **Plugins**: choose **Installed** (on 10.11: **My Plugins**), open
-  **Picture shrinker**, then **Settings**.
+- **The settings** are in **Dashboard**, **Plugins**: choose **Installed**, open **Picture shrinker**, then **Settings**.
 - **The tasks** are in **Dashboard**, **Scheduled Tasks**, under **Picture shrinker**: **Shrink pictures** and
   **Restore original pictures**.
 
@@ -248,8 +245,7 @@ the space saved, and how it ended.
 
 1. To keep the pictures as they are now, skip to step 3. To put the originals back, follow 'Put the original pictures back' first.
 2. To free the backup's space, choose **Delete backup** on the settings page.
-3. In **Dashboard**, **Plugins**, **Installed** (on Jellyfin 10.11: **My Plugins**), open **Picture shrinker** and
-   choose **Uninstall**, then restart Jellyfin.
+3. In **Dashboard**, **Plugins**, **Installed**, open **Picture shrinker** and choose **Uninstall**, then restart Jellyfin.
 4. If you did not delete the backup, its folder stays in Jellyfin's data folder (`picture-shrinker/originals`); you
    can delete it yourself. Two small files stay too, which you can delete: its settings,
    `plugins/configurations/Jellyfin.Plugin.PictureShrinker.xml`, and its figures, `plugins/Jellyfin.Plugin.PictureShrinker`,

@@ -3,11 +3,6 @@
 
 # Add a description track you have
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Add a description track you already have, such as one from AudioVault, to its film or episode. The plug-in checks
 that the track is as long as your copy of the film, then adds it next to the film as an extra sound track. The film's
 own file is never changed, and nothing is ever deleted. This takes 8 steps.

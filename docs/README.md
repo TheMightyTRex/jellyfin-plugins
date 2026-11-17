@@ -8,8 +8,7 @@ repository address. You do not need Starboard for either. The help centre is als
   smaller, so they take less space. Each smaller copy is checked before it replaces the original, and you choose
   whether the originals are backed up first.
 - **Audio description** finds and tags the films and series with a described sound track, for blind and partially
-  sighted people, plays that track for the people who choose it, and adds a description track you have. It is not
-  released yet.
+  sighted people, plays that track for the people who choose it, and adds a description track you have.
 
 ## Start here: add the repository
 

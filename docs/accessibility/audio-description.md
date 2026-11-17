@@ -3,11 +3,6 @@
 
 # Audio description's accessibility
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Audio description is made for blind and partially sighted people: it marks the films and series with a described
 sound track in every Jellyfin app, and plays that track for the people who want it. Its settings page is
 built from Jellyfin's own controls. This page lists what it does for the people who watch, how the settings page

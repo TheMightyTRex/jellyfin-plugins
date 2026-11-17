@@ -3,11 +3,6 @@
 
 # Find the films and series with audio description
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Audio description gives every film and episode with a described sound track, and its series, the tag **Audio
 description**, and puts the films and series in a collection called **Audio description**. Every Jellyfin app,
 televisions included, shows tags and collections, so the described titles can be found in any app. This takes 8
