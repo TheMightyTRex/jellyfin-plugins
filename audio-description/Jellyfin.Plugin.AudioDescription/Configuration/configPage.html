@@ -84,6 +84,21 @@
                     </div>
                 </fieldset>
 
+                <fieldset aria-describedby="adListHelp">
+                    <legend>Titles with audio description</legend>
+                    <p class="fieldDescription" id="adListHelp">How many films and series the Titles with audio description tab lists, most recently added to Jellyfin first.</p>
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="FilmsShown">Films to list</label>
+                        <select is="emby-select" id="FilmsShown" aria-describedby="FilmsShownHelp"><option value="0">All</option><option value="10">Last 10</option><option value="20">Last 20</option><option value="50">Last 50</option><option value="100">Last 100</option><option value="500">Last 500</option></select>
+                        <div class="fieldDescription" id="FilmsShownHelp">On Titles with audio description, the films most recently added to Jellyfin, newest first. Last 20 by default.</div>
+                    </div>
+                    <div class="selectContainer">
+                        <label class="selectLabel" for="SeriesShown">Series to list</label>
+                        <select is="emby-select" id="SeriesShown" aria-describedby="SeriesShownHelp"><option value="0">All</option><option value="10">Last 10</option><option value="20">Last 20</option><option value="50">Last 50</option><option value="100">Last 100</option><option value="500">Last 500</option></select>
+                        <div class="fieldDescription" id="SeriesShownHelp">On Titles with audio description, the series with the most recently added described episodes, newest first, each with all its described episodes. Last 20 by default.</div>
+                    </div>
+                </fieldset>
+
                 <fieldset aria-describedby="adPlayHelp">
                     <legend>Play the described track</legend>
                     <p class="fieldDescription" id="adPlayHelp">Inactive until you choose a person. For each person ticked here, when they start a title with a described track and another sound track is playing, Jellyfin asks their app to change to the described track.</p>
@@ -311,6 +326,8 @@
                     $('TracksFolder').value = c.TracksFolder || '';
                     $('WatchFolder').checked = c.WatchFolder;
                     $('ToleranceSeconds').value = c.ToleranceSeconds;
+                    $('FilmsShown').value = String(c.FilmsShown);
+                    $('SeriesShown').value = String(c.SeriesShown);
                     chosenPeople = c.PlayUsers || [];
                     return load().then(function (s) {
                         var lang = $('Language');
@@ -336,6 +353,8 @@
                     c.WatchFolder = $('WatchFolder').checked;
                     c.Language = $('Language').value;
                     c.ToleranceSeconds = parseInt($('ToleranceSeconds').value, 10);
+                    c.FilmsShown = parseInt($('FilmsShown').value, 10);
+                    c.SeriesShown = parseInt($('SeriesShown').value, 10);
                     c.PlayUsers = Array.prototype.map.call(page.querySelectorAll('.adPerson:checked'), function (i) { return i.value; });
                     chosenPeople = c.PlayUsers;
                     return ApiClient.updatePluginConfiguration(pluginId, c);

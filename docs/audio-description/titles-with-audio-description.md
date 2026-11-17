@@ -24,11 +24,14 @@ The first line says how many films, and how many episodes in how many series, ha
 when Find and tag last ran, such as "1 film and 2 episodes in 1 series have a described sound track. Checked 17
 November at 04:20."
 
+It then says how many it lists, newest first, such as "Showing the last 20 of 143 films and all 6 series, newest first,
+with 11 described episodes."
+
 **Show** chooses **All**, **Films** or **Series**, each with its count, such as **Films (1)**. The list changes at once.
 
 ### Films
 
-A table with a row for each film, by name:
+A table with a row for each film, newest added first:
 
 | Column | What it shows |
 |---|---|
@@ -39,7 +42,7 @@ A table with a row for each film, by name:
 
 ### Series
 
-A heading for each series, by name, with its year, then how many of its episodes are described and its described
+A heading for each series, newest described episode first, with its year, then how many of its episodes are described and its described
 track, such as "2 of 3 episodes described. Described track: English (Described)". When every episode is described,
 it says so, such as "All 6 episodes described". Under it, a table of its described episodes in order:
 
@@ -49,6 +52,17 @@ it says so, such as "All 6 episodes described". Under it, a table of its describ
 | **Described track** | The name of its first described sound track |
 | **Status** | **Described** |
 
+## Choose how many it lists
+
+On the settings page, under **Titles with audio description**:
+
+| Setting | What it does | Default |
+|---|---|---|
+| **Films to list** | **All**, or the **Last 10**, **Last 20**, **Last 50**, **Last 100** or **Last 500** films added to Jellyfin, newest first | Last 20 |
+| **Series to list** | The same choices, for series, by their newest described episode. Each series listed still has all its described episodes | Last 20 |
+
+Select **Save** at the end of the settings page, then choose **Titles with audio description** again.
+
 ## Where the list comes from
 
 - It lists the films and episodes with the tag **Audio description** that still have a described track. Read
@@ -56,8 +70,8 @@ it says so, such as "All 6 episodes described". Under it, a table of its describ
   given.
 - A film added since the last Find and tag is listed after the next one, which runs after each library scan and every
   night at 04:20. Select **Find and tag now** on the settings to list it straight away.
-- It reads the tagged films and episodes, their sound tracks and each series' number of episodes only when the page
-  opens. Nothing runs in the background for it.
+- It reads only as many tagged films and episodes as it lists, newest first, with their sound tracks and each listed
+  series' number of episodes, only when the page opens. Nothing runs in the background for it.
 
 ## With a keyboard and a screen reader
 

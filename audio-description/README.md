@@ -103,8 +103,13 @@ the same page, with the same columns and words, as **Titles with audio descripti
   episodes described", and its described track. Under it, a table of its described episodes in order: **Episode**
   (such as "S1 E3: Part three"), **Described track** and **Status**.
 - **Each title is a link** to its page in Jellyfin.
+- **How many:** **Films to list** and **Series to list**, on the settings page under **Titles with audio description**,
+  choose **All**, or the **Last 10**, **Last 20**, **Last 50**, **Last 100** or **Last 500** added to Jellyfin; **Last
+  20** by default. The list is newest first, and the first line says how many it shows, such as "Showing the last 20 of
+  143 films". A series counts by its newest described episode and still lists all its described episodes.
 
-It reads only the tagged films and episodes, their sound tracks, and each series' episode count, when the page opens.
+It reads only as many tagged films and episodes as it lists, newest first, their sound tracks, and each listed series'
+episode count, when the page opens.
 
 ## Play the described track
 

@@ -7,6 +7,19 @@ Semantic Versioning.
 
 ## [Unreleased]
 
+## [1.0.5.0] for Jellyfin 12 and [1.0.4.0] for Jellyfin 10.11 (17 November 2026)
+
+Rules 1.0, unchanged. The same as the Starboard plug-in Audio description 1.5.0.
+
+### Added
+
+- **Films to list and Series to list:** on the settings page, under Titles with audio description, how many of each the Titles with audio description tab lists: All, or the last 10, 20, 50, 100 or 500 added to Jellyfin, newest first. Last 20 by default. A series counts by its newest described episode and still lists all its described episodes. Only that many are read from the library.
+- **The tab says how many it shows,** such as "Showing the last 20 of 143 films and all 6 series, newest first", and where to change it.
+
+### Changed
+
+- **Newest first:** films and series are listed by when they were added to Jellyfin, newest first.
+
 ## [1.0.3.0] for Jellyfin 12 and [1.0.2.0] for Jellyfin 10.11 (17 November 2026)
 
 Rules 1.0, unchanged. The same page as the Starboard plug-in Audio description 1.4.0.
