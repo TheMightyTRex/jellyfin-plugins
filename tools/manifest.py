@@ -118,6 +118,33 @@ RULES_NOTES = [
 ]
 
 
+def notice(plugin):
+    """(from version, text) of the plug-in's jellyfin-notice.json, or None: a warning Jellyfin shows at the top of the
+    release notes of that version and every later one, above a line."""
+    path = os.path.join(ROOT, plugin, "jellyfin-notice.json")
+    if not os.path.isfile(path):
+        return None
+    with open(path, encoding="utf-8") as f:
+        data = json.load(f)
+    return data["from"], data["text"].strip()
+
+
+def _ver(v):
+    return tuple(int(x) for x in str(v).split("."))
+
+
+def with_notice(plugin, version, notes):
+    """The notes with the plug-in's notice under the Jellyfin heading and a line before the release notes, when the
+    version is at or after the notice's first version. Running it again changes nothing."""
+    n = notice(plugin)
+    if not n or _ver(version) < _ver(n[0]) or n[1] in notes:
+        return notes
+    m = re.match(r"(### For Jellyfin [\d.]+)\s*", notes)
+    head, rest = (m.group(1), notes[m.end():]) if m else ("", notes)
+    # A blank line before the --- matters: straight after a paragraph, Markdown reads --- as an underlined heading.
+    return "\n\n".join(x for x in (head, n[1], "---", rest.strip()) if x)
+
+
 def jellyfin_notes(version, body):
     """The text Jellyfin shows for one version: a heading naming the Jellyfin the build is for (Jellyfin shows the
     changelog as Markdown, so it reads larger), then the notes without the rules sentence."""
@@ -140,7 +167,7 @@ def changelog(plugin, version):
     # left out.
     body = re.sub(r"^### (\w+)[ \t]*$", r"\1:", body, flags=re.M)
     body = re.sub(r"^\[[^\]]+\]: \S+[ \t]*$", "", body, flags=re.M)
-    return jellyfin_notes(version, body.replace("**", ""))
+    return with_notice(plugin, version, jellyfin_notes(version, body.replace("**", "")))
 
 
 def _now():
@@ -212,6 +239,12 @@ def check():
             problems.append(f"{p.get('name')}: imageUrl is not its own logo, {RAW}/{guids[g]}/images/logo.png")
         elif not os.path.isfile(os.path.join(ROOT, guids[g], "images", "logo.png")):
             problems.append(f"{p.get('name')}: no {guids[g]}/images/logo.png")
+        if g in guids and notice(guids[g]):
+            first, text = notice(guids[g])
+            for v in p.get("versions", []):
+                if _ver(v["version"]) >= _ver(first) and not str(v.get("changelog", "")).startswith(
+                        f"### For Jellyfin {target(v['version'])}\n\n{text}\n\n---\n\n"):
+                    problems.append(f"{p.get('name')} {v['version']}: the notes do not start with its notice and a line")
         for v in p.get("versions", []):
             for need in ("version", "targetAbi", "sourceUrl", "checksum"):
                 if not v.get(need):

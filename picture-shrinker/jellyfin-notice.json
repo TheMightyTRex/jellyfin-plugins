@@ -1,0 +1,5 @@
+{
+  "about": "Shown at the top of every Jellyfin release note from this version on, above a line (tools/manifest.py).",
+  "from": "1.2.0.0",
+  "text": "**After you install or update it, choose a backup option, or nothing is shrunk.** Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Shrink without a backup, then Save. There is no default."
+}
