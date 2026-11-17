@@ -68,6 +68,7 @@ the flag that marks a described track inside a file, so these words are what can
 
 ## Find out more
 
+- [Titles with audio description](titles-with-audio-description.md), the page that lists them
 - [Play the described track for the people who want it](play-the-described-track.md)
 - [Add a description track you have](add-a-track.md)
 - [Audio description is not working](../fix/audio-description-problems.md)

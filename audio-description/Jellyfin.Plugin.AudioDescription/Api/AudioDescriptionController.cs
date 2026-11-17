@@ -59,10 +59,28 @@ public class AudioDescriptionController : ControllerBase
         };
     }
 
+    /// <summary>Titles with audio description: every film and described episode, by series, from the tags Find and tag gives.</summary>
+    [HttpGet("Titles")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public ActionResult<TitlesAnswer> Titles()
+    {
+        var last = _service.Store.Load().LastTag;
+        return _service.Tagger.Titles(last is null || last.At == default ? null : last.At);
+    }
+
 #if JELLYFIN_12
     private System.Collections.Generic.IEnumerable<Jellyfin.Database.Implementations.Entities.User> AllUsers() => _users.GetUsers();
 #else
-    private System.Collections.Generic.IEnumerable<Jellyfin.Database.Implementations.Entities.User> AllUsers() => _users.Users;
+    // Jellyfin 10.11.0 has IUserManager.Users, which later 10.11 releases replaced with GetUsers() (found on 10.11.11,
+    // 17 November 2026: the settings page could not load). The 10.11 build is built against 10.11.0, so it asks for
+    // whichever this Jellyfin has.
+    private System.Collections.Generic.IEnumerable<Jellyfin.Database.Implementations.Entities.User> AllUsers()
+    {
+        var get = typeof(IUserManager).GetMethod("GetUsers", Type.EmptyTypes);
+        var users = get is not null ? get.Invoke(_users, null) : typeof(IUserManager).GetProperty("Users")?.GetValue(_users);
+        return users as System.Collections.Generic.IEnumerable<Jellyfin.Database.Implementations.Entities.User>
+            ?? Array.Empty<Jellyfin.Database.Implementations.Entities.User>();
+    }
 #endif
 
     /// <summary>Starts Find and tag now.</summary>

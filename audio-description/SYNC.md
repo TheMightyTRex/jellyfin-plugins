@@ -26,6 +26,7 @@ depends on which version did the work.
 | The new track: `<film>.Audio Description.<language>.mka` next to the film, titled `<Language> (Audio Description)`, the visual impaired flag, not the default track, the sound copied without converting; the twelve languages | `rules.json`, `tracks` | Unit tests in each repository |
 | Never replace a track that is there, never delete: Confirmed, Taken off and Unzipped folders; zips of at most 500 files and 4 GB | `rules.json`, `tracks.folders`, `tracks.zip`, `never_replace`, `never_delete` | Unit tests in each repository |
 | The words for each track's state (Added, Lengths differ, Choose the title and so on) | Code | Unit tests in each repository |
+| The page **Titles with audio description**: its name; films with their year, described track and **Described**; each series with its year, "3 of 6 episodes described" or "All 6 episodes described", its described track, and its described episodes in order as "S1 E3: Name"; Films and Series to choose, with their counts; each title linking to its page in Jellyfin | Code | Unit tests in each repository (`TitlesTests`, `WordingTests` here; `TitlesPage` in `tests/test_audio_description.py` there) |
 
 Differences that come from where each runs, which do not change what is found or added:
 
@@ -39,6 +40,10 @@ Differences that come from where each runs, which do not change what is found or
 - **Uploads:** up to 1 GB here; up to 60 MB in Starboard, its limit for a file.
 - **The folder:** here, `audio-description` in Jellyfin's data folder unless another is chosen, checked every 5
   minutes; in Starboard, `audio-description` in the media folder, checked when its page opens and every night.
+- **Titles with audio description:** here a page beside Settings, with tables, which lists the tagged items when it
+  opens; in Starboard a page of rows, with **Films** and **Series** to choose and a row for each series that opens to
+  its episodes, drawn from what the nightly check keeps. A link there opens Jellyfin in a new tab, and needs **Jellyfin
+  address for links** when Starboard reaches Jellyfin at an address a browser cannot open.
 - **Only in Starboard:** preferring releases with audio description in Reelix, and the links to AudioVault,
   YouDescribe, MovieReading and Earcatch.
 
@@ -77,7 +82,8 @@ The Jellyfin version shares its first two numbers with the rules version:
 
 Jellyfin 12 runs on .NET 10 and its plug-ins must be built for it; Jellyfin 10.11 runs on .NET 9. Every Jellyfin part
 this plug-in uses (scheduled tasks, library and session events, collections, the settings page) is the same between
-them, except the list of people (`IUserManager.Users` in 10.11, `GetUsers()` in 12). So one source makes two builds
+them, except the list of people (`IUserManager.Users` in 10.11.0, `GetUsers()` in later 10.11 releases and in 12; the 10.11
+build asks for whichever the running Jellyfin has). So one source makes two builds
 (`JellyfinTarget` in `Directory.Build.props`), and the third number says which:
 
 | Third number | Build | .NET | Built against | targetAbi |

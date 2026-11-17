@@ -22,9 +22,9 @@ public class WordingTests
 
     private static string Wording(string name) => File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "wording", name));
 
-    private static IEnumerable<string> PageTexts()
+    private static IEnumerable<string> PageTexts(string name = "configPage.html")
     {
-        var html = Regex.Replace(Wording("configPage.html"), "<style.*?</style>", string.Empty, RegexOptions.Singleline);
+        var html = Regex.Replace(Wording(name), "<style.*?</style>", string.Empty, RegexOptions.Singleline);
         var scripts = Regex.Matches(html, "<script[^>]*>(.*?)</script>", RegexOptions.Singleline).Select(m => m.Groups[1].Value).ToList();
         html = Regex.Replace(html, "<script.*?</script>", string.Empty, RegexOptions.Singleline);
         foreach (Match m in Regex.Matches(html, "\\b(?:aria-label|title|alt|placeholder)=\"([^\"]*)\""))
@@ -50,10 +50,12 @@ public class WordingTests
         }
     }
 
-    [Fact]
-    public void TheSettingsPageHasNoBannedWords()
+    [Theory]
+    [InlineData("configPage.html")]
+    [InlineData("titlesPage.html")]
+    public void ThePagesHaveNoBannedWords(string name)
     {
-        Assert.Empty(PageTexts().Where(t => Banned.IsMatch(t)).Select(t => t.Trim()));
+        Assert.Empty(PageTexts(name).Where(t => Banned.IsMatch(t)).Select(t => t.Trim()));
     }
 
     [Theory]
@@ -97,6 +99,7 @@ public class WordingTests
 
     [Theory]
     [InlineData("configPage.html")]
+    [InlineData("titlesPage.html")]
     [InlineData("README.md")]
     [InlineData("SYNC.md")]
     [InlineData("CHANGELOG.md")]
@@ -115,5 +118,22 @@ public class WordingTests
         Assert.Contains("Inactive until you choose a person", page, StringComparison.Ordinal);
         Assert.Contains("Not every Jellyfin app accepts this", page, StringComparison.Ordinal);
         Assert.Contains("Not every Jellyfin app accepts", Wording("README.md"), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void TheTitlesPageHasTheSameNameAndColumnsAsStarboards()
+    {
+        // The Starboard plug-in's page is "Titles with audio description" too, with the same parts (SYNC.md).
+        var page = Wording("titlesPage.html");
+        Assert.Contains("<title>Titles with audio description</title>", page, StringComparison.Ordinal);
+        Assert.Contains("<th scope=\"col\">Title</th><th scope=\"col\">Year</th><th scope=\"col\">Described track</th><th scope=\"col\">Status</th>", page, StringComparison.Ordinal);
+        Assert.Contains("['Episode', 'Described track', 'Status']", page, StringComparison.Ordinal);
+        Assert.Contains("'. Described track: '", page, StringComparison.Ordinal);
+        Assert.Contains("'described episode', 'described episodes'", page, StringComparison.Ordinal);
+        Assert.Contains("have a described sound track. ", page, StringComparison.Ordinal);
+        foreach (var name in new[] { "configPage.html", "titlesPage.html" })
+        {
+            Assert.Contains("aria-label=\"Audio description pages\"", Wording(name), StringComparison.Ordinal); // the tabs on both pages
+        }
     }
 }

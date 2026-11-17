@@ -1,8 +1,8 @@
 # For jprm (Jellyfin's plug-in packaging tool): the Jellyfin 12 build. For the Jellyfin 10.11 build, use version
-# 1.0.0.0, targetAbi "10.11.0.0" and framework "net9.0", and build with -p:JellyfinTarget=10.11.
+# 1.0.2.0, targetAbi "10.11.0.0" and framework "net9.0", and build with -p:JellyfinTarget=10.11.
 name: "Audio description"
 guid: "7a591954-9c27-4ba7-80c3-dc5f0a140692"
-version: "1.0.1.0"
+version: "1.0.3.0"
 targetAbi: "12.0.0.0"
 framework: "net10.0"
 owner: "TheMightyTRexUK"
@@ -10,8 +10,10 @@ overview: "Finds and tags the films and series with a described sound track, pla
 description: >
   Audio description is a second sound track in which a narrator says what is happening, for blind and partially
   sighted people. This plug-in tags every film, episode and series with one as Audio description, and can put them in
-  a collection, so every Jellyfin app can find them. For each person who chooses it, it asks their app to play the
-  described track. And it adds a description track you already have next to its film, after checking the lengths match.
+  a collection, so every Jellyfin app can find them. Titles with audio description, a page beside its settings, lists
+  every described film and episode, by series, each linking to its page. For each person who chooses it, it asks their
+  app to play the described track. And it adds a description track you already have next to its film, after checking
+  the lengths match.
 category: "General"
 artifacts:
   - "Jellyfin.Plugin.AudioDescription.dll"
