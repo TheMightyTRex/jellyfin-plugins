@@ -1,5 +1,32 @@
 [
   {
+    "guid": "7a591954-9c27-4ba7-80c3-dc5f0a140692",
+    "name": "Audio description",
+    "overview": "Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have.",
+    "description": "Audio description is a second sound track in which a narrator says what is happening, for blind and partially sighted people. This plug-in tags every film, episode and series with one as Audio description, and can put them in a collection, so every Jellyfin app can find them. For each person who chooses it, it asks their app to play the described track. And it adds a description track you already have next to its film, after checking the lengths match.",
+    "owner": "TheMightyTRexUK",
+    "category": "General",
+    "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/audio-description/images/logo.png",
+    "versions": [
+      {
+        "version": "1.0.1.0",
+        "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Find and tag: every night at 04:20 and after each library scan, each film and episode with a described sound track, and its series, gets the tag Audio description, and the tag comes off when the track goes. Every Jellyfin app, televisions included, can filter by it.\n- The Audio description collection: active by default, the films and series with a described track are in one collection.\n- Play the described track: for each person ticked on the settings page, inactive until chosen. When they start a title with a described track and another track plays, Jellyfin asks their app to change to it. Not every app accepts this; the log says when one does not.\n- Add a track you have: a description track in the folder, or uploaded on the settings page, is matched to its film or episode by its name, its length compared with the film's, and added next to the film as English (Audio Description) when they agree within 5 seconds. The sound is copied without converting it, with Jellyfin's own ffmpeg. Yes and No on the settings page put the original away or take the track off. Nothing is ever deleted.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.1.0/audio-description_1.0.1.0_jellyfin-12.zip",
+        "checksum": "0cb816e636e4d2eef2732b033c672cc0",
+        "timestamp": "2026-11-17T15:52:33Z"
+      },
+      {
+        "version": "1.0.0.0",
+        "changelog": "### For Jellyfin 10.11\n\nAdded:\n\n- Find and tag: every night at 04:20 and after each library scan, each film and episode with a described sound track, and its series, gets the tag Audio description, and the tag comes off when the track goes. Every Jellyfin app, televisions included, can filter by it.\n- The Audio description collection: active by default, the films and series with a described track are in one collection.\n- Play the described track: for each person ticked on the settings page, inactive until chosen. When they start a title with a described track and another track plays, Jellyfin asks their app to change to it. Not every app accepts this; the log says when one does not.\n- Add a track you have: a description track in the folder, or uploaded on the settings page, is matched to its film or episode by its name, its length compared with the film's, and added next to the film as English (Audio Description) when they agree within 5 seconds. The sound is copied without converting it, with Jellyfin's own ffmpeg. Yes and No on the settings page put the original away or take the track off. Nothing is ever deleted.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.1.0/audio-description_1.0.0.0_jellyfin-10.11.zip",
+        "checksum": "9c55bf85a76662e4cc5cc691dc939eb8",
+        "timestamp": "2026-11-17T15:52:33Z"
+      }
+    ]
+  },
+  {
     "guid": "80bf9325-d299-4e24-ac74-c087aeec3011",
     "name": "Picture shrinker",
     "overview": "Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space.",
