@@ -1,0 +1,61 @@
+{
+ "about": "Help centre screenshots, phase 6-jellyfin-10-11: run in order (tools/help_shots/run.sh). Made-up data only.",
+ "shots": [
+  {
+   "file": "add-the-repository-10-11-available-en.png",
+   "route": "/dashboard/plugins?status=Available&query=Picture",
+   "marks": [
+    {
+     "t": "Available",
+     "step": 10,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    10
+   ],
+   "alt": "Jellyfin 10.11.11's Plugins page with Available (step 10) outlined, listing Picture shrinker 1.2.2.0, the build for Jellyfin 10.11"
+  },
+  {
+   "file": "add-the-repository-10-11-plugins-en.png",
+   "route": "/dashboard/plugins",
+   "marks": [
+    {
+     "t": "$a[href='#/dashboard/plugins'] .MuiListItemText-root",
+     "step": 4,
+     "side": "right",
+     "tail": 120
+    },
+    {
+     "t": "Manage Repositories",
+     "step": 5,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    4,
+    5
+   ],
+   "alt": "Jellyfin 10.11.11's Plugins page, with Plugins in the menu (step 4) and Manage Repositories (step 5) outlined, the same as Jellyfin 12"
+  },
+  {
+   "file": "install-picture-shrinker-10-11-settings-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#BackupChoiceGroup",
+     "step": 12,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    12
+   ],
+   "alt": "Picture shrinker 1.2.4.0's settings on Jellyfin 10.11.11, with Original pictures (step 12) outlined, the same page as on Jellyfin 12"
+  }
+ ]
+}

@@ -9,6 +9,10 @@ https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.j
 
 You do not need Starboard: each plug-in works on any Jellyfin 10.11 or Jellyfin 12 server. GPLv3 licence.
 
+**Help centre:** [themightytrex.github.io/jellyfin-plugins](https://themightytrex.github.io/jellyfin-plugins/) has a
+step-by-step article, with pictures, for every task: adding the repository, installing, every setting, updates, and
+what to do when something goes wrong.
+
 > [!IMPORTANT]
 > **Picture shrinker: after you install or update it, choose a backup option, or nothing is shrunk.** In Jellyfin,
 > open **Dashboard**, **Plugins**, **Picture shrinker**, then **Settings**. Under **Original pictures**, choose **Keep a

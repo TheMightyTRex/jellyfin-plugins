@@ -1,0 +1,699 @@
+{
+ "about": "Help centre screenshots, phase 3-after-a-run: run in order (tools/help_shots/run.sh). Made-up data only.",
+ "shots": [
+  {
+   "file": "backup-and-restore-1-keep-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "near:Keep a backup copy of each original|.psChoice",
+     "step": 2,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Original pictures, with Keep a backup copy of each original chosen and outlined (step 2)"
+  },
+  {
+   "file": "backup-and-restore-2-folder-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "actions": [
+    {
+     "eval": "document.querySelector('#BackupFolder').scrollIntoView({block:'start'}); window.scrollBy(0,-120);"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$.inputContainer:has(#BackupFolder)",
+     "step": 3,
+     "side": "right",
+     "tail": 90,
+     "scroll": false
+    },
+    {
+     "t": "$#PictureShrinkerConfigForm button[type=submit]",
+     "step": 4,
+     "side": "top",
+     "tail": 70,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    3,
+    4
+   ],
+   "alt": "Backup folder, empty so the folder in Jellyfin's data folder is used, outlined (step 3), and Save (step 4) outlined"
+  },
+  {
+   "file": "backup-and-restore-3-triggers-en.png",
+   "route": "/dashboard/tasks/{task:Shrink pictures}",
+   "marks": [
+    {
+     "t": "$.MuiIconButton-colorError, button[aria-label='Delete'], button[title='Delete']",
+     "step": 6,
+     "side": "left",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "The Shrink pictures task, with its trigger Sundays at 03:30 and the delete button (step 6) outlined"
+  },
+  {
+   "file": "backup-and-restore-4-restore-en.png",
+   "route": "/dashboard/tasks",
+   "marks": [
+    {
+     "t": "near:Restore original pictures|.MuiListItem-root, li",
+     "step": 7,
+     "side": "right",
+     "tail": 100,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    7
+   ],
+   "alt": "Scheduled Tasks, with Restore original pictures under Picture shrinker outlined (step 7), with its run button"
+  },
+  {
+   "file": "backup-and-restore-5-delete-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#psDelete",
+     "step": 8,
+     "side": "bottom",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    8
+   ],
+   "alt": "The Space section, with Backup of the originals, 222.8 MB, and Delete backup (frees 222.8 MB) outlined (step 8), with example data"
+  },
+  {
+   "file": "backup-and-restore-6-confirm-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "actions": [
+    {
+     "click": "$#psDelete",
+     "settle": 3000
+    }
+   ],
+   "marks": [
+    {
+     "t": "$#psConfirmDelete",
+     "step": 9,
+     "side": "bottom",
+     "tail": 70,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    9
+   ],
+   "alt": "The Delete the backup? dialog saying how many original pictures it deletes and the space it frees, with Delete backup (step 9) outlined"
+  },
+  {
+   "file": "find-and-tag-2-figures-en.png",
+   "route": "/configurationpage?name=Audio%20description",
+   "marks": [
+    {
+     "t": "$.adFigures",
+     "step": 5,
+     "side": "bottom",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    5
+   ],
+   "alt": "Find and tag after a run, outlined (step 5): 1 film with a described track, 1 episode in 1 series, and the last run, with example data"
+  },
+  {
+   "file": "find-and-tag-3-collections-en.png",
+   "route": "/home",
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('.card')].find(e=>e.querySelector('.cardText')&&e.querySelector('.cardText').textContent.trim()==='Collections')",
+     "step": 6,
+     "side": "bottom",
+     "tail": 70
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "Jellyfin's home page, My Media, with Collections outlined (step 6), with example data"
+  },
+  {
+   "file": "find-and-tag-4-collection-en.png",
+   "route": "/home",
+   "actions": [
+    {
+     "eval": "[...document.querySelectorAll('.card')].find(e=>e.querySelector('.cardText')&&e.querySelector('.cardText').textContent.trim()==='Collections').querySelector('a, button, .cardImageContainer').click()",
+     "settle": 10000
+    }
+   ],
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('.card')].find(e=>e.textContent.includes('Audio description'))",
+     "step": 7,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    7
+   ],
+   "alt": "Collections, with the Audio description collection outlined (step 7)"
+  },
+  {
+   "file": "find-and-tag-5-tag-en.png",
+   "route": "/home",
+   "actions": [
+    {
+     "click": "Films"
+    },
+    {
+     "click": "Harbour Lights (2019)"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$.itemTags",
+     "step": 8,
+     "side": "bottom",
+     "tail": 70
+    }
+   ],
+   "steps": [
+    8
+   ],
+   "alt": "The page of the example film Harbour Lights (2019), with Tags: Audio description outlined (step 8)"
+  },
+  {
+   "file": "move-from-the-old-address-1-both-en.png",
+   "route": "/dashboard/plugins/repositories",
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('li, .MuiListItem-root')].find(e=>e.textContent.includes('jellyfin-plugin-picture-shrinker'))",
+     "step": 3,
+     "side": "bottom",
+     "tail": 70
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The Repositories page listing Jellyfin Stable, the old Picture shrinker address and TheMightyTRexUK, with the old address outlined (step 3)"
+  },
+  {
+   "file": "move-from-the-old-address-2-delete-en.png",
+   "route": "/dashboard/plugins/repositories",
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('li, .MuiListItem-root')].find(e=>e.textContent.includes('jellyfin-plugin-picture-shrinker')).querySelector('button')",
+     "step": 4,
+     "side": "left",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    4
+   ],
+   "alt": "The Repositories page, with the delete button of the old Picture shrinker address outlined (step 4)"
+  },
+  {
+   "file": "play-the-described-track-1-people-en.png",
+   "route": "/configurationpage?name=Audio%20description",
+   "actions": [
+    {
+     "eval": "[...document.querySelectorAll('.adPerson')].forEach(i=>{ if(i.parentElement.textContent.trim()==='Sam') i.checked=true; });"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$#adPeople",
+     "step": 2,
+     "side": "right",
+     "tail": 110,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Play the described track, with the made-up people Alex, Jordan, Priya and Sam, Sam ticked, outlined (step 2)"
+  },
+  {
+   "file": "play-the-described-track-2-save-en.png",
+   "route": "/configurationpage?name=Audio%20description",
+   "marks": [
+    {
+     "t": "$#AudioDescriptionConfigForm button[type=submit]",
+     "step": 3,
+     "side": "top",
+     "tail": 80,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The end of Audio description's settings, with Save (step 3) outlined"
+  },
+  {
+   "file": "play-the-described-track-3-remember-en.png",
+   "route": "/mypreferencesplayback",
+   "user": "Sam",
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('.checkboxContainer')].find(e=>e.textContent.includes('Set audio track based on previous item'))",
+     "step": 5,
+     "side": "right",
+     "tail": 110,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    5
+   ],
+   "alt": "Sam's Playback settings, Advanced, with Set audio track based on previous item outlined (step 5)"
+  },
+  {
+   "file": "play-the-described-track-4-audio-en.png",
+   "route": "/home",
+   "user": "Sam",
+   "actions": [
+    {
+     "click": "Films"
+    },
+    {
+     "click": "Harbour Lights (2019)"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$select.selectAudio",
+     "step": 6,
+     "side": "bottom",
+     "tail": 70
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "The page of the example film Harbour Lights (2019), with its Audio choice outlined (step 6)"
+  },
+  {
+   "file": "settings-1-shrink-all-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "near:Shrink all picture types|.checkboxContainer",
+     "step": 2,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Picture shrinker's settings, What to shrink, with Shrink all picture types active (step 2) outlined"
+  },
+  {
+   "file": "settings-2-picture-types-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "actions": [
+    {
+     "eval": "const c=document.querySelector('#ShrinkAll'); c.checked=false; c.dispatchEvent(new Event('change',{bubbles:true})); document.querySelector('#IncludeLogos').checked=false;"
+    }
+   ],
+   "marks": [
+    {
+     "t": "$#psTypes",
+     "step": 3,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "Picture types after Shrink all picture types is deactivated, outlined (step 3): each type has its tick, with Logos unticked"
+  },
+  {
+   "file": "settings-3-sizes-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "near:Posters no taller than (pixels)|.inputContainer",
+     "step": 4,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    4
+   ],
+   "alt": "The Sizes section, with Posters no taller than (pixels), 900, outlined (step 4), and the other sizes under it"
+  },
+  {
+   "file": "settings-4-quality-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$.inputContainer:has(#Quality)",
+     "step": 5,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    5
+   ],
+   "alt": "Quality, 85, outlined (step 5), at the end of Sizes"
+  },
+  {
+   "file": "settings-5-save-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#PictureShrinkerConfigForm button[type=submit]",
+     "step": 6,
+     "side": "top",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "The end of the settings form, with Save (step 6) outlined"
+  },
+  {
+   "file": "space-saved-1-figures-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$.psSpace",
+     "step": 2,
+     "side": "bottom",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "The Space section: Pictures now 15.9 MB, Backup of the originals 222.8 MB, and Space saved 207.0 MB with 34 pictures shrunk, outlined (step 2), with example data"
+  },
+  {
+   "file": "space-saved-2-measure-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#psMeasure",
+     "step": 3,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    },
+    {
+     "t": "$#psShrinkNow",
+     "step": 4,
+     "side": "bottom",
+     "tail": 70,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    3,
+    4
+   ],
+   "alt": "Measure again (step 3) and Shrink now (step 4) outlined under the Space figures"
+  },
+  {
+   "file": "space-saved-3-last-runs-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#psRunsWrap",
+     "step": 5,
+     "side": "top",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    5
+   ],
+   "alt": "Last runs, outlined (step 5): one run of Shrink pictures, 34 shrunk, 0 left as they were, 0 not shrunk, 207.0 MB saved, Finished, with example data"
+  },
+  {
+   "file": "start-again-1-buttons-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "$#psAgainTitle + p + .psButtons",
+     "step": 2,
+     "side": "top",
+     "tail": 70,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "The Start again section, with Start again: the pictures it shrinks and Start again: every picture outlined (step 2)"
+  },
+  {
+   "file": "start-again-2-question-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "actions": [
+    {
+     "click": "$#psAgainPictures",
+     "settle": 3000
+    }
+   ],
+   "marks": [
+    {
+     "t": "$#psAgainGo",
+     "step": 3,
+     "side": "bottom",
+     "tail": 70,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The question Start again: the pictures it shrinks?, saying what is deleted and that the backup choice is kept, with Start again (step 3) outlined"
+  },
+  {
+   "file": "updates-1-version-en.png",
+   "route": "/dashboard/plugins?status=Installed&query=Picture",
+   "marks": [
+    {
+     "t": "near:Picture shrinker|.MuiCard-root",
+     "step": 1,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    1
+   ],
+   "alt": "Plugins, Installed, with the Picture shrinker card outlined (step 1): version 1.2.5.0, Active"
+  },
+  {
+   "file": "updates-2-update-plugins-en.png",
+   "route": "/dashboard/tasks",
+   "marks": [
+    {
+     "t": "near:Update Plugins|.MuiListItem-root, li",
+     "step": 2,
+     "side": "right",
+     "tail": 100
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Scheduled Tasks, with Update Plugins under Application outlined (step 2)"
+  },
+  {
+   "file": "updates-3-roll-back-en.png",
+   "route": "/dashboard/plugins?status=Installed&query=Picture",
+   "actions": [
+    {
+     "mouse": [
+      375,
+      233
+     ]
+    },
+    {
+     "click": "1.2.3.0 — 17/11/2026, 10:38:37",
+     "settle": 4000
+    },
+    {
+     "eval": "[...document.querySelectorAll('.MuiAccordion-root')].find(e=>e.textContent.includes('1.2.3.0')).scrollIntoView({block:'start'}); window.scrollBy(0,-80);"
+    }
+   ],
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('.MuiAccordion-root')].find(e=>e.textContent.includes('1.2.3.0')).querySelector('.MuiAccordionSummary-root')",
+     "step": 5,
+     "side": "right",
+     "tail": 60,
+     "scroll": false
+    },
+    {
+     "t": "js:[...document.querySelectorAll('.MuiAccordion-root')].find(e=>e.textContent.includes('1.2.3.0')).querySelector('.MuiAccordionDetails-root button')",
+     "step": 6,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    5,
+    6
+   ],
+   "alt": "Picture shrinker's Revision History, with version 1.2.3.0 opened (step 5) and its notes, and its Install button (step 6) outlined"
+  },
+  {
+   "file": "when-it-runs-1-task-en.png",
+   "route": "/dashboard/tasks",
+   "marks": [
+    {
+     "t": "near:Shrink pictures|.MuiListItem-root, li",
+     "step": 2,
+     "side": "right",
+     "tail": 100,
+     "block": "center"
+    }
+   ],
+   "steps": [
+    2
+   ],
+   "alt": "Scheduled Tasks, with Shrink pictures under Picture shrinker outlined (step 2)"
+  },
+  {
+   "file": "when-it-runs-2-add-trigger-en.png",
+   "route": "/dashboard/tasks/{task:Shrink pictures}",
+   "marks": [
+    {
+     "t": "Add Trigger",
+     "step": 3,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The Shrink pictures task, with its trigger Sundays at 03:30 and Add Trigger (step 3) outlined"
+  },
+  {
+   "file": "when-it-runs-3-trigger-en.png",
+   "route": "/dashboard/tasks/{task:Shrink pictures}",
+   "actions": [
+    {
+     "click": "Add Trigger",
+     "settle": 4000
+    }
+   ],
+   "marks": [
+    {
+     "t": "js:[...document.querySelectorAll('[role=dialog] .MuiFormControl-root')][0]",
+     "step": 4,
+     "side": "left",
+     "tail": 110,
+     "scroll": false
+    },
+    {
+     "t": "js:[...document.querySelectorAll('[role=dialog] .MuiFormControl-root')][1]",
+     "step": 5,
+     "side": "left",
+     "tail": 110,
+     "scroll": false
+    },
+    {
+     "t": "$[role=dialog] .MuiDialogActions-root button:last-child",
+     "step": 6,
+     "side": "bottom",
+     "tail": 70,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    4,
+    5,
+    6
+   ],
+   "alt": "The Add Trigger dialog, with Trigger type Daily (step 4), Time (step 5) and Add (step 6) outlined"
+  },
+  {
+   "file": "when-it-runs-4-remove-en.png",
+   "route": "/dashboard/tasks/{task:Shrink pictures}",
+   "marks": [
+    {
+     "t": "$.MuiIconButton-colorError, button[aria-label='Delete'], button[title='Delete']",
+     "step": 7,
+     "side": "left",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    7
+   ],
+   "alt": "The Shrink pictures task, with the delete button of the trigger Sundays at 03:30 outlined (step 7)"
+  },
+  {
+   "file": "when-it-runs-5-when-to-shrink-en.png",
+   "route": "/configurationpage?name=Picture%20shrinker",
+   "marks": [
+    {
+     "t": "near:Once a month|.checkboxContainer",
+     "step": 8,
+     "side": "right",
+     "tail": 90,
+     "block": "center"
+    },
+    {
+     "t": "near:Shrink new pictures soon after Jellyfin saves them|.checkboxContainer",
+     "step": 9,
+     "side": "right",
+     "tail": 90,
+     "scroll": false
+    },
+    {
+     "t": "near:Wait before shrinking a new picture (minutes)|.inputContainer",
+     "step": 10,
+     "side": "right",
+     "tail": 90,
+     "scroll": false
+    }
+   ],
+   "steps": [
+    8,
+    9,
+    10
+   ],
+   "alt": "When to shrink, with Once a month (step 8), Shrink new pictures soon after Jellyfin saves them (step 9) and Wait before shrinking a new picture (step 10) outlined"
+  }
+ ]
+}

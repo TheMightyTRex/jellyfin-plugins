@@ -1,0 +1,4 @@
+# Genuine exceptions to tools/check_words.py: the file, a tab, a regular expression for the line, a tab, and the reason.
+docs/audio-description/play-the-described-track.md	Under \*\*Advanced\*\*	Jellyfin's own heading on its Playback settings page, quoted exactly
+docs/picture-shrinker/install.md	with Enable plugin active	Jellyfin's own label on a plug-in's page, quoted exactly in a text description
+docs/picture-shrinker/update-and-roll-back.md	\*\*Just shrink, with	The old label, quoted exactly where the article says what it was renamed to

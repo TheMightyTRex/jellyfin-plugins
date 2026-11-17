@@ -1,0 +1,262 @@
+{
+ "about": "Help centre screenshots, phase 1-before-install: run in order (tools/help_shots/run.sh). Made-up data only.",
+ "shots": [
+  {
+   "file": "add-the-repository-2-dashboard-en.png",
+   "route": "/home",
+   "actions": [
+    {
+     "click": "$button[aria-label^='User']",
+     "settle": 8000
+    }
+   ],
+   "marks": [
+    {
+     "t": "$[role=menuitem][href='#/dashboard']",
+     "step": 3,
+     "side": "left",
+     "tail": 140
+    }
+   ],
+   "steps": [
+    3
+   ],
+   "alt": "The profile menu open on Jellyfin's home page, with Dashboard (step 3) outlined, with example data"
+  },
+  {
+   "file": "add-the-repository-3-plugins-en.png",
+   "route": "/dashboard/plugins",
+   "marks": [
+    {
+     "t": "$a[href='#/dashboard/plugins'] .MuiListItemText-root",
+     "step": 4,
+     "side": "right",
+     "tail": 120
+    },
+    {
+     "t": "Manage Repositories",
+     "step": 5,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    4,
+    5
+   ],
+   "alt": "The Plugins page of Jellyfin's Dashboard, with Plugins in the menu (step 4) and Manage Repositories (step 5) outlined"
+  },
+  {
+   "file": "add-the-repository-4-new-repository-en.png",
+   "route": "/dashboard/plugins/repositories",
+   "marks": [
+    {
+     "t": "New Repository",
+     "step": 6,
+     "side": "right",
+     "tail": 120
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "The Repositories page, listing Jellyfin Stable, with New Repository (step 6) outlined"
+  },
+  {
+   "file": "add-the-repository-5-fill-in-en.png",
+   "route": "/dashboard/plugins/repositories",
+   "actions": [
+    {
+     "click": "New Repository",
+     "settle": 4000
+    },
+    {
+     "fill": [
+      "label:Repository Name",
+      "TheMightyTRexUK"
+     ]
+    },
+    {
+     "fill": [
+      "label:Repository URL",
+      "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json"
+     ]
+    }
+   ],
+   "marks": [
+    {
+     "t": "near:Repository Name|.MuiFormControl-root",
+     "step": 7,
+     "side": "left",
+     "tail": 90
+    },
+    {
+     "t": "near:Repository URL|.MuiFormControl-root",
+     "step": 8,
+     "side": "left",
+     "tail": 90
+    },
+    {
+     "t": "Add",
+     "step": 9,
+     "side": "bottom",
+     "tail": 80
+    }
+   ],
+   "steps": [
+    7,
+    8,
+    9
+   ],
+   "alt": "The New Repository dialog with Repository Name TheMightyTRexUK (step 7), the Repository URL (step 8) and Add (step 9) outlined"
+  },
+  {
+   "file": "add-the-repository-6-available-en.png",
+   "route": "/dashboard/plugins?status=Available",
+   "marks": [
+    {
+     "t": "Available",
+     "step": 10,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    10
+   ],
+   "alt": "The Plugins page with Available (step 10) outlined, listing Picture shrinker 1.2.3.0 with its picture"
+  },
+  {
+   "file": "install-picture-shrinker-1-available-en.png",
+   "route": "/dashboard/plugins?status=Available",
+   "actions": [
+    {
+     "fill": [
+      "$input[placeholder='Search']",
+      "Picture"
+     ],
+     "settle": 6000
+    }
+   ],
+   "marks": [
+    {
+     "t": "Available",
+     "step": 2,
+     "side": "bottom",
+     "tail": 70
+    },
+    {
+     "t": "$input[placeholder='Search']",
+     "step": 3,
+     "side": "bottom",
+     "tail": 70
+    },
+    {
+     "t": "$.MuiCard-root",
+     "step": 4,
+     "side": "right",
+     "tail": 110
+    }
+   ],
+   "steps": [
+    2,
+    3,
+    4
+   ],
+   "alt": "The Plugins page with Available (step 2), Search with Picture entered (step 3) and the Picture shrinker card (step 4) outlined"
+  },
+  {
+   "file": "install-picture-shrinker-2-install-en.png",
+   "route": "/dashboard/plugins?status=Available&query=Picture",
+   "actions": [
+    {
+     "mouse": [
+      375,
+      233
+     ]
+    }
+   ],
+   "marks": [
+    {
+     "t": "$button.MuiButton-containedPrimary",
+     "step": 5,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    5
+   ],
+   "alt": "Picture shrinker's page in the catalogue, with its Revision History, Status Not installed and Install (step 5) outlined"
+  },
+  {
+   "file": "install-picture-shrinker-3-confirm-en.png",
+   "route": "/dashboard/plugins?status=Available&query=Picture",
+   "actions": [
+    {
+     "mouse": [
+      375,
+      233
+     ]
+    },
+    {
+     "click": {
+      "role": "button",
+      "name": "Install"
+     },
+     "settle": 5000
+    }
+   ],
+   "marks": [
+    {
+     "t": "$[role=dialog] button.MuiButton-contained, [role=dialog] .MuiDialogActions-root button:last-child",
+     "step": 6,
+     "side": "bottom",
+     "tail": 80
+    }
+   ],
+   "steps": [
+    6
+   ],
+   "alt": "The Confirm Plugin Installation dialog, with its warning about plug-ins from other authors and Install (step 6) outlined"
+  },
+  {
+   "file": "install-picture-shrinker-4-restart-en.png",
+   "route": "/dashboard",
+   "marks": [
+    {
+     "t": "Restart",
+     "step": 7,
+     "side": "bottom",
+     "tail": 90
+    }
+   ],
+   "steps": [
+    7
+   ],
+   "alt": "Jellyfin's Dashboard, with Restart (step 7) outlined, with example data"
+  },
+  {
+   "file": "install-picture-shrinker-5-restart-confirm-en.png",
+   "route": "/dashboard",
+   "actions": [
+    {
+     "click": "Restart",
+     "settle": 4000
+    }
+   ],
+   "marks": [
+    {
+     "t": "$[role=dialog] .MuiDialogActions-root button:last-child",
+     "step": 8,
+     "side": "bottom",
+     "tail": 80
+    }
+   ],
+   "steps": [
+    8
+   ],
+   "alt": "The Restart dialog asking 'Are you sure you wish to restart Jellyfin?', with Restart (step 8) outlined"
+  }
+ ]
+}

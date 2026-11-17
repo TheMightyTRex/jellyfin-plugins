@@ -1,0 +1,237 @@
+{
+  "name": "Jellyfin plug-ins",
+  "title": "Jellyfin plug-ins help",
+  "repo": "https://github.com/TheMightyTRex/jellyfin-plugins",
+  "site": "https://themightytrex.github.io/jellyfin-plugins/help/",
+  "help_dir": "docs",
+  "logo_file": "docs/images/logo.svg",
+  "search_example": "Enter what you want to do, such as \"backup\", \"described track\" or \"repository\".",
+  "front_door": true,
+  "home": {
+    "title": "Welcome to the Jellyfin plug-ins help",
+    "intro": "Two free plug-ins for Jellyfin 10.11 and 12, from one repository address: Picture shrinker makes the pictures Jellyfin keeps smaller, and Audio description finds, tags and plays described sound tracks. Start by adding the address to Jellyfin."
+  },
+  "areas": [
+    {
+      "key": "start",
+      "intro": "Add the one repository address to Jellyfin, then install the plug-ins you want.",
+      "groups": [
+        {
+          "key": "add",
+          "label": "Add the plug-ins"
+        }
+      ]
+    },
+    {
+      "key": "use",
+      "intro": "Using the plug-ins beside Starboard, and which version to choose.",
+      "groups": [
+        {
+          "key": "starboard",
+          "label": "With Starboard"
+        }
+      ]
+    },
+    {
+      "key": "plugins",
+      "intro": "Every task for each plug-in, one article each.",
+      "groups": [
+        {
+          "key": "picture-shrinker",
+          "label": "Picture shrinker"
+        },
+        {
+          "key": "audio-description",
+          "label": "Audio description"
+        }
+      ]
+    },
+    {
+      "key": "a11y",
+      "intro": "How each plug-in works with a keyboard, a screen reader and Jellyfin's own apps, and its limits.",
+      "groups": [
+        {
+          "key": "plugins",
+          "label": "Each plug-in"
+        }
+      ]
+    },
+    {
+      "key": "fix",
+      "intro": "Find out why something is not working. Each article starts with a flow chart.",
+      "groups": [
+        {
+          "key": "adding",
+          "label": "Adding the plug-ins"
+        },
+        {
+          "key": "picture-shrinker",
+          "label": "Picture shrinker"
+        },
+        {
+          "key": "audio-description",
+          "label": "Audio description"
+        }
+      ]
+    },
+    {
+      "key": "dev",
+      "intro": "The shared rules each plug-in follows with its Starboard version, and how the plug-ins are built and released.",
+      "groups": [
+        {
+          "key": "rules",
+          "label": "The rules and SYNC.md"
+        },
+        {
+          "key": "build",
+          "label": "Build and release"
+        }
+      ]
+    }
+  ],
+  "journey": {
+    "title": "The plug-ins, step by step",
+    "intro": "Follow the path, or go straight to any stage.",
+    "stages": [
+      {
+        "label": "Add",
+        "icon": "download",
+        "tone": "start",
+        "cards": [
+          {
+            "title": "Add the repository",
+            "line": "One address for both plug-ins",
+            "to": "start/add-the-repository.md"
+          },
+          {
+            "title": "Move from the old address",
+            "line": "For Picture shrinker's first address",
+            "to": "start/move-from-the-old-address.md"
+          }
+        ]
+      },
+      {
+        "label": "Install",
+        "icon": "puzzle",
+        "tone": "step",
+        "cards": [
+          {
+            "title": "Install Picture shrinker",
+            "line": "Then choose a backup option",
+            "to": "picture-shrinker/install.md"
+          },
+          {
+            "title": "Install Audio description",
+            "line": "Find, tag and play described tracks",
+            "to": "audio-description/install.md"
+          },
+          {
+            "title": "Use them with Starboard",
+            "line": "Which version to choose",
+            "to": "start/use-with-starboard.md"
+          }
+        ]
+      },
+      {
+        "label": "Use",
+        "icon": "play",
+        "tone": "step",
+        "cards": [
+          {
+            "title": "Choose what to shrink",
+            "line": "Each picture type and its size",
+            "to": "picture-shrinker/choose-what-to-shrink.md"
+          },
+          {
+            "title": "Find described films",
+            "line": "The tag and the collection",
+            "to": "audio-description/find-and-tag.md"
+          },
+          {
+            "title": "Check the space saved",
+            "line": "The figures and the last runs",
+            "to": "picture-shrinker/space-saved.md"
+          }
+        ]
+      },
+      {
+        "label": "Update or fix",
+        "icon": "wrench",
+        "tone": "fix",
+        "cards": [
+          {
+            "title": "Problem solver",
+            "line": "Answer a few questions",
+            "to": "solver.html"
+          },
+          {
+            "title": "Update or roll back",
+            "line": "Picture shrinker's versions",
+            "to": "picture-shrinker/update-and-roll-back.md"
+          }
+        ]
+      }
+    ]
+  },
+  "featured": {
+    "chip": "Start here",
+    "title": "One address for both plug-ins",
+    "text": "Add https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json to Jellyfin once, and both plug-ins appear in its catalogue, with their updates. Go to Dashboard, Plugins, Manage Repositories, then New Repository; on a Plugins page with tabs, the Repositories tab, then +.",
+    "to": "start/add-the-repository.md",
+    "flow": "start: Dashboard, then Plugins\nstep1: Manage Repositories\nstep2: New Repository\nstep3: Enter the address, then Add\nend: The plug-ins are in Available"
+  },
+  "solver": {
+    "title": "Problem solver",
+    "intro": "Answer up to three questions to find the right fix.",
+    "start": {
+      "question": "What is wrong?",
+      "answers": [
+        {
+          "label": "A plug-in is not in Jellyfin's catalogue",
+          "to": "fix/plug-in-not-in-the-catalogue.md"
+        },
+        {
+          "label": "Something about Picture shrinker",
+          "next": {
+            "question": "What happens?",
+            "answers": [
+              {
+                "label": "Nothing is shrunk, or Shrink pictures failed",
+                "to": "fix/picture-shrinker-problems.md"
+              },
+              {
+                "label": "The pictures are too soft",
+                "to": "picture-shrinker/choose-what-to-shrink.md"
+              },
+              {
+                "label": "I want the original pictures back",
+                "to": "picture-shrinker/backup-and-restore.md"
+              }
+            ]
+          }
+        },
+        {
+          "label": "Something about Audio description",
+          "next": {
+            "question": "What happens?",
+            "answers": [
+              {
+                "label": "A described film has no tag",
+                "to": "fix/audio-description-problems.md"
+              },
+              {
+                "label": "The described track does not play by itself",
+                "to": "fix/audio-description-problems.md"
+              },
+              {
+                "label": "A track I added says Not added or Lengths differ",
+                "to": "fix/audio-description-problems.md"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "footer_note": "**Use description tracks you have the right to use.** Audio description adds a description track you already have, such as one from AudioVault. Get each track yourself, keep to the rules of the site it comes from, and use it only with a copy of the film you own. The plug-ins download nothing from any website."
+}
