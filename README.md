@@ -4,7 +4,7 @@ Works on any Jellyfin 10.11 or Jellyfin 12 server; you do not need Starboard.
 
 A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
 
-![The Picture shrinker settings page in Jellyfin's dashboard: the Space section shows the pictures now, the backup with a Delete backup button, and the space saved](images/settings.png)
+![The Space section of Picture shrinker's settings page in Jellyfin 12: 5.2 MB of pictures now, a 5.4 MB backup of the originals with a Delete backup button, 4.3 MB saved with 16 pictures shrunk, and the Shrink now and Measure again buttons](images/settings.png)
 
 ## What it does
 
@@ -58,6 +58,8 @@ After the restart:
 Nothing is shrunk until you choose, on its settings page under **Original pictures**, **Keep a backup copy of each
 original** or **Just shrink, with no backup**. There is no default. Then the first run is every Sunday at 03:30, or
 when you choose **Shrink now**.
+
+![Picture shrinker's settings page before a choice is made: a notice says nothing is shrunk until you choose, and Original pictures offers Keep a backup copy of each original and Just shrink, with no backup, with neither chosen](images/settings-choose.png)
 
 If you use Starboard, it can do all of this for you in **Settings**, **Apps**, **Jellyfin**, **Picture shrinker**.
 
@@ -155,6 +157,8 @@ If you choose **Just shrink**, the settings page warns that pictures shrunk from
 **Start again**, on the settings page, clears everything and has Jellyfin download pictures again from the internet.
 There are two, and each asks you first:
 
+![The Start again section, with the buttons Start again: the pictures it shrinks and Start again: every picture](images/start-again.png)
+
 - **Start again: the pictures it shrinks:** every type in the table above, whatever is ticked in **What to shrink**
   (it is a reset, so a type you turned off after shrinking it comes back too).
 - **Start again: every picture:** Jellyfin replaces every picture of every film, series, season, collection and
@@ -174,6 +178,8 @@ Each one, in order:
      at full size. Metadata is filled in only where it is missing.
    - **Every picture:** nothing is moved. Jellyfin refreshes each library, with everything in it, and each person,
      replacing every picture.
+
+![The question before Start again: the pictures it shrinks. It says the backup and the plug-in's records are deleted, Jellyfin downloads every picture it shrinks again at full size, the backup choice is kept and a picture not downloaded again is put back after a day, with Cancel and Start again buttons](images/start-again-question.png)
 
 The old picture is kept until Jellyfin has a new one, so a poster you uploaded yourself, or one no source has, is
 never lost. Every 10 minutes while any are waiting, and at the start of each run, the shrinker checks them: once
