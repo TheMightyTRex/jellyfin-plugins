@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(PluginFramework)</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <ImplicitUsings>disable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Jellyfin.Plugin.AudioDescription\Jellyfin.Plugin.AudioDescription.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\rules.json" Link="rules.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.AudioDescription\Configuration\configPage.html" Link="wording\configPage.html" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\README.md" Link="wording\README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\SYNC.md" Link="wording\SYNC.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\CHANGELOG.md" Link="wording\CHANGELOG.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.AudioDescription\**\*.cs" Exclude="..\..\Jellyfin.Plugin.AudioDescription\obj\**;..\..\Jellyfin.Plugin.AudioDescription\bin\**" LinkBase="wording\code" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
