@@ -3,11 +3,6 @@
 
 # Audio description is not working
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 A film with a described track has no tag, the described track does not play by itself, or a track you added was not
 added. Follow the chart to find the cause.
 

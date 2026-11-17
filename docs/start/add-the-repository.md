@@ -47,8 +47,8 @@ with tabs on its **Plugins** page names some controls differently: read [On Jell
 
    ![The New Repository dialog with Repository Name TheMightyTRexUK (step 7), the Repository URL (step 8) and Add (step 9) outlined](../images/add-the-repository-5-fill-in-en.png)
 
-10. Go back to **Plugins** and select **Available**. Picture shrinker is listed with its own picture. Audio
-    description is listed once it is released.
+10. Go back to **Plugins** and select **Available**. Each plug-in by TheMightyTRexUK is listed with its own
+    picture.
 
     ![The Plugins page with Available (step 10) outlined, listing Picture shrinker 1.2.3.0 with its picture](../images/add-the-repository-6-available-en.png)
 

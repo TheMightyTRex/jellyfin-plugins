@@ -3,11 +3,6 @@
 
 # Audio description for developers
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Audio description has a Jellyfin version, this plug-in, and two Starboard plug-ins: Audio description, and Audio
 description tracks. They must find the same tracks, give the same tag, and name and check added tracks in the same
 way, so their shared rules are in one file, `audio-description/rules.json`, and

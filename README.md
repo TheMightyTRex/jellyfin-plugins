@@ -24,7 +24,7 @@ what to do when something goes wrong.
 | Plug-in | What it does | Folder |
 |---|---|---|
 | Picture shrinker | Shrinks the posters, backdrops, logos, photos of people and other pictures Jellyfin keeps, so they take less space. | [picture-shrinker](picture-shrinker) |
-| Audio description | Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have. Not released yet. | [audio-description](audio-description) |
+| Audio description | Finds and tags the films and series with a described sound track, plays it for the people who choose it, and adds a description track you have. | [audio-description](audio-description) |
 
 Each plug-in has two builds, one for Jellyfin 12 (.NET 10) and one for Jellyfin 10.11 (.NET 9). Jellyfin installs the
 one for its own version.
@@ -35,13 +35,11 @@ You need an administrator account.
 
 1. Open Jellyfin in a web browser and sign in as an administrator.
 2. Open the menu, then **Dashboard**, then **Plugins**.
-3. Choose **Manage Repositories** (on Jellyfin 10.11: the **Repositories** tab), then **New Repository** (on 10.11:
-   **+**). Fill in:
+3. Choose **Manage Repositories**, then **New Repository**. Fill in:
    - **Repository Name:** `TheMightyTRexUK`
    - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json`
-4. Choose **Add** (on 10.11: **Save**).
-5. Back on **Plugins**, choose **Available** (on 10.11: the **Catalogue** tab). Each plug-in here is listed with its
-   own picture. Open one, choose **Install**, then restart Jellyfin.
+4. Choose **Add**.
+5. Back on **Plugins**, choose **Available**. Each plug-in here is listed with its own picture. Open one, choose **Install**, then restart Jellyfin.
 
 Each plug-in's README says how to set it up after the restart.
 

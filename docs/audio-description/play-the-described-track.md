@@ -3,11 +3,6 @@
 
 # Play the described track for the people who want it
 
-<!-- not-released: audio-description -->
-> [!NOTE]
-> **Audio description is not released yet,** so Jellyfin's catalogue does not list it. This page describes version
-> 1.0.1.0 for Jellyfin 12 and 1.0.0.0 for Jellyfin 10.11.
-
 Choose the people who want audio description, and when one of them starts a film or episode with a described track,
 Jellyfin asks their app to change to it. In an app that does not accept that, they choose the track once in the
 player, and Jellyfin can remember it. This takes 6 steps.
@@ -33,8 +28,7 @@ player, and Jellyfin can remember it. This takes 6 steps.
    **Playback**.
 5. Under **Advanced**, they activate **Set audio track based on previous item**, then select **Save**. In a series,
    Jellyfin then plays each next episode with the sound track they chose for the last one, also in an app that does
-   not change the track by itself. The plug-in's settings page calls this setting Remember audio
-   selections.
+   not change the track by itself.
 
    ![Sam's Playback settings, with Set audio track based on previous item outlined (step 5)](../images/play-the-described-track-3-remember-en.png)
 

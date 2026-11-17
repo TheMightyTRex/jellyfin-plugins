@@ -15,17 +15,13 @@ q: Is TheMightyTRexUK in Manage Repositories?
 q2: Is the address exactly the one in this help?
   No -> 2
   Yes -> q3
-q3: Which plug-in is missing?
-  Audio description -> 3
-  Picture shrinker -> q4
-q4: Is your Jellyfin 10.11 or 12?
-  No, an earlier or later one -> 4
-  Yes -> 5
+q3: Is your Jellyfin 10.11 or 12?
+  No, an earlier or later one -> 3
+  Yes -> 4
 1: Add the repository #1-add-the-repository
 2: Correct the address #2-correct-the-address
-3: Audio description is not released yet #3-audio-description-is-not-released-yet
-4: Use Jellyfin 10.11 or 12 #4-use-jellyfin-1011-or-12
-5: Let Jellyfin read the repository again #5-let-jellyfin-read-the-repository-again
+3: Use Jellyfin 10.11 or 12 #3-use-jellyfin-1011-or-12
+4: Let Jellyfin read the repository again #4-let-jellyfin-read-the-repository-again
 ```
 
 ## 1. Add the repository
@@ -46,18 +42,13 @@ Jellyfin lists only the plug-ins of the repositories it has. Follow
 
 3. If it differs, select the delete button beside it, then add it again with **New Repository**.
 
-## 3. Audio description is not released yet
-
-<!-- not-released: audio-description -->
-Audio description is not in the repository yet, so no Jellyfin lists it. Picture shrinker is listed.
-
-## 4. Use Jellyfin 10.11 or 12
+## 3. Use Jellyfin 10.11 or 12
 
 Each plug-in has a build for Jellyfin 10.11 and one for Jellyfin 12, and Jellyfin lists only builds for its own
 version or earlier. To find your version, go to **Dashboard**: it is under the server name in the Dashboard's menu.
 Jellyfin 10.10 and earlier are not supported. Update Jellyfin to use the plug-ins.
 
-## 5. Let Jellyfin read the repository again
+## 4. Let Jellyfin read the repository again
 
 Jellyfin reads each repository from the internet when the **Plugins** page opens.
 

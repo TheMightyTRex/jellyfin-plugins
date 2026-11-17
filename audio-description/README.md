@@ -37,23 +37,20 @@ To find your version, go to **Dashboard**: the version is under the server name 
 
 1. Open Jellyfin in a web browser and sign in as an administrator.
 2. Open the menu, then **Dashboard**, then **Plugins**.
-3. Choose **Manage Repositories** (on Jellyfin 10.11: the **Repositories** tab), then **New Repository** (on 10.11:
-   **+**). Fill in:
+3. Choose **Manage Repositories**, then **New Repository**. Fill in:
    - **Repository Name:** `TheMightyTRexUK`
    - **Repository URL:** `https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/manifest.json`
 
    One address holds every Jellyfin plug-in by TheMightyTRexUK, Picture shrinker among them. If you added it for
    another of them, skip to step 5.
-4. Choose **Add** (on 10.11: **Save**).
-5. Back on **Plugins**, choose **Available** (on 10.11: the **Catalogue** tab) and search for `Audio`. Open
-   **Audio description**.
+4. Choose **Add**.
+5. Back on **Plugins**, choose **Available** and search for `Audio`. Open **Audio description**.
 6. Choose **Install**, then **Install** again to confirm.
 7. Restart Jellyfin: **Dashboard**, then **Restart** (or restart its container or service).
 
 After the restart:
 
-- **The settings** are in **Dashboard**, **Plugins**: choose **Installed** (on 10.11: **My Plugins**), open
-  **Audio description**, then **Settings**.
+- **The settings** are in **Dashboard**, **Plugins**: choose **Installed**, open **Audio description**, then **Settings**.
 - **The tasks** are in **Dashboard**, **Scheduled Tasks**, under **Audio description**: **Find and tag audio
   description** and **Add description tracks**.
 
@@ -100,7 +97,7 @@ sound track (SetAudioStreamIndex), the same command Jellyfin's apps send each ot
 **Not every Jellyfin app accepts this.** Each app tells Jellyfin which commands it accepts. Jellyfin's web app is one
 that accepts it; an app that does not say it does is left alone, and Jellyfin's log says so, with the app's name:
 "does not accept the command to change the sound track". In those apps, choose the described track in the player.
-Jellyfin remembers that choice for each film and series when **Remember audio selections** is active in the person's
+Jellyfin remembers that choice for each film and series when **Set audio track based on previous item** is active in the person's
 **Playback** settings.
 
 ## Add a track you have
@@ -158,8 +155,7 @@ Jellyfin needs to be able to write in your film and series folders to add a trac
 
 1. To take the tags off first, deactivate **Add them to the Audio description collection**, then remove the tag in
    Jellyfin; or keep them, as they do no harm.
-2. In **Dashboard**, **Plugins**, **Installed** (on Jellyfin 10.11: **My Plugins**), open **Audio description** and
-   choose **Uninstall**, then restart Jellyfin.
+2. In **Dashboard**, **Plugins**, **Installed**, open **Audio description** and choose **Uninstall**, then restart Jellyfin.
 3. Added tracks stay next to their films and keep working. The folder for description tracks stays, with its
    **Confirmed**, **Taken off** and **Unzipped** folders: delete them yourself. Two small files stay too: its
    settings, `plugins/configurations/Jellyfin.Plugin.AudioDescription.xml`, and its records,
