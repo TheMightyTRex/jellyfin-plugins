@@ -21,6 +21,10 @@
   <ItemGroup>
     <None Include="..\pictures\**\*" LinkBase="pictures" CopyToOutputDirectory="PreserveNewest" />
     <None Include="..\..\rules.json" Link="rules.json" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.PictureShrinker\Configuration\configPage.html" Link="wording\configPage.html" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\README.md" Link="wording\README.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\SYNC.md" Link="wording\SYNC.md" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\Jellyfin.Plugin.PictureShrinker\**\*.cs" Exclude="..\..\Jellyfin.Plugin.PictureShrinker\obj\**;..\..\Jellyfin.Plugin.PictureShrinker\bin\**" LinkBase="wording\code" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

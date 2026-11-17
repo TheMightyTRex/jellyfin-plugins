@@ -19,7 +19,7 @@ public sealed class ChoiceReminder : IHostedService
 
     public const string ShortOverview = "Nothing is shrunk until you choose a backup option";
 
-    public const string Overview = "Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Just shrink, with no backup, then save.";
+    public const string Overview = "Open Dashboard, Plugins, Picture shrinker, then Settings. Under Original pictures, choose Keep a backup copy of each original or Shrink without a backup, then save.";
 
     public static readonly TimeSpan Every = TimeSpan.FromDays(1);
 

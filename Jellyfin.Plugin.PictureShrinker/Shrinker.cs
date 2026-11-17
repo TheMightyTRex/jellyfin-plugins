@@ -115,7 +115,7 @@ public sealed class ShrinkSettings
     /// <summary>Gets a value indicating whether each original is backed up before it is replaced.</summary>
     public bool Backup => Choice == Shrinker.Keep;
 
-    /// <summary>Gets a value indicating whether the person has chosen Keep a backup copy or Just shrink.</summary>
+    /// <summary>Gets a value indicating whether the person has chosen Keep a backup copy or Shrink without a backup.</summary>
     public bool Chosen => Choice is Shrinker.Keep or Shrinker.JustShrink;
 
     public string BackupRoot { get; init; } = string.Empty;
@@ -280,7 +280,7 @@ public sealed class Shrinker
     /// <summary>The backup choice Keep a backup copy of each original.</summary>
     public const string Keep = "keep";
 
-    /// <summary>The backup choice Just shrink, with no backup.</summary>
+    /// <summary>The backup choice Shrink without a backup.</summary>
     public const string JustShrink = "none";
 
     /// <summary>Start again: the pictures it shrinks (posters, backdrops and photos of people, of every kind whatever is ticked).</summary>
@@ -290,7 +290,7 @@ public sealed class Shrinker
     public const string EveryPicture = "every_picture";
 
     /// <summary>What a run, Shrink now and the new-picture watcher say while the backup choice is not made.</summary>
-    public const string ChooseFirst = "Not shrunk: choose Keep a backup copy or Just shrink, in its settings, first";
+    public const string ChooseFirst = "Not shrunk: choose Keep a backup copy or Shrink without a backup, in its settings, first";
 
     private static readonly string[] _otherPictureExtensions = { ".gif", ".bmp" };
     private readonly SemaphoreSlim _gate = new(1, 1);
@@ -600,7 +600,7 @@ public sealed class Shrinker
         }
         catch (Exception e) when (e is IOException or UnauthorizedAccessException)
         {
-            return (false, 0, $"not shrunk: the original could not be backed up ({e.Message})");
+            return (false, 0, $"not shrunk: the original could not be copied to the backup folder. Check that Jellyfin can write to it. Technical details: {e.Message}");
         }
         finally
         {

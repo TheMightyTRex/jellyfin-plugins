@@ -384,7 +384,7 @@ public sealed class ShrinkerTests : IDisposable
         var before = Hashes(_meta);
         var shrinker = Make(Settings(choice: choice));
         var rec = shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
-        Assert.Equal("Not shrunk: choose Keep a backup copy or Just shrink, in its settings, first", rec.Stopped);
+        Assert.Equal("Not shrunk: choose Keep a backup copy or Shrink without a backup, in its settings, first", rec.Stopped);
         Assert.Equal(0, rec.Shrunk);
         var only = Directory.GetFiles(Path.Combine(_meta, "library"), "poster.*", SearchOption.AllDirectories);
         Assert.Equal(Shrinker.ChooseFirst, shrinker.Run("new", TimeSpan.FromMinutes(5), CancellationToken.None, null, only)!.Stopped);

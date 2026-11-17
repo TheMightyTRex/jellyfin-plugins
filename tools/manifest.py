@@ -57,7 +57,11 @@ def pair(version=None):
 def changelog(version):
     text = open(os.path.join(ROOT, "CHANGELOG.md"), encoding="utf-8").read()
     m = re.search(rf"^## [^\n]*?(?<![\d.]){re.escape(version)}(?![\d.])[^\n]*$(.*?)(?=^## |\Z)", text, re.M | re.S)
-    return (m.group(1).strip() if m else "").replace("**", "")
+    body = m.group(1) if m else ""
+    # Jellyfin shows the text as it is: "### Added" reads "Added:", and the link references at the end are left out.
+    body = re.sub(r"^### (\w+)[ \t]*$", r"\1:", body, flags=re.M)
+    body = re.sub(r"^\[[^\]]+\]: \S+[ \t]*$", "", body, flags=re.M)
+    return body.strip().replace("**", "")
 
 
 def meta(version):

@@ -7,7 +7,7 @@ A Jellyfin plug-in by TheMightyTRexUK, GPLv3 licence.
 > [!IMPORTANT]
 > **After you install or update it, choose a backup option, or nothing is shrunk.** In Jellyfin, open **Dashboard**,
 > **Plugins**, **Picture shrinker**, then **Settings**. Under **Original pictures**, choose **Keep a backup copy of each
-> original** or **Just shrink, with no backup**, then **Save**. There is no default. Until you choose, the Dashboard's
+> original** or **Shrink without a backup**, then **Save**. There is no default. Until you choose, the Dashboard's
 > **Activity** list reminds you and **Shrink pictures** shows as failed in **Scheduled Tasks**.
 
 ![The Space section of Picture shrinker's settings page in Jellyfin 12: 5.2 MB of pictures now, a 5.4 MB backup of the originals with a Delete backup button, 4.3 MB saved with 16 pictures shrunk, and the Shrink now and Measure again buttons](images/settings.png)
@@ -22,7 +22,7 @@ example:
 - **Backdrops** become 1,920 pixels wide, sharp on a 1080p screen.
 - **Photos of cast and crew** become 400 pixels wide.
 
-Every picture type is shrunk by default; the table below has them all.
+Every picture type is shrunk by default. 'What it picks' lists them all.
 
 Before a picture is replaced, the smaller copy is checked. If anything is wrong, the original stays as it was. You
 choose whether each original is copied to a backup folder first: with a backup you can put every original back with
@@ -40,7 +40,7 @@ Jellyfin 10.11).
 | 12.0 to 12.4 | 1.2.3.0 | .NET 10 |
 | 10.11 | 1.2.2.0 | .NET 9 |
 
-To see your version: **Dashboard**; it is under the server name at the top of the menu.
+To find your version, go to **Dashboard**: the version is under the server name in the menu.
 
 1. Open Jellyfin in a web browser and sign in as an administrator.
 2. Open the menu, then **Dashboard**, then **Plugins**.
@@ -62,10 +62,10 @@ After the restart:
   **Restore original pictures**.
 
 Nothing is shrunk until you choose, on its settings page under **Original pictures**, **Keep a backup copy of each
-original** or **Just shrink, with no backup**. There is no default. Then the first run is every Sunday at 03:30, or
+original** or **Shrink without a backup**. There is no default. Then the first run is every Sunday at 03:30, or
 when you choose **Shrink now**.
 
-![Picture shrinker's settings page before a choice is made: a notice says nothing is shrunk until you choose, and Original pictures offers Keep a backup copy of each original and Just shrink, with no backup, with neither chosen](images/settings-choose.png)
+![Picture shrinker's settings page before a choice is made: a notice says nothing is shrunk until you choose, and Original pictures offers its two backup choices, with neither chosen](images/settings-choose.png)
 
 If you use Starboard, it can do all of this for you in **Settings**, **Apps**, **Jellyfin**, **Picture shrinker**.
 
@@ -73,7 +73,7 @@ If you use Starboard, it can do all of this for you in **Settings**, **Apps**, *
 
 ### What it picks
 
-It looks only in Jellyfin's metadata folder (in the official Docker image, `/config/metadata`; in the LinuxServer.io
+It works only in Jellyfin's metadata folder (in the official Docker image, `/config/metadata`; in the LinuxServer.io
 image, `/config/data/metadata`).
 
 | Picture | Where Jellyfin keeps it | Shrunk to |
@@ -92,9 +92,9 @@ files, and every other picture, are left alone. A picture that is already small 
 size, never written. Each picture keeps its format: JPEG and WebP at **Quality** 85, PNG lossless and with its
 transparency, which matters for logos and clear art.
 
-**What to shrink**, at the top of the settings page, holds the backup choice, **Shrink all picture types** and a tick
-for each type. **Shrink all picture types** is on by default: every type is shrunk, and the ticks cannot be changed.
-Turn it off to choose the types yourself; each is ticked by default. Each type's size is under **Sizes**.
+**What to shrink**, the first section of the settings page, holds the backup choice, **Shrink all picture types** and a tick
+for each type. **Shrink all picture types** is active by default: every type is shrunk, and the ticks cannot be changed.
+Deactivate it to choose the types yourself; each is ticked by default. Each type's size is under **Sizes**.
 
 ### The checks before a replace
 
@@ -103,7 +103,7 @@ For each picture that is too big:
 1. A smaller copy is written to a hidden file beside it.
 2. The copy is opened again and decoded in full, and must have exactly the new size and the original's format.
 3. The copy must be smaller in bytes than the original. If it is not, the original is kept.
-4. With **Keep a backup copy** chosen, the original is copied to the backup folder (see below). If that fails, the picture is not
+4. With **Keep a backup copy** chosen, the original is copied to the backup folder (read 'The backup'). If that fails, the picture is not
    shrunk.
 5. The copy takes the original's file mode and owner and replaces it in one step (a rename), so Jellyfin never reads
    half a picture.
@@ -132,14 +132,14 @@ A picture that cannot be read is left as it is and listed on the settings page w
 
 **Original pictures** on the settings page has two choices, and neither is chosen until you choose one:
 
-- **Keep a backup copy of each original:** the backup below.
-- **Just shrink, with no backup:** no extra space is used, and pictures shrunk from then on cannot be put back.
+- **Keep a backup copy of each original:** the backup described in this section.
+- **Shrink without a backup:** no extra space is used, and pictures shrunk from then on cannot be put back.
 
 Until you choose, nothing is shrunk: a scheduled run, a new picture and **Shrink now** each say "Not shrunk: choose
-Keep a backup copy or Just shrink, in its settings, first", and the settings page shows a notice at the top.
+Keep a backup copy or Shrink without a backup, in its settings, first", and the settings page shows a notice.
 **Restore original pictures**, **Delete backup** and **Start again** still work.
 
-After the update from version 1.1, the old on and off backup setting is no longer used, so you choose again. A backup
+After the update from version 1.1, the old backup setting is no longer used, so you choose again. A backup
 folder you already have is kept whichever you choose; **Delete backup** removes it.
 
 With **Keep a backup copy**:
@@ -159,7 +159,7 @@ With **Keep a backup copy**:
   backup shows. It removes only the pictures the shrinker put in the backup folder, never anything outside it, and is
   not available while a run is going.
 
-If you choose **Just shrink**, the settings page warns that pictures shrunk from then on cannot be put back.
+If you choose **Shrink without a backup**, the settings page warns that pictures shrunk from then on cannot be put back.
 
 ### Start again
 
@@ -168,8 +168,8 @@ There are two, and each asks you first:
 
 ![The Start again section, with the buttons Start again: the pictures it shrinks and Start again: every picture](images/start-again.png)
 
-- **Start again: the pictures it shrinks:** every type in the table above, whatever is ticked in **What to shrink**
-  (it is a reset, so a type you turned off after shrinking it comes back too).
+- **Start again: the pictures it shrinks:** every type in the table in 'What it picks', whatever is ticked in **What to shrink**
+  (it is a reset, so a type you deactivated after shrinking it comes back too).
 - **Start again: every picture:** Jellyfin replaces every picture of every film, series, season, collection and
   person, backdrops and logos included. Pictures you added yourself in Jellyfin are replaced. This downloads much
   more and can take many hours.
@@ -209,27 +209,27 @@ The settings page shows, measured when the page opens and after each thing you d
   pictures** no longer count. After **Start again**, it also says how many pictures are waiting for Jellyfin, how many
   were replaced by a new one and how many were put back.
 
-Below, **Last runs** lists each run: when, what started it, how many were shrunk, left as they were and not shrunk,
+**Last runs** lists each run: when, what started it, how many were shrunk, left as they were and not shrunk,
 the space saved, and how it ended.
 
 ## Risks, and how to undo them
 
 - **Pictures are changed in place.** Jellyfin shows the smaller picture straight away. With **Keep a backup copy**
-  you can put the originals back; with **Just shrink** you cannot, but **Start again** can have Jellyfin download
+  you can put the originals back; with **Shrink without a backup** you cannot, but **Start again** can have Jellyfin download
   them again.
 - **The backup uses space until you remove it.** The first run copies every picture it shrinks, so it may need almost
   as much free space as the pictures take now. The Space section shows how much. When you are happy with the
   pictures, **Delete backup** frees it.
 - **Deleting the backup cannot be undone.** After **Delete backup**, **Restore original pictures** can no longer put
   those pictures back. The shrunk pictures stay.
-- **Smaller pictures look softer on very large screens.** 900 pixels tall is sharp on a television; on a large 4K
-  screen up close a poster may look a little soft. Choose a larger size, or a higher **Quality**, if it matters to
+- **Smaller pictures are softer on very large screens.** 900 pixels tall is sharp on a television; on a large 4K
+  screen up close a poster can be a little soft. Choose a larger size, or a higher **Quality**, if it matters to
   you. A picture already shrunk is not made larger again: restore it first.
 - **Jellyfin may download bigger pictures again.** **Refresh metadata** with **Replace existing images** fetches new,
   full-size pictures. The next run shrinks them, but their backup is not replaced: the backup keeps the first original.
 - **A run uses processor time.** It works at the lowest priority, but on a small server choose a quiet time for
   **Shrink pictures**, such as the night.
-- **Do not run two shrinkers.** If you also use Starboard's Picture shrinker plug-in, it sees that this one is
+- **Do not run two shrinkers.** If you also use Starboard's Picture shrinker plug-in, it detects that this one is
   installed and stays idle, so the two never shrink the same pictures. Other tools that change Jellyfin's pictures
   should not run at the same time.
 
@@ -242,7 +242,7 @@ the space saved, and how it ended.
 
 ### Remove the plug-in cleanly
 
-1. To keep the pictures as they are now, skip to step 3. To put the originals back, follow the steps above first.
+1. To keep the pictures as they are now, skip to step 3. To put the originals back, follow 'Put the original pictures back' first.
 2. To free the backup's space, choose **Delete backup** on the settings page.
 3. In **Dashboard**, **Plugins**, **Installed** (on Jellyfin 10.11: **My Plugins**), open **Picture shrinker** and
    choose **Uninstall**, then restart Jellyfin.

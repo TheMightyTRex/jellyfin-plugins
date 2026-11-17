@@ -36,8 +36,8 @@
             <h2 class="sectionTitle">Picture shrinker</h2>
             <p>Shrinks the pictures Jellyfin keeps of films, series and cast and crew (posters, backdrops, thumbnails, logos, banners, disc art, clear art and photos of people), so they take less space. Each smaller copy is checked before it replaces the original, and you choose whether each original is backed up first. Runs are set in <a is="emby-linkbutton" class="button-link" href="#/dashboard/tasks">Scheduled Tasks</a>, under Picture shrinker.</p>
             <div class="psWarning" id="psChooseNotice" hidden>
-                <p><strong>Nothing is shrunk until you choose.</strong> Under <a href="#BackupChoiceGroup" id="psChooseLink">Original pictures</a>, choose Keep a backup copy of each original or Just shrink, with no backup, then save.</p>
-                <p>If you have just updated from version 1.1, choose again: version 1.2 asks once more. A backup you already have is kept whichever you choose.</p>
+                <p><strong>Before you begin:</strong> nothing is shrunk until you choose. Under <a href="#BackupChoiceGroup" id="psChooseLink">Original pictures</a>, choose Keep a backup copy of each original or Shrink without a backup, then save.</p>
+                <p>If you updated from version 1.1, choose again: version 1.2 asks once more. A backup you already have is kept whichever you choose.</p>
             </div>
 
             <form id="PictureShrinkerConfigForm">
@@ -54,11 +54,11 @@
                             <div class="fieldDescription" id="BackupKeepHelp">Each original is copied once, before its first shrink, and a copy already there is never replaced. If the copy fails or the backup disk is short of space, the picture is not shrunk. Restore original pictures, in Scheduled Tasks, puts them back.</div>
                             <label class="radio-label-block">
                                 <input is="emby-radio" type="radio" name="BackupChoice" id="BackupNone" value="none" aria-describedby="BackupNoneHelp">
-                                <span>Just shrink, with no backup</span>
+                                <span>Shrink without a backup</span>
                             </label>
                             <div class="fieldDescription" id="BackupNoneHelp">Uses no extra space. Pictures shrunk from then on cannot be put back.</div>
                         </div>
-                        <p class="psWarning" id="BackupWarning" hidden>With no backup, pictures shrunk from now on cannot be put back. Jellyfin can download them again from the internet with Refresh metadata or Start again, but pictures you chose or uploaded yourself are lost. A backup you already have is kept until you delete it.</p>
+                        <p class="psWarning" id="BackupWarning" hidden><strong>Warning:</strong> with no backup, pictures shrunk from now on cannot be put back. Jellyfin can download them again from the internet with Refresh metadata or Start again, but pictures you chose or uploaded yourself are lost. A backup you already have is kept until you delete it.</p>
                     </fieldset>
 
                     <div class="checkboxContainer checkboxContainer-withDescription">
@@ -66,7 +66,7 @@
                             <input is="emby-checkbox" type="checkbox" id="ShrinkAll" aria-describedby="ShrinkAllHelp">
                             <span>Shrink all picture types</span>
                         </label>
-                        <div class="fieldDescription checkboxFieldDescription" id="ShrinkAllHelp">On by default. Every type below is shrunk. Turn it off to choose the types yourself.</div>
+                        <div class="fieldDescription checkboxFieldDescription" id="ShrinkAllHelp">Active by default: every type in Picture types is shrunk. Deactivate it to choose the types yourself.</div>
                     </div>
 
                     <fieldset id="psTypes" aria-describedby="psTypesHelp">
@@ -126,7 +126,7 @@
                                 <input is="emby-checkbox" type="checkbox" id="IncludeClearart" aria-describedby="IncludeClearartHelp">
                                 <span>Clear art</span>
                             </label>
-                            <div class="fieldDescription checkboxFieldDescription" id="IncludeClearartHelp">Characters and titles on a see-through background.</div>
+                            <div class="fieldDescription checkboxFieldDescription" id="IncludeClearartHelp">Characters and titles on a transparent background.</div>
                         </div>
                     </fieldset>
                 </fieldset>
@@ -136,7 +136,7 @@
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="PosterHeight">Posters no taller than (pixels)</label>
                         <input is="emby-input" type="number" id="PosterHeight" min="300" max="3000" required aria-describedby="PosterHeightHelp">
-                        <div class="fieldDescription" id="PosterHeightHelp">From 300 to 3,000, 900 by default. A poster taller than this is shrunk to this height. 900 pixels looks sharp on a television.</div>
+                        <div class="fieldDescription" id="PosterHeightHelp">From 300 to 3,000, 900 by default. A poster taller than this is shrunk to this height. 900 pixels is sharp on a television.</div>
                     </div>
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="PersonWidth">Photos of people no wider than (pixels)</label>
@@ -209,7 +209,7 @@
                     <div class="inputContainer">
                         <label class="inputLabel inputLabelUnfocused" for="NewPictureMinutes">Wait before shrinking a new picture (minutes)</label>
                         <input is="emby-input" type="number" id="NewPictureMinutes" min="1" max="1440" required aria-describedby="NewPictureMinutesHelp">
-                        <div class="fieldDescription" id="NewPictureMinutesHelp">Jellyfin may still be writing a picture it has just saved. 10 minutes is safe.</div>
+                        <div class="fieldDescription" id="NewPictureMinutesHelp">Jellyfin may still be writing a picture it saved a moment ago. 10 minutes is safe.</div>
                     </div>
                 </fieldset>
 
@@ -222,7 +222,7 @@
 
             <section aria-labelledby="psSpaceTitle">
                 <h2 id="psSpaceTitle" class="sectionTitle">Space</h2>
-                <p id="psMeasured" class="fieldDescription">Measuring the pictures...</p>
+                <p id="psMeasured" class="fieldDescription">Measuring the pictures…</p>
                 <div class="psSpace">
                     <div class="psFigure">
                         <h3>Pictures now</h3>
@@ -288,11 +288,11 @@
         <h2 id="psConfirmTitle">Delete the backup?</h2>
         <div id="psConfirmText">
             <p id="psConfirmSize"></p>
-            <p>The original pictures in the backup are removed for good. Restore original pictures can no longer put those pictures back. The shrunk pictures stay in Jellyfin.</p>
+            <p>The original pictures in the backup are deleted permanently. Restore original pictures can no longer put those pictures back. The shrunk pictures stay in Jellyfin.</p>
         </div>
         <div class="psButtons">
-            <button is="emby-button" type="button" class="raised" id="psConfirmCancel" autofocus>Cancel</button>
             <button is="emby-button" type="button" class="raised button-delete" id="psConfirmDelete">Delete backup</button>
+            <button is="emby-button" type="button" class="raised" id="psConfirmCancel" autofocus>Cancel</button>
         </div>
     </dialog>
 
@@ -300,8 +300,8 @@
         <h2 id="psAgainConfirmTitle"></h2>
         <p id="psAgainConfirmText"></p>
         <div class="psButtons">
-            <button is="emby-button" type="button" class="raised" id="psAgainCancel" autofocus>Cancel</button>
             <button is="emby-button" type="button" class="raised button-delete" id="psAgainGo">Start again</button>
+            <button is="emby-button" type="button" class="raised" id="psAgainCancel" autofocus>Cancel</button>
         </div>
     </dialog>
 
@@ -329,10 +329,10 @@
 
             function showTypesHelp() {
                 var all = $('ShrinkAll').checked;
-                // While Shrink all is on, the ticks are not used, so they cannot be changed; their state is kept.
+                // While Shrink all is active, the ticks are not used, so they cannot be changed; their state is kept.
                 ticks.forEach(function (id) { $(id).disabled = all; });
                 $('psTypesHelp').textContent = all
-                    ? 'Shrink all picture types is on, so every type is shrunk. Turn it off to choose the types here.'
+                    ? 'Shrink all picture types is active, so every type is shrunk. Deactivate it to choose the types here.'
                     : 'Only the types ticked here are shrunk.';
             }
             var last = null;
@@ -477,14 +477,15 @@
                     return ApiClient.updatePluginConfiguration(pluginId, c);
                 }).then(function (result) {
                     Dashboard.processPluginConfigurationUpdateResult(result);
-                    say('Settings saved.');
+                    var now = new Date();
+                    say('Saved at ' + ('0' + now.getHours()).slice(-2) + ':' + ('0' + now.getMinutes()).slice(-2));
                     return measure();
                 }).finally(function () { Dashboard.hideLoadingMsg(); });
                 return false;
             });
 
             $('psShrinkNow').addEventListener('click', function () {
-                if (this.getAttribute('aria-disabled') === 'true') { say('Already running. Measure again to see how far it has gone.'); return; }
+                if (this.getAttribute('aria-disabled') === 'true') { say('Already running. Select Measure again to show how far it has got.'); return; }
                 post('ShrinkNow').then(function (r) { say(r.Said); return measure(); });
             });
 
@@ -527,7 +528,7 @@
             $('psAgainGo').addEventListener('click', function () {
                 var from = againFrom;
                 againDialog.close();
-                say('Starting again...');
+                say('Starting again…');
                 post(again[from].path).then(function (r) {
                     say(r.Said);
                     return measure();
@@ -536,7 +537,7 @@
 
             $('psConfirmDelete').addEventListener('click', function () {
                 dialog.close();
-                say('Deleting the backup...');
+                say('Deleting the backup…');
                 post('DeleteBackup').then(function (r) {
                     say(r.Said);
                     return measure();

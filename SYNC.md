@@ -16,7 +16,7 @@ They must shrink the same pictures in the same way, so a picture never depends o
 |---|---|---|
 | The sizes: posters 900 pixels tall; photos of people 400, backdrops 1,920, thumbnails 1,280, logos 800, banners 1,000, disc art 500 and clear art 800 pixels wide, with their limits | `rules.json`, `kinds` | Both test suites compare their defaults and limits with `rules.json` |
 | Which pictures: eight kinds, in this order, each matched by the start of its file name under its folder: `poster`, `backdrop` (backdrop.jpg, backdrop1.jpg and so on), `landscape` (Jellyfin's Thumb), `logo`, `banner`, `disc` and `clearart` under `library`, and anything under `People`; only `.jpg`, `.jpeg`, `.png` and `.webp`, never hidden files | `rules.json`, `kinds`, `extensions`, `skip_hidden` | The shared test pictures (a backdrop small enough, a PNG logo and a landscape thumbnail among them) |
-| What is shrunk: Shrink all picture types, on by default, shrinks every kind whatever the ticks; with it off, each kind's own tick, all on by default | `rules.json`, `shrink_all`, `kinds` (`shrink_by_default`) | Unit tests in each repository |
+| What is shrunk: Shrink all picture types, active by default, shrinks every kind whatever the ticks; with it inactive, each kind's own tick, all active by default | `rules.json`, `shrink_all`, `kinds` (`shrink_by_default`) | Unit tests in each repository |
 | Quality 85 for JPEG and WebP, PNG lossless, each picture keeps its format | `rules.json`, `quality`, `formats` | The shared test pictures |
 | Rounding half to even, so 500.5 pixels becomes 500 | `rules.json`, `rounding` | The shared test pictures (`library/7b/7b8c/poster.jpg`) |
 | The checks before a replace: decodes in full, right size, right format, smaller than the original | `rules.json`, `checks` | The shared test pictures (a broken and a cut-short picture) |
@@ -42,7 +42,7 @@ two never shrink the same pictures.
 
 ## How to change a rule
 
-1. Change `rules.json` here, and raise `rules_version` (see version numbers below).
+1. Change `rules.json` here, and raise `rules_version` (read 'Version numbers').
 2. If the change affects a test picture's result, change `tools/make-test-pictures.py` and run it, so
    `tests/pictures/expected.json` says the new result.
 3. Change the code here until `dotnet test` passes for both builds
@@ -61,8 +61,8 @@ each week and on each change, and fails when its copy differs.
 Both versions share the first two numbers, which are the rules version:
 
 - **Rules 1.1** is the Jellyfin version **1.1.x.0** and the Starboard version **1.1.x**.
-- **Rules 1.2** (the backup choice, Start again and every picture type) is the Jellyfin version **1.2.x.0** (1.2.0.0 and 1.2.2.0 for
-  Jellyfin 10.11, 1.2.1.0 and 1.2.3.0 for Jellyfin 12) and the Starboard version **1.2.x**.
+- **Rules 1.2** (the backup choice, Start again and every picture type) is the Jellyfin version **1.2.x.0** (1.2.0.0, 1.2.2.0 and 1.2.4.0 for
+  Jellyfin 10.11, 1.2.1.0, 1.2.3.0 and 1.2.5.0 for Jellyfin 12) and the Starboard version **1.2.x**.
 - A change to `rules.json` or to what a run does raises the second number in both, such as 1.2.
 - A fix that changes nothing the rules cover raises only the third number, in the version that needs it.
 - The fourth number of the Jellyfin version is always 0 (Jellyfin plug-in versions have four numbers).
@@ -82,14 +82,14 @@ the plug-in's settings) is unchanged between them. So one source makes two build
 Why this way:
 
 - Jellyfin lists every version in a repository whose targetAbi is not newer than itself, and installs or updates to
-  the highest version number among them. It has no upper limit. So Jellyfin 10.11 sees only the 10.11 build, and
-  Jellyfin 12 sees both and must find its own build to be the higher one. An odd third number for the 12 build, one
-  above the 10.11 build, does that.
+  the highest version number among them. It has no upper limit. So Jellyfin 10.11 offers only the 10.11 build, and
+  Jellyfin 12 offers both and must find its own build to be the higher one. An odd third number for the 12 build, one
+  higher than the 10.11 build, does that.
 - The two builds are always released together, from one tag named by the 12 build (`v1.1.1.0` makes 1.1.0.0 and
   1.1.1.0). A 10.11 build released alone would be higher than the last 12 build and Jellyfin 12 would offer it.
 - The first two numbers stay the rules version, as before, and the fourth stays 0.
 - Each build targets the first release of its Jellyfin line (10.11.0, 12.0.0), so it suits every later release in
   that line, as Jellyfin's own plug-ins do (their Jellyfin 12 builds all say targetAbi 12.0.0.0).
 
-The next fix is 1.2.2.0 for 10.11 and 1.2.3.0 for 12, tagged `v1.2.3.0`. If a later Jellyfin needs a third build,
+The next fix is 1.2.4.0 for 10.11 and 1.2.5.0 for 12, tagged `v1.2.5.0`. If a later Jellyfin needs a third build,
 this scheme has to change; until then, Starboard offers the plug-in on Jellyfin 10.11 and 12 only.
