@@ -63,6 +63,43 @@ public sealed class TitlesTests : IDisposable
         Assert.Empty(Make().Titles(null).Films);
     }
 
+    [Fact]
+    public async Task Last_20_newest_first_by_default_and_a_series_keeps_all_its_episodes()
+    {
+        var day = new DateTime(2026, 10, 1, 10, 0, 0, DateTimeKind.Utc);
+        for (var n = 1; n <= 25; n++)
+        {
+            var f = _jf.Film($"Film {n:00}", 2020, "", FakeJellyfin.Audio(1, "AD"));
+            f.DateCreated = day.AddDays(n);
+        }
+
+        for (var n = 1; n <= 23; n++)
+        {
+            var show = _jf.Show($"Show {n:00}");
+            for (var k = 1; k <= 3; k++)
+            {
+                var ep = _jf.Ep(show, 1, k, "", FakeJellyfin.Audio(1, "AD"));
+                ep.DateCreated = day.AddDays(n).AddHours(k);
+            }
+        }
+
+        var tagger = Make();
+        await tagger.RunAsync("now", null, default);
+        var answer = tagger.Titles(DateTimeOffset.Now);
+
+        Assert.Equal((25, 23, 20, 20), (answer.FilmTotal, answer.SeriesTotal, answer.FilmsShown, answer.SeriesShown));
+        Assert.Equal(20, answer.Films.Count);
+        Assert.Equal(new[] { "Film 25", "Film 24" }, answer.Films.Take(2).Select(f => f.Title)); // newest first
+        Assert.Equal(20, answer.Series.Count);
+        Assert.Equal("Show 23", answer.Series[0].Name);
+        Assert.All(answer.Series, s => Assert.Equal(3, s.Items.Count)); // every described episode of a listed series
+        Assert.Equal(60, answer.EpisodeCount);
+
+        var all = DescribedTitles.Build(_jf.Library(), id => "AD", null, 0, 10);
+        Assert.Equal((25, 10), (all.Films.Count, all.Series.Count));
+        Assert.Equal(20, DescribedTitles.Shown(7)); // an unknown value is the default
+    }
+
     [Theory]
     [InlineData(4, 4, "All 4 episodes described")]
     [InlineData(1, 1, "1 of 1 episode described")]

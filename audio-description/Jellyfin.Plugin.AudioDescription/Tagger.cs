@@ -55,7 +55,12 @@ public sealed class Tagger
 
     /// <summary>Titles with audio description: every tagged film and episode with a described track, by series.</summary>
     public TitlesAnswer Titles(DateTimeOffset? checkedAt)
-        => DescribedTitles.Build(_library, id => Words.DescribedTrack(_media.GetMediaStreams(id)) is { } s ? (s.DisplayTitle ?? s.Title ?? "Audio description") : null, checkedAt);
+        => DescribedTitles.Build(
+            _library,
+            id => Words.DescribedTrack(_media.GetMediaStreams(id)) is { } s ? (s.DisplayTitle ?? s.Title ?? "Audio description") : null,
+            checkedAt,
+            _config().FilmsShown,
+            _config().SeriesShown);
 
     /// <summary>A whole pass over the library. Returns null when a pass is already running.</summary>
     public async Task<TagRecord?> RunAsync(string why, IProgress<double>? progress, CancellationToken cancellationToken)

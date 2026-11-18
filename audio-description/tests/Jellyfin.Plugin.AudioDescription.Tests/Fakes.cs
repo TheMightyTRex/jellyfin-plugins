@@ -130,11 +130,18 @@ public sealed class FakeJellyfin
             items = items.Where(i => i.ParentIndexNumber == season);
         }
 
+        if (q.OrderBy.Count > 0 && q.OrderBy[0].OrderBy == ItemSortBy.DateCreated)
+        {
+            items = items.OrderByDescending(i => i.DateCreated).ThenBy(i => i.Name, StringComparer.OrdinalIgnoreCase);
+        }
+
+        items = items.Skip(q.StartIndex ?? 0);
         return q.Limit is int n ? items.Take(n) : items;
     }
 
     public ILibraryManager Library() => Fake<ILibraryManager>.Make((m, a) => m.Name switch
     {
+        nameof(ILibraryManager.GetCount) => Query((InternalItemsQuery)a[0]!).Count(),
         nameof(ILibraryManager.GetItemIds) => Query((InternalItemsQuery)a[0]!).Select(i => i.Id).ToList(),
         nameof(ILibraryManager.GetItemList) when a.Length == 1 => Query((InternalItemsQuery)a[0]!).ToList(),
         nameof(ILibraryManager.GetItemById) when a.Length >= 1 && a[0] is Guid id => Items.GetValueOrDefault(id),

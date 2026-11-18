@@ -120,6 +120,16 @@ public class WordingTests
         Assert.Contains("Not every Jellyfin app accepts", Wording("README.md"), StringComparison.Ordinal);
     }
 
+    [Theory]
+    [InlineData("configPage.html")]
+    [InlineData("titlesPage.html")]
+    public void NoFunctionIsDeclaredTwice(string name)
+    {
+        // A second declaration silently replaces the first in a script (the titles page once broke this way).
+        var names = Regex.Matches(Wording(name), @"function (\w+)\(").Select(m => m.Groups[1].Value).ToList();
+        Assert.Empty(names.GroupBy(n => n).Where(g => g.Count() > 1).Select(g => g.Key));
+    }
+
     [Fact]
     public void TheTitlesPageHasTheSameNameAndColumnsAsStarboards()
     {
@@ -131,6 +141,11 @@ public class WordingTests
         Assert.Contains("'. Described track: '", page, StringComparison.Ordinal);
         Assert.Contains("'described episode', 'described episodes'", page, StringComparison.Ordinal);
         Assert.Contains("have a described sound track. ", page, StringComparison.Ordinal);
+        Assert.Contains("'the last '", page, StringComparison.Ordinal); // Showing the last 20 of 143 films, as in Starboard
+        Assert.Contains("'. Change how many in Films to list and Series to list, on the Settings tab.", page, StringComparison.Ordinal);
+        Assert.Contains(">Films to list</label>", Wording("configPage.html"), StringComparison.Ordinal);
+        Assert.Contains(">Series to list</label>", Wording("configPage.html"), StringComparison.Ordinal);
+        Assert.Contains("<option value=\"500\">Last 500</option>", Wording("configPage.html"), StringComparison.Ordinal);
         foreach (var name in new[] { "configPage.html", "titlesPage.html" })
         {
             Assert.Contains("aria-label=\"Audio description pages\"", Wording(name), StringComparison.Ordinal); // the tabs on both pages

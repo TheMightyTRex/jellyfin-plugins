@@ -27,4 +27,10 @@ public class PluginConfiguration : BasePluginConfiguration
     public string Language { get; set; } = Rules.Current.Tracks.DefaultLanguage;
 
     public int ToleranceSeconds { get; set; } = Rules.Current.Tracks.ToleranceSeconds.Default;
+
+    /// <summary>Gets or sets how many films Titles with audio description lists, newest added first: 0 for all, else 10, 20, 50, 100 or 500.</summary>
+    public int FilmsShown { get; set; } = DescribedTitles.ShownDefault;
+
+    /// <summary>Gets or sets how many series Titles with audio description lists, by their newest described episode: 0 for all, else 10, 20, 50, 100 or 500.</summary>
+    public int SeriesShown { get; set; } = DescribedTitles.ShownDefault;
 }

@@ -132,6 +132,13 @@
                 return wrap;
             }
 
+            // The last 20 of 143 films, all 3 films, or the 1 film: the same words as the Starboard plug-in.
+            function howManyWords(limit, total, one, many) {
+                if (limit && total > limit) { return 'the last ' + limit.toLocaleString('en-GB') + ' of ' + total.toLocaleString('en-GB') + ' ' + many; }
+                if (!total) { return 'no ' + many; }
+                return total === 1 ? 'the 1 ' + one : 'all ' + total.toLocaleString('en-GB') + ' ' + many;
+            }
+
             function seriesCount(d) {
                 return plural(d.Series.length, 'series', 'series') + ', ' + plural(d.EpisodeCount, 'described episode', 'described episodes');
             }
@@ -187,13 +194,15 @@
                 var any = d.Films.length || d.Series.length;
                 var intro;
                 if (!d.Checked) {
-                    intro = 'Find and tag has not run yet. Select Find and tag now on the Settings tab, or wait for tonight’s run at 04:20.';
+                    intro = 'Find and tag has not run yet. Select Find and tag now on the Settings tab, or wait for its run at 04:20 tonight.';
                 } else if (!any) {
                     intro = 'No film or series in Jellyfin has a described sound track yet. ' + checkedWords(d.Checked) + '.';
                 } else {
-                    intro = plural(d.Films.length, 'film', 'films') + ' and ' + plural(d.EpisodeCount, 'episode', 'episodes') + ' in '
-                        + plural(d.Series.length, 'series', 'series') + ' have a described sound track. ' + checkedWords(d.Checked)
-                        + '. Each title opens its page in Jellyfin.';
+                    intro = plural(d.FilmTotal, 'film', 'films') + ' and ' + plural(d.SeriesTotal, 'series', 'series')
+                        + ' have a described sound track. ' + checkedWords(d.Checked) + '. Showing '
+                        + howManyWords(d.FilmsShown, d.FilmTotal, 'film', 'films') + ' and ' + howManyWords(d.SeriesShown, d.SeriesTotal, 'series', 'series')
+                        + ', newest first' + (d.EpisodeCount ? ', with ' + plural(d.EpisodeCount, 'described episode', 'described episodes') : '')
+                        + '. Change how many in Films to list and Series to list, on the Settings tab. Each title opens its page in Jellyfin.';
                 }
 
                 $('adtIntro').textContent = intro;
