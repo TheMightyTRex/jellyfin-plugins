@@ -1541,7 +1541,41 @@ public sealed class Shrinker
             return false;
         }
 
-        return File.ReadAllBytes(a).AsSpan().SequenceEqual(File.ReadAllBytes(b));
+        using var first = new FileStream(a, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.SequentialScan);
+        using var second = new FileStream(b, FileMode.Open, FileAccess.Read, FileShare.Read, 64 * 1024, FileOptions.SequentialScan);
+        var firstBuffer = new byte[64 * 1024];
+        var secondBuffer = new byte[64 * 1024];
+        while (true)
+        {
+            var firstRead = ReadBlock(first, firstBuffer);
+            var secondRead = ReadBlock(second, secondBuffer);
+            if (firstRead != secondRead || !firstBuffer.AsSpan(0, firstRead).SequenceEqual(secondBuffer.AsSpan(0, secondRead)))
+            {
+                return false;
+            }
+
+            if (firstRead == 0)
+            {
+                return true;
+            }
+        }
+
+        static int ReadBlock(Stream stream, byte[] buffer)
+        {
+            var read = 0;
+            while (read < buffer.Length)
+            {
+                var count = stream.Read(buffer, read, buffer.Length - read);
+                if (count == 0)
+                {
+                    break;
+                }
+
+                read += count;
+            }
+
+            return read;
+        }
     }
 
     private static long SafeLength(string path)

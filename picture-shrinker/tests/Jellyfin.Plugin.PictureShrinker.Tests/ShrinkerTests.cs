@@ -358,6 +358,24 @@ public sealed class ShrinkerTests : IDisposable
     }
 
     [Fact]
+    public void RestoreReplacesSameSizeDifferentContent()
+    {
+        var rel = Path.Combine("library", "0a", "0a1b", "poster.jpg");
+        var live = Path.Combine(_meta, rel);
+        var copy = Path.Combine(_backup, rel);
+        var shrinker = Make(Settings());
+        Assert.True(shrinker.Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!.Shrunk > 0);
+
+        var changed = File.ReadAllBytes(copy);
+        changed[0] ^= 1;
+        File.WriteAllBytes(live, changed);
+
+        var rec = shrinker.Restore(CancellationToken.None)!;
+        Assert.Equal(10, rec.Restored);
+        Assert.Equal(File.ReadAllBytes(copy), File.ReadAllBytes(live));
+    }
+
+    [Fact]
     public void JustShrinkShrinksWithoutBackup()
     {
         var rec = Make(Settings(backup: false)).Run("shrink", TimeSpan.FromMinutes(5), CancellationToken.None)!;
