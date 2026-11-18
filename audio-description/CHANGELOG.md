@@ -7,7 +7,7 @@ Semantic Versioning.
 
 ## [Unreleased]
 
-## [1.0.5.0] for Jellyfin 12 and [1.0.4.0] for Jellyfin 10.11 (17 November 2026)
+## [1.0.5.0] for Jellyfin 12 and [1.0.4.0] for Jellyfin 10.11 (18 November 2026)
 
 Rules 1.0, unchanged. The same as the Starboard plug-in Audio description 1.5.0.
 
