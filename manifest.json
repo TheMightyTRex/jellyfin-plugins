@@ -9,6 +9,22 @@
     "imageUrl": "https://raw.githubusercontent.com/TheMightyTRex/jellyfin-plugins/main/audio-description/images/logo.png",
     "versions": [
       {
+        "version": "1.0.5.0",
+        "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Films to list and Series to list: on the settings page, under Titles with audio description, how many of each the Titles with audio description tab lists: All, or the last 10, 20, 50, 100 or 500 added to Jellyfin, newest first. Last 20 by default. A series counts by its newest described episode and still lists all its described episodes. Only that many are read from the library.\n- The tab says how many it shows, such as \"Showing the last 20 of 143 films and all 6 series, newest first\", and where to change it.\n\nChanged:\n\n- Newest first: films and series are listed by when they were added to Jellyfin, newest first.",
+        "targetAbi": "12.0.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.5.0/audio-description_1.0.5.0_jellyfin-12.zip",
+        "checksum": "111ccef534d2020a70de9f79d0fab1ab",
+        "timestamp": "2026-11-18T22:34:03Z"
+      },
+      {
+        "version": "1.0.4.0",
+        "changelog": "### For Jellyfin 10.11\n\nAdded:\n\n- Films to list and Series to list: on the settings page, under Titles with audio description, how many of each the Titles with audio description tab lists: All, or the last 10, 20, 50, 100 or 500 added to Jellyfin, newest first. Last 20 by default. A series counts by its newest described episode and still lists all its described episodes. Only that many are read from the library.\n- The tab says how many it shows, such as \"Showing the last 20 of 143 films and all 6 series, newest first\", and where to change it.\n\nChanged:\n\n- Newest first: films and series are listed by when they were added to Jellyfin, newest first.",
+        "targetAbi": "10.11.0.0",
+        "sourceUrl": "https://github.com/TheMightyTRex/jellyfin-plugins/releases/download/audio-description-v1.0.5.0/audio-description_1.0.4.0_jellyfin-10.11.zip",
+        "checksum": "73937e0166c6ab4b3b5c41b630820406",
+        "timestamp": "2026-11-18T22:34:03Z"
+      },
+      {
         "version": "1.0.3.0",
         "changelog": "### For Jellyfin 12\n\nAdded:\n\n- Titles with audio description: a page beside Settings, chosen from the tabs at the top of both pages, that lists every film and every described episode, by series, from the tags Find and tag gives. Films have their year, described track and status; each series has how many of its episodes are described, such as 3 of 6 episodes described, and its episodes in order. Show All, Films or Series, each with its count. Each title opens its page in Jellyfin. The same page, columns and words as in the Starboard plug-in.\n\nFixed:\n\n- Later Jellyfin 10.11 releases, such as 10.11.11: the settings page loads again. They changed how a plug-in asks for the list of people, so the page could not show its figures, people or tracks.",
         "targetAbi": "12.0.0.0",
